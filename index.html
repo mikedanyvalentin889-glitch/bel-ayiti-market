@@ -167,7 +167,15 @@
   .admin-pcat{font-size:.7rem;color:var(--or);margin-bottom:6px;}
   .admin-upload-btn{background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.25);color:var(--or);padding:5px 12px;border-radius:2px;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;font-family:'Oswald',sans-serif;cursor:pointer;transition:all .2s;}
   .admin-upload-btn:hover{background:rgba(212,175,55,.2);}
-  .admin-hint{font-size:.72rem;color:rgba(245,240,232,.35);margin-top:16px;padding:12px;border:1px dashed rgba(212,175,55,.15);border-radius:3px;line-height:1.5;text-align:center;}
+  .admin-hint{font-size:.72rem;color:rgba(245,240,232,.35);margin-bottom:16px;padding:12px;border:1px dashed rgba(212,175,55,.15);border-radius:3px;line-height:1.5;text-align:center;}
+  .admin-tab{flex:1;background:transparent;border:none;color:rgba(245,240,232,.5);padding:12px;font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
+  .admin-tab.active{color:var(--or);border-bottom-color:var(--or);}
+  .form-group{margin-bottom:16px;}
+  .form-label{display:block;font-size:.72rem;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+  .form-input{width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.25);color:var(--ivoire);padding:10px 14px;border-radius:3px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+  .form-input:focus{border-color:var(--or);}
+  .form-input option{background:var(--gris2);}
+  textarea.form-input{resize:vertical;}
   .photo-status{font-size:.68rem;margin-top:3px;}
   .photo-status.has-photo{color:#25D366;}
   .photo-status.no-photo{color:rgba(245,240,232,.3);}
@@ -334,15 +342,77 @@
 <!-- ADMIN PANEL -->
 <div class="admin-panel" id="adminPanel">
   <div class="admin-header">
-    <h4>⚙ Gérer les photos</h4>
+    <h4>⚙ Gestion produits</h4>
     <button class="admin-close" onclick="closeAdminPanel()">✕</button>
   </div>
-  <div class="admin-scroll">
-    <div class="admin-hint">
-      Clique sur la miniature ou le bouton <strong style="color:var(--or)">Changer photo</strong> pour uploader une image depuis ton téléphone ou ordinateur.<br><br>
-      Les photos sont sauvegardées automatiquement dans ce navigateur. 📱
-    </div>
+
+  <!-- TABS -->
+  <div style="display:flex;border-bottom:1px solid rgba(212,175,55,.15);flex-shrink:0;">
+    <button class="admin-tab active" id="tab-list" onclick="switchTab('list')">📦 Produits</button>
+    <button class="admin-tab" id="tab-add" onclick="switchTab('add')">➕ Ajouter</button>
+  </div>
+
+  <!-- TAB: LISTE PRODUITS -->
+  <div class="admin-scroll" id="view-list">
+    <div class="admin-hint">Clique sur 📷 pour changer la photo, ✏️ pour modifier, 🗑 pour supprimer.</div>
     <div id="adminProductList"></div>
+  </div>
+
+  <!-- TAB: AJOUTER / MODIFIER -->
+  <div class="admin-scroll" id="view-add" style="display:none;">
+    <div id="form-title" style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;color:var(--or);letter-spacing:2px;margin-bottom:18px;">Nouveau produit</div>
+
+    <div class="form-group">
+      <label class="form-label">Nom du produit *</label>
+      <input class="form-input" id="f-name" type="text" placeholder="Ex: Café Haïtien Premium">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Catégorie *</label>
+      <select class="form-input" id="f-cat">
+        <option value="">Choisir...</option>
+        <option>Alimentation</option>
+        <option>Artisanat</option>
+        <option>Beauté</option>
+        <option>Mode</option>
+        <option>Maison</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Prix (HTG) *</label>
+      <input class="form-input" id="f-price" type="number" placeholder="Ex: 350">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input" id="f-desc" rows="3" placeholder="Décris ton produit..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Badge (optionnel)</label>
+      <select class="form-input" id="f-badge">
+        <option value="">Aucun</option>
+        <option value="Nouveau|rouge">Nouveau</option>
+        <option value="Bestseller|or">Bestseller</option>
+        <option value="Artisan|or">Artisan</option>
+        <option value="Promo|rouge">Promo</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji (si pas de photo)</label>
+      <input class="form-input" id="f-emoji" type="text" placeholder="Ex: ☕" maxlength="4">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Photo produit</label>
+      <div id="f-photo-preview" style="width:100%;height:120px;background:var(--noir);border:2px dashed rgba(212,175,55,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;cursor:pointer;" onclick="document.getElementById('f-file').click()">
+        <span style="color:rgba(245,240,232,.3);font-size:.85rem;">Cliquer pour ajouter une photo</span>
+      </div>
+      <input type="file" id="f-file" accept="image/*" style="display:none" onchange="previewFormPhoto(event)">
+      <button class="admin-upload-btn" onclick="document.getElementById('f-file').click()" style="width:100%;text-align:center;">📷 Choisir une photo</button>
+    </div>
+
+    <input type="hidden" id="f-edit-id" value="">
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button onclick="cancelForm()" style="flex:1;background:transparent;border:1px solid rgba(245,240,232,.15);color:rgba(245,240,232,.5);padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:1px;">Annuler</button>
+      <button onclick="saveProduct()" style="flex:2;background:var(--rouge);border:none;color:white;padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.9rem;letter-spacing:1px;text-transform:uppercase;">💾 Enregistrer</button>
+    </div>
   </div>
 </div>
 
@@ -447,26 +517,143 @@ function renderProducts() {
 // ─── RENDER ADMIN LIST ───────────────────────────────────
 function renderAdminList() {
   const list = document.getElementById('adminProductList');
+  if (!list) return;
   list.innerHTML = products.map(p => {
     const photoUrl = photos[p.id];
     return `
     <div class="admin-product">
-      <div class="admin-thumb" onclick="triggerUpload(${p.id})" title="Cliquer pour uploader">
+      <div class="admin-thumb" onclick="triggerUpload(${p.id})" title="Changer photo">
         ${photoUrl ? `<img src="${photoUrl}" alt="">` : `<div class="thumb-emoji">${p.emoji}</div>`}
-        <div class="thumb-add">+</div>
+        <div class="thumb-add">📷</div>
       </div>
       <div class="admin-info">
         <div class="admin-pcat">${p.category}</div>
         <div class="admin-pname">${p.name}</div>
-        <div class="photo-status ${photoUrl ? 'has-photo' : 'no-photo'}">
-          ${photoUrl ? '✓ Photo enregistrée' : '○ Pas encore de photo'}
+        <div class="photo-status ${photoUrl ? 'has-photo' : 'no-photo'}">${photoUrl ? '✓ Photo ok' : '○ Pas de photo'}</div>
+        <div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;">
+          <button class="admin-upload-btn" onclick="triggerUpload(${p.id})">📷 Photo</button>
+          <button class="admin-upload-btn" onclick="editProduct(${p.id})" style="border-color:rgba(212,175,55,.4);color:var(--or);">✏️ Modifier</button>
+          <button class="admin-upload-btn" onclick="deleteProduct(${p.id})" style="border-color:rgba(192,57,43,.4);color:#C0392B;">🗑 Supprimer</button>
         </div>
-        <button class="admin-upload-btn" onclick="triggerUpload(${p.id})" style="margin-top:6px">
-          📷 ${photoUrl ? 'Changer photo' : 'Ajouter photo'}
-        </button>
-        ${photoUrl ? `<button class="admin-upload-btn" onclick="removePhoto(${p.id})" style="margin-top:4px;border-color:rgba(192,57,43,.4);color:#C0392B;">✕ Supprimer</button>` : ''}
       </div>
     </div>`; }).join('');
+}
+
+// ─── TABS ────────────────────────────────────────────────
+function switchTab(tab) {
+  document.getElementById('view-list').style.display = tab === 'list' ? 'flex' : 'none';
+  document.getElementById('view-add').style.display  = tab === 'add'  ? 'flex' : 'none';
+  document.getElementById('view-list').style.flexDirection = 'column';
+  document.getElementById('tab-list').classList.toggle('active', tab === 'list');
+  document.getElementById('tab-add').classList.toggle('active', tab === 'add');
+  if (tab === 'add') {
+    document.getElementById('form-title').textContent = 'Nouveau produit';
+    document.getElementById('f-edit-id').value = '';
+    clearForm();
+  }
+}
+
+// ─── FORM PHOTO PREVIEW ──────────────────────────────────
+let formPhotoData = null;
+function previewFormPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    formPhotoData = e.target.result;
+    const preview = document.getElementById('f-photo-preview');
+    preview.innerHTML = `<img src="${formPhotoData}" style="width:100%;height:100%;object-fit:cover;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── SAVE PRODUCT (add or edit) ──────────────────────────
+function saveProduct() {
+  const name  = document.getElementById('f-name').value.trim();
+  const cat   = document.getElementById('f-cat').value;
+  const price = parseInt(document.getElementById('f-price').value);
+  const desc  = document.getElementById('f-desc').value.trim();
+  const badgeVal = document.getElementById('f-badge').value;
+  const emoji = document.getElementById('f-emoji').value.trim() || '🛍️';
+  const editId = document.getElementById('f-edit-id').value;
+
+  if (!name) { alert('Entre le nom du produit.'); return; }
+  if (!cat)  { alert('Choisis une catégorie.'); return; }
+  if (!price || price <= 0) { alert('Entre un prix valide.'); return; }
+
+  const badgeParts = badgeVal ? badgeVal.split('|') : [];
+  const badge     = badgeParts[0] || null;
+  const badgeType = badgeParts[1] || null;
+
+  if (editId) {
+    // Edit existing
+    const p = products.find(x => x.id === parseInt(editId));
+    if (p) { p.name = name; p.category = cat; p.price = price; p.desc = desc; p.badge = badge; p.badgeType = badgeType; p.emoji = emoji; }
+    if (formPhotoData) photos[parseInt(editId)] = formPhotoData;
+  } else {
+    // New product
+    const newId = Date.now();
+    products.push({ id: newId, category: cat, name, desc, price, emoji, badge, badgeType });
+    if (formPhotoData) photos[newId] = formPhotoData;
+  }
+
+  formPhotoData = null;
+  clearForm();
+  renderProducts();
+  renderAdminList();
+  switchTab('list');
+}
+
+function clearForm() {
+  document.getElementById('f-name').value  = '';
+  document.getElementById('f-cat').value   = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-desc').value  = '';
+  document.getElementById('f-badge').value = '';
+  document.getElementById('f-emoji').value = '';
+  document.getElementById('f-photo-preview').innerHTML = '<span style="color:rgba(245,240,232,.3);font-size:.85rem;">Cliquer pour ajouter une photo</span>';
+  document.getElementById('f-file').value = '';
+  formPhotoData = null;
+}
+
+function cancelForm() {
+  clearForm();
+  document.getElementById('f-edit-id').value = '';
+  switchTab('list');
+}
+
+// ─── EDIT PRODUCT ────────────────────────────────────────
+function editProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  switchTab('add');
+  document.getElementById('form-title').textContent = 'Modifier produit';
+  document.getElementById('f-edit-id').value = id;
+  document.getElementById('f-name').value  = p.name;
+  document.getElementById('f-cat').value   = p.category;
+  document.getElementById('f-price').value = p.price;
+  document.getElementById('f-desc').value  = p.desc || '';
+  document.getElementById('f-emoji').value = p.emoji || '';
+  // badge
+  if (p.badge && p.badgeType) {
+    document.getElementById('f-badge').value = `${p.badge}|${p.badgeType}`;
+  }
+  // photo
+  if (photos[id]) {
+    formPhotoData = photos[id];
+    document.getElementById('f-photo-preview').innerHTML = `<img src="${photos[id]}" style="width:100%;height:100%;object-fit:cover;">`;
+  }
+}
+
+// ─── DELETE PRODUCT ──────────────────────────────────────
+function deleteProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`Supprimer "${p.name}" ?`)) return;
+  products = products.filter(x => x.id !== id);
+  delete photos[id];
+  renderProducts();
+  renderAdminList();
 }
 
 // ─── UPLOAD LOGIC ────────────────────────────────────────
