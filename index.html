@@ -15,8 +15,7 @@
 
   /* ── NAV ── */
   nav{position:fixed;top:0;width:100%;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;background:rgba(13,13,13,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.2);}
-  .logo{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--or);letter-spacing:2px;text-transform:uppercase;}
-  .logo span{color:var(--rouge);}
+  .logo-3d-wrap{display:flex;align-items:center;flex-shrink:0;}
   .nav-links{display:flex;gap:28px;list-style:none;}
   .nav-links a{color:var(--ivoire);text-decoration:none;font-size:.82rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;transition:color .2s;}
   .nav-links a:hover{color:var(--or);}
@@ -201,7 +200,9 @@
 
 <!-- NAV -->
 <nav>
-  <div class="logo">Bèl<span>Ayiti</span> Market</div>
+  <div class="logo-3d-wrap">
+    <canvas id="navLogo" width="180" height="52" style="display:block;cursor:pointer;" onclick="location.href='#'"></canvas>
+  </div>
   <ul class="nav-links">
     <li><a href="#categories">Catégories</a></li>
     <li><a href="#produits">Produits</a></li>
@@ -217,19 +218,14 @@
   <div class="hero-bg"></div>
   <div class="flag-stripes"><div class="stripe-blue"></div><div class="stripe-red"></div></div>
   <div class="hero-content">
-    <div class="hero-eyebrow">Fièt pou Ayiti</div>
-    <h1>
-      <span class="sub">Le meilleur de</span>
-      <span class="highlight">Haïti</span>
-      livré chez toi
-    </h1>
-    <p class="hero-desc">Produits locaux authentiques — artisanat, alimentation, beauté et plus. Qualité haïtienne, prix juste, livraison rapide.</p>
+    <canvas id="heroLogo" width="560" height="200" style="display:block;max-width:100%;margin-bottom:24px;"></canvas>
+    <p class="hero-desc">Produits locaux authentiques — kepi, maillot, pantalon ak plis. Kalite haïtienne, bon pri, livrezon rapid.</p>
     <div class="hero-btns">
       <a href="#produits" class="btn-primary">Voir les produits</a>
       <a href="#commande" class="btn-secondary">Commander WhatsApp</a>
     </div>
     <div class="hero-stats">
-      <div><div class="stat-num">200+</div><div class="stat-label">Produits locaux</div></div>
+      <div><div class="stat-num">3+</div><div class="stat-label">Produits locaux</div></div>
       <div><div class="stat-num">24h</div><div class="stat-label">Délai livraison</div></div>
       <div><div class="stat-num">100%</div><div class="stat-label">Haïtien</div></div>
     </div>
@@ -823,6 +819,94 @@ function closeAdminPanel() {
 loadPhotos();
 renderCategories();
 renderProducts();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+function buildLogo(canvasId, scale) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const W = canvas.width, H = canvas.height;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+  renderer.setClearColor(0x0D0D0D, canvasId==='heroLogo'?0:1);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
+  camera.position.set(0, 0, 14 / scale);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+  const d1 = new THREE.DirectionalLight(0xffffff, 0.9); d1.position.set(2,6,8); scene.add(d1);
+  const d2 = new THREE.DirectionalLight(0x00209F, 0.5); d2.position.set(-6,2,4); scene.add(d2);
+  const d3 = new THREE.DirectionalLight(0xD21034, 0.5); d3.position.set(6,-2,4); scene.add(d3);
+  const gL = new THREE.PointLight(0xD4AF37, 1.2, 40); gL.position.set(0,0,6); scene.add(gL);
+
+  const matBlue = new THREE.MeshPhongMaterial({color:0x00209F, shininess:120, specular:0x4466ff});
+  const matRed  = new THREE.MeshPhongMaterial({color:0xD21034, shininess:120, specular:0xff4466});
+  const matGold = new THREE.MeshPhongMaterial({color:0xD4AF37, shininess:200, specular:0xffffaa});
+
+  const s = scale;
+  function box(w,h,d,mat,x,y,z){ const m=new THREE.Mesh(new THREE.BoxGeometry(w*s,h*s,d*s),mat); m.position.set(x*s,y*s,z*s); scene.add(m); return m; }
+
+  const dp = 0.55;
+  // B
+  box(0.25,2.2,dp,matBlue,-5.8,0.3,0); box(0.7,0.22,dp,matBlue,-5.45,1.2,0);
+  box(0.7,0.22,dp,matBlue,-5.45,0.28,0); box(0.7,0.22,dp,matBlue,-5.45,-0.65,0);
+  box(0.22,0.72,dp,matRed,-5.08,0.74,0); box(0.22,0.72,dp,matGold,-5.08,-0.18,0);
+  // È
+  box(0.25,2.2,dp,matBlue,-4.4,0.3,0); box(0.75,0.22,dp,matBlue,-4.02,1.2,0);
+  box(0.65,0.22,dp,matBlue,-4.07,0.28,0); box(0.75,0.22,dp,matBlue,-4.02,-0.65,0);
+  const acc=new THREE.Mesh(new THREE.BoxGeometry(0.55*s,0.16*s,dp*s),matGold); acc.position.set(-3.65*s,1.88*s,0); acc.rotation.z=0.5; scene.add(acc);
+  // L
+  box(0.25,2.2,dp,matBlue,-3.0,0.3,0); box(0.75,0.22,dp,matBlue,-2.62,-0.65,0);
+  // separator
+  box(0.1,2.4,dp*0.5,matGold,-2.1,0.3,0.1);
+  // A
+  box(0.25,2.2,dp,matRed,-1.55,0.3,0); box(0.25,2.2,dp,matRed,-0.85,0.3,0);
+  box(0.9,0.22,dp,matRed,-1.2,1.2,0); box(0.9,0.22,dp,matGold,-1.2,0.28,0);
+  // Y
+  box(0.25,1.1,dp,matRed,0.05,-0.35,0);
+  const yL=new THREE.Mesh(new THREE.BoxGeometry(0.25*s,1.1*s,dp*s),matRed); yL.position.set(-0.2*s,0.35*s,0); yL.rotation.z=0.5; scene.add(yL);
+  const yR=new THREE.Mesh(new THREE.BoxGeometry(0.25*s,1.1*s,dp*s),matRed); yR.position.set(0.3*s,0.35*s,0); yR.rotation.z=-0.5; scene.add(yR);
+  // I
+  box(0.25,2.2,dp,matRed,1.05,0.3,0); box(0.7,0.22,dp,matRed,1.05,1.2,0); box(0.7,0.22,dp,matRed,1.05,-0.65,0);
+  // T
+  box(0.25,1.9,dp,matRed,1.75,0.15,0); box(1.0,0.22,dp,matRed,1.75,1.2,0);
+  // I
+  box(0.25,2.2,dp,matRed,2.5,0.3,0); box(0.7,0.22,dp,matRed,2.5,1.2,0); box(0.7,0.22,dp,matRed,2.5,-0.65,0);
+  // MARKET
+  for(let i=0;i<6;i++){
+    box(0.18,0.9,0.3,matGold,-1.5+i*0.58,-1.65,0);
+    box(0.42,0.13,0.3,matGold,-1.5+i*0.58,-1.2,0);
+    box(0.42,0.13,0.3,matGold,-1.5+i*0.58,-2.1,0);
+  }
+  // plate
+  const plate=new THREE.Mesh(new THREE.BoxGeometry(14*s,5.5*s,0.1*s),new THREE.MeshPhongMaterial({color:0x111111,shininess:20})); plate.position.set(-0.5*s,0,-0.6*s); scene.add(plate);
+  // bars
+  box(13,0.12,0.2,matGold,-0.5,2.6,0); box(13,0.12,0.2,matGold,-0.5,-1.05,0);
+  box(13,0.06,0.15,matBlue,-0.5,2.45,0); box(13,0.06,0.15,matRed,-0.5,-1.18,0);
+  // corner stars
+  [[−6.3,2.6],[5.3,2.6],[−6.3,−1.05],[5.3,−1.05]].forEach(([x,y])=>{
+    for(let a=0;a<4;a++){const st=new THREE.Mesh(new THREE.BoxGeometry(0.5*s,0.1*s,0.2*s),matGold); st.position.set(x*s,y*s,0.1*s); st.rotation.z=a*Math.PI/4; scene.add(st);}
+  });
+
+  let t=0;
+  function animate(){
+    requestAnimationFrame(animate);
+    t+=0.008;
+    scene.rotation.y=Math.sin(t)*0.12;
+    scene.rotation.x=Math.sin(t*0.7)*0.05;
+    gL.intensity=1.0+Math.sin(t*2)*0.3;
+    renderer.render(scene,camera);
+  }
+  animate();
+}
+
+window.addEventListener('load', function() {
+  buildLogo('navLogo', 0.34);
+  buildLogo('heroLogo', 0.72);
+});
 </script>
 </body>
 </html>
