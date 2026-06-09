@@ -220,7 +220,7 @@
   <div class="hero-bg" style="z-index:1;"></div>
   <div class="flag-stripes" style="z-index:1;"><div class="stripe-blue"></div><div class="stripe-red"></div></div>
   <div class="hero-content" style="position:relative;z-index:2;">
-    <canvas id="heroLogo" width="700" height="320" style="display:block;width:100%;margin-bottom:24px;"></canvas>
+    <canvas id="heroLogo" width="700" height="380" style="display:block;width:100%;margin-bottom:24px;border-radius:8px;"></canvas>
     <p class="hero-desc">Produits locaux authentiques — kepi, maillot, pantalon ak plis. Kalite haïtienne, bon pri, livrezon rapid.</p>
     <div class="hero-btns">
       <a href="#produits" class="btn-primary">Voir les produits</a>
@@ -824,90 +824,315 @@ renderProducts();
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-function buildLogo(canvasId, scale) {
+function buildNavLogo(canvasId) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   const W = canvas.width, H = canvas.height;
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setSize(W, H);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
-  renderer.setClearColor(0x0D0D0D, canvasId==='heroLogo'?0:1);
-
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setClearColor(0x0D0D0D,1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
-  camera.position.set(0, 0, 14 / scale);
-
-  // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-  const d1 = new THREE.DirectionalLight(0xffffff, 0.9); d1.position.set(2,6,8); scene.add(d1);
-  const d2 = new THREE.DirectionalLight(0x00209F, 0.5); d2.position.set(-6,2,4); scene.add(d2);
-  const d3 = new THREE.DirectionalLight(0xD21034, 0.5); d3.position.set(6,-2,4); scene.add(d3);
-  const gL = new THREE.PointLight(0xD4AF37, 1.2, 40); gL.position.set(0,0,6); scene.add(gL);
-
-  const matBlue = new THREE.MeshPhongMaterial({color:0x00209F, shininess:120, specular:0x4466ff});
-  const matRed  = new THREE.MeshPhongMaterial({color:0xD21034, shininess:120, specular:0xff4466});
-  const matGold = new THREE.MeshPhongMaterial({color:0xD4AF37, shininess:200, specular:0xffffaa});
-
-  const s = scale;
-  function box(w,h,d,mat,x,y,z){ const m=new THREE.Mesh(new THREE.BoxGeometry(w*s,h*s,d*s),mat); m.position.set(x*s,y*s,z*s); scene.add(m); return m; }
-
-  const dp = 0.55;
-  // B
-  box(0.25,2.2,dp,matBlue,-5.8,0.3,0); box(0.7,0.22,dp,matBlue,-5.45,1.2,0);
-  box(0.7,0.22,dp,matBlue,-5.45,0.28,0); box(0.7,0.22,dp,matBlue,-5.45,-0.65,0);
-  box(0.22,0.72,dp,matRed,-5.08,0.74,0); box(0.22,0.72,dp,matGold,-5.08,-0.18,0);
-  // È
-  box(0.25,2.2,dp,matBlue,-4.4,0.3,0); box(0.75,0.22,dp,matBlue,-4.02,1.2,0);
-  box(0.65,0.22,dp,matBlue,-4.07,0.28,0); box(0.75,0.22,dp,matBlue,-4.02,-0.65,0);
-  const acc=new THREE.Mesh(new THREE.BoxGeometry(0.55*s,0.16*s,dp*s),matGold); acc.position.set(-3.65*s,1.88*s,0); acc.rotation.z=0.5; scene.add(acc);
-  // L
-  box(0.25,2.2,dp,matBlue,-3.0,0.3,0); box(0.75,0.22,dp,matBlue,-2.62,-0.65,0);
-  // separator
-  box(0.1,2.4,dp*0.5,matGold,-2.1,0.3,0.1);
-  // A
-  box(0.25,2.2,dp,matRed,-1.55,0.3,0); box(0.25,2.2,dp,matRed,-0.85,0.3,0);
-  box(0.9,0.22,dp,matRed,-1.2,1.2,0); box(0.9,0.22,dp,matGold,-1.2,0.28,0);
-  // Y
-  box(0.25,1.1,dp,matRed,0.05,-0.35,0);
-  const yL=new THREE.Mesh(new THREE.BoxGeometry(0.25*s,1.1*s,dp*s),matRed); yL.position.set(-0.2*s,0.35*s,0); yL.rotation.z=0.5; scene.add(yL);
-  const yR=new THREE.Mesh(new THREE.BoxGeometry(0.25*s,1.1*s,dp*s),matRed); yR.position.set(0.3*s,0.35*s,0); yR.rotation.z=-0.5; scene.add(yR);
-  // I
-  box(0.25,2.2,dp,matRed,1.05,0.3,0); box(0.7,0.22,dp,matRed,1.05,1.2,0); box(0.7,0.22,dp,matRed,1.05,-0.65,0);
-  // T
-  box(0.25,1.9,dp,matRed,1.75,0.15,0); box(1.0,0.22,dp,matRed,1.75,1.2,0);
-  // I
-  box(0.25,2.2,dp,matRed,2.5,0.3,0); box(0.7,0.22,dp,matRed,2.5,1.2,0); box(0.7,0.22,dp,matRed,2.5,-0.65,0);
-  // MARKET
-  for(let i=0;i<6;i++){
-    box(0.18,0.9,0.3,matGold,-1.5+i*0.58,-1.65,0);
-    box(0.42,0.13,0.3,matGold,-1.5+i*0.58,-1.2,0);
-    box(0.42,0.13,0.3,matGold,-1.5+i*0.58,-2.1,0);
-  }
-  // plate
-  const plate=new THREE.Mesh(new THREE.BoxGeometry(14*s,5.5*s,0.1*s),new THREE.MeshPhongMaterial({color:0x111111,shininess:20})); plate.position.set(-0.5*s,0,-0.6*s); scene.add(plate);
-  // bars
-  box(13,0.12,0.2,matGold,-0.5,2.6,0); box(13,0.12,0.2,matGold,-0.5,-1.05,0);
-  box(13,0.06,0.15,matBlue,-0.5,2.45,0); box(13,0.06,0.15,matRed,-0.5,-1.18,0);
-  // corner stars
-  [[-6.3,2.6],[5.3,2.6],[-6.3,-1.05],[5.3,-1.05]].forEach(([x,y])=>{
-    for(let a=0;a<4;a++){const st=new THREE.Mesh(new THREE.BoxGeometry(0.5*s,0.1*s,0.2*s),matGold); st.position.set(x*s,y*s,0.1*s); st.rotation.z=a*Math.PI/4; scene.add(st);}
-  });
-
+  camera.position.set(0,0,20);
+  scene.add(new THREE.AmbientLight(0xffffff,0.5));
+  const d=new THREE.DirectionalLight(0xD4AF37,1); d.position.set(2,4,6); scene.add(d);
+  const matB=new THREE.MeshPhongMaterial({color:0x00209F,shininess:120});
+  const matR=new THREE.MeshPhongMaterial({color:0xD21034,shininess:120});
+  const matG=new THREE.MeshPhongMaterial({color:0xD4AF37,shininess:200});
+  function b(w,h,dp,mat,x,y){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dp),mat);m.position.set(x,y,0);scene.add(m);}
+  // BEL
+  b(0.18,1.6,0.4,matB,-5.6,0.2); b(0.5,0.16,0.4,matB,-5.25,0.88); b(0.5,0.16,0.4,matB,-5.25,0.2); b(0.5,0.16,0.4,matB,-5.25,-0.48); b(0.16,0.52,0.4,matR,-4.95,0.54); b(0.16,0.52,0.4,matG,-4.95,-0.14);
+  b(0.18,1.6,0.4,matB,-4.3,0.2); b(0.55,0.16,0.4,matB,-3.95,0.88); b(0.5,0.16,0.4,matB,-3.98,0.2); b(0.55,0.16,0.4,matB,-3.95,-0.48);
+  b(0.18,1.6,0.4,matB,-3.2,0.2); b(0.55,0.16,0.4,matB,-2.85,-0.48);
+  b(0.06,1.8,0.3,matG,-2.3,0.2);
+  // AYITI
+  b(0.18,1.6,0.4,matR,-1.8,0.2); b(0.18,1.6,0.4,matR,-1.2,0.2); b(0.65,0.16,0.4,matR,-1.5,0.88); b(0.65,0.16,0.4,matG,-1.5,0.2);
+  b(0.18,0.8,0.4,matR,-0.45,-0.2);
+  const yL2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.8,0.4),matR); yL2.position.set(-0.7,0.25,0); yL2.rotation.z=0.5; scene.add(yL2);
+  const yR2=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.8,0.4),matR); yR2.position.set(-0.2,0.25,0); yR2.rotation.z=-0.5; scene.add(yR2);
+  b(0.18,1.6,0.4,matR,0.5,0.2); b(0.5,0.16,0.4,matR,0.5,0.88); b(0.5,0.16,0.4,matR,0.5,-0.48);
+  b(0.18,1.4,0.4,matR,1.15,0.1); b(0.72,0.16,0.4,matR,1.15,0.88);
+  b(0.18,1.6,0.4,matR,1.8,0.2); b(0.5,0.16,0.4,matR,1.8,0.88); b(0.5,0.16,0.4,matR,1.8,-0.48);
   let t=0;
-  function animate(){
+  (function loop(){requestAnimationFrame(loop);t+=0.008;scene.rotation.y=Math.sin(t)*0.1;scene.rotation.x=Math.sin(t*0.6)*0.04;renderer.render(scene,camera);})();
+}
+
+function buildHeroCinematic() {
+  const canvas = document.getElementById('heroLogo');
+  if (!canvas || typeof THREE === 'undefined') return;
+  const W = canvas.width, H = canvas.height;
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.setClearColor(0x050510, 1);
+  renderer.shadowMap.enabled = true;
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x050510, 0.035);
+  const camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 200);
+  camera.position.set(0, 2, 18);
+
+  // ── LIGHTS ──
+  scene.add(new THREE.AmbientLight(0x112244, 0.5));
+  const spot = new THREE.SpotLight(0xffffff, 3, 40, 0.4, 0.5);
+  spot.position.set(0, 14, 5); spot.castShadow = true; scene.add(spot);
+  const blueL = new THREE.PointLight(0x00209F, 4, 30); blueL.position.set(-8, 4, 6); scene.add(blueL);
+  const redL  = new THREE.PointLight(0xD21034, 4, 30); redL.position.set(8, 4, 6); scene.add(redL);
+  const goldL = new THREE.PointLight(0xD4AF37, 3, 25); goldL.position.set(0, 6, 10); scene.add(goldL);
+
+  // ── FLOOR ──
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(60, 60),
+    new THREE.MeshPhongMaterial({color:0x0a0a1a, shininess:80, specular:0x223366})
+  );
+  floor.rotation.x = -Math.PI/2; floor.position.y = -3.5; floor.receiveShadow = true;
+  scene.add(floor);
+
+  // ── PARTICLES ──
+  const pCount = 500;
+  const pPos = new Float32Array(pCount*3);
+  const pCol = new Float32Array(pCount*3);
+  const pSpd = new Float32Array(pCount);
+  const PCOLS = [new THREE.Color(0x00209F), new THREE.Color(0xD21034), new THREE.Color(0xD4AF37), new THREE.Color(0xffffff)];
+  for (let i=0;i<pCount;i++) {
+    pPos[i*3]=(Math.random()-0.5)*50; pPos[i*3+1]=(Math.random()-0.5)*30; pPos[i*3+2]=(Math.random()-0.5)*30;
+    pSpd[i]=0.01+Math.random()*0.02;
+    const c=PCOLS[Math.floor(Math.random()*4)]; pCol[i*3]=c.r; pCol[i*3+1]=c.g; pCol[i*3+2]=c.b;
+  }
+  const pGeo=new THREE.BufferGeometry(); pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3)); pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
+  scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({size:0.2,vertexColors:true,transparent:true,opacity:0.6})));
+
+  // ── MANNEQUIN ──
+  const mannequin = new THREE.Group();
+  const skinMat = new THREE.MeshPhongMaterial({color:0xc8a882, shininess:60});
+  const clothMat= new THREE.MeshPhongMaterial({color:0x1a1a2e, shininess:40});
+  const shoesMat= new THREE.MeshPhongMaterial({color:0x111111, shininess:80});
+  const boxMat  = new THREE.MeshPhongMaterial({color:0xD4AF37, shininess:120, emissive:0x332200});
+
+  function part(geo,mat,x,y,z,rx,ry,rz){
+    const m=new THREE.Mesh(geo,mat); m.position.set(x,y,z);
+    if(rx)m.rotation.x=rx; if(ry)m.rotation.y=ry; if(rz)m.rotation.z=rz;
+    m.castShadow=true; mannequin.add(m); return m;
+  }
+
+  // Body parts
+  part(new THREE.SphereGeometry(0.42,16,16),skinMat,0,3.4,0);             // head
+  part(new THREE.BoxGeometry(1.0,1.4,0.55),clothMat,0,2.1,0);             // torso
+  part(new THREE.BoxGeometry(0.95,0.6,0.5),clothMat,0,1.25,0);            // hips
+  // left leg
+  part(new THREE.BoxGeometry(0.38,1.1,0.38),clothMat,-0.27,0.3,0);
+  part(new THREE.BoxGeometry(0.34,1.0,0.34),clothMat,-0.27,-0.85,0);
+  part(new THREE.BoxGeometry(0.38,0.22,0.55),shoesMat,-0.27,-1.44,0.08);
+  // right leg
+  part(new THREE.BoxGeometry(0.38,1.1,0.38),clothMat,0.27,0.3,0);
+  part(new THREE.BoxGeometry(0.34,1.0,0.34),clothMat,0.27,-0.85,0);
+  part(new THREE.BoxGeometry(0.38,0.22,0.55),shoesMat,0.27,-1.44,0.08);
+  // left arm (holding box)
+  const leftArm=part(new THREE.BoxGeometry(0.3,1.0,0.3),clothMat,-0.72,2.0,0,0,0,0.35);
+  const leftFore=part(new THREE.BoxGeometry(0.28,0.9,0.28),skinMat,-1.1,1.3,0,0,0,-0.6);
+  // right arm
+  part(new THREE.BoxGeometry(0.3,1.0,0.3),clothMat,0.72,2.0,0,0,0,-0.35);
+  part(new THREE.BoxGeometry(0.28,0.9,0.28),skinMat,1.1,1.3,0,0,0,0.6);
+
+  // Package box held by mannequin
+  const pkg = new THREE.Group();
+  const pkgBox = new THREE.Mesh(new THREE.BoxGeometry(1.1,0.9,0.9), boxMat);
+  pkgBox.castShadow=true; pkg.add(pkgBox);
+  // ribbon on box
+  const ribH = new THREE.Mesh(new THREE.BoxGeometry(1.12,0.08,0.08), new THREE.MeshPhongMaterial({color:0xD21034,shininess:120}));
+  ribH.position.set(0,0,0.46); pkg.add(ribH);
+  const ribV = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.92,0.08), new THREE.MeshPhongMaterial({color:0xD21034,shininess:120}));
+  ribV.position.set(0,0,0.46); pkg.add(ribV);
+  // BOW
+  const bowL=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.04,8,16,Math.PI),new THREE.MeshPhongMaterial({color:0xD21034}));
+  bowL.position.set(-0.12,0.05,0.47); bowL.rotation.z=0.4; pkg.add(bowL);
+  const bowR=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.04,8,16,Math.PI),new THREE.MeshPhongMaterial({color:0xD21034}));
+  bowR.position.set(0.12,0.05,0.47); bowR.rotation.z=-0.4+Math.PI; pkg.add(bowR);
+  // MARKET text on box (just a colored plane)
+  const labelGeo=new THREE.PlaneGeometry(0.8,0.35);
+  const labelMat=new THREE.MeshPhongMaterial({color:0x00209F,shininess:60});
+  const label=new THREE.Mesh(labelGeo,labelMat); label.position.set(0,0,0.46); pkg.add(label);
+  pkg.position.set(-1.05,1.0,0.5);
+  mannequin.add(pkg);
+
+  mannequin.position.set(-8, -2, 0);
+  mannequin.scale.set(1.3,1.3,1.3);
+  scene.add(mannequin);
+
+  // ── LOGO LETTERS (hidden initially) ──
+  const logoGroup = new THREE.Group();
+  const matBlue=new THREE.MeshPhongMaterial({color:0x00209F,shininess:150,specular:0x4488ff});
+  const matRed =new THREE.MeshPhongMaterial({color:0xD21034,shininess:150,specular:0xff4466});
+  const matGold=new THREE.MeshPhongMaterial({color:0xD4AF37,shininess:250,specular:0xffffaa,emissive:0x221100,emissiveIntensity:0.3});
+
+  const s=0.9, dp=0.7;
+  function lb(w,h,d,mat,x,y){const m=new THREE.Mesh(new THREE.BoxGeometry(w*s,h*s,d),mat);m.position.set(x*s,y*s,0);m.castShadow=true;logoGroup.add(m);}
+  // B
+  lb(0.25,2.2,dp,matBlue,-5.8,0.3); lb(0.7,0.22,dp,matBlue,-5.45,1.2); lb(0.7,0.22,dp,matBlue,-5.45,0.28); lb(0.7,0.22,dp,matBlue,-5.45,-0.65);
+  lb(0.22,0.72,dp,matRed,-5.08,0.74); lb(0.22,0.72,dp,matGold,-5.08,-0.18);
+  // E
+  lb(0.25,2.2,dp,matBlue,-4.4,0.3); lb(0.75,0.22,dp,matBlue,-4.02,1.2); lb(0.65,0.22,dp,matBlue,-4.07,0.28); lb(0.75,0.22,dp,matBlue,-4.02,-0.65);
+  // L
+  lb(0.25,2.2,dp,matBlue,-3.0,0.3); lb(0.75,0.22,dp,matBlue,-2.62,-0.65);
+  // separator
+  lb(0.08,2.4,dp*0.5,matGold,-2.1,0.3);
+  // A
+  lb(0.25,2.2,dp,matRed,-1.55,0.3); lb(0.25,2.2,dp,matRed,-0.85,0.3); lb(0.9,0.22,dp,matRed,-1.2,1.2); lb(0.9,0.22,dp,matGold,-1.2,0.28);
+  // Y
+  lb(0.25,1.1,dp,matRed,0.05,-0.35);
+  const yL=new THREE.Mesh(new THREE.BoxGeometry(0.25*s,1.1*s,dp),matRed); yL.position.set(-0.2*s,0.35*s,0); yL.rotation.z=0.5; logoGroup.add(yL);
+  const yR=new THREE.Mesh(new THREE.BoxGeometry(0.25*s,1.1*s,dp),matRed); yR.position.set(0.3*s,0.35*s,0); yR.rotation.z=-0.5; logoGroup.add(yR);
+  // I
+  lb(0.25,2.2,dp,matRed,1.05,0.3); lb(0.7,0.22,dp,matRed,1.05,1.2); lb(0.7,0.22,dp,matRed,1.05,-0.65);
+  // T
+  lb(0.25,1.9,dp,matRed,1.75,0.15); lb(1.0,0.22,dp,matRed,1.75,1.2);
+  // I
+  lb(0.25,2.2,dp,matRed,2.5,0.3); lb(0.7,0.22,dp,matRed,2.5,1.2); lb(0.7,0.22,dp,matRed,2.5,-0.65);
+  // MARKET label below
+  for(let i=0;i<6;i++){
+    lb(0.18,0.9,0.4,matGold,-1.5+i*0.58,-1.7);
+    lb(0.42,0.13,0.4,matGold,-1.5+i*0.58,-1.25);
+    lb(0.42,0.13,0.4,matGold,-1.5+i*0.58,-2.15);
+  }
+
+  logoGroup.position.set(0, 1.5, -2);
+  logoGroup.scale.set(0,0,0); // hidden at start
+  scene.add(logoGroup);
+
+  // ── EXPLOSION PARTICLES ──
+  const explodeCount = 200;
+  const exPos = new Float32Array(explodeCount*3);
+  const exVel = [];
+  const exCol = new Float32Array(explodeCount*3);
+  const ECOLS = [new THREE.Color(0x00209F),new THREE.Color(0xD21034),new THREE.Color(0xD4AF37),new THREE.Color(0xffffff)];
+  for(let i=0;i<explodeCount;i++){
+    exPos[i*3]=0; exPos[i*3+1]=0; exPos[i*3+2]=0;
+    exVel.push(new THREE.Vector3((Math.random()-0.5)*0.4,(Math.random()-0.5)*0.4,(Math.random()-0.5)*0.2));
+    const c=ECOLS[Math.floor(Math.random()*4)]; exCol[i*3]=c.r; exCol[i*3+1]=c.g; exCol[i*3+2]=c.b;
+  }
+  const exGeo=new THREE.BufferGeometry(); exGeo.setAttribute('position',new THREE.BufferAttribute(exPos,3)); exGeo.setAttribute('color',new THREE.BufferAttribute(exCol,3));
+  const exMat=new THREE.PointsMaterial({size:0.25,vertexColors:true,transparent:true,opacity:0});
+  const explodePS=new THREE.Points(exGeo,exMat); scene.add(explodePS);
+
+  // ── GOLD RINGS for reveal ──
+  const rings=[];
+  for(let i=0;i<3;i++){
+    const rg=new THREE.Mesh(new THREE.TorusGeometry(1+i*1.5,0.06,16,80),new THREE.MeshPhongMaterial({color:0xD4AF37,transparent:true,opacity:0,shininess:300}));
+    rg.position.set(0,1.5,-2); scene.add(rg); rings.push(rg);
+  }
+
+  // ── ANIMATION STATE MACHINE ──
+  // Phase 0: mannequin walks in (0-3s)
+  // Phase 1: mannequin presents package (3-5s)
+  // Phase 2: package EXPLODES → logo REVEAL (5-7s)
+  // Phase 3: logo breathes + mannequin steps back (7s+)
+
+  let t = 0;
+  let phase = 0;
+  let exploding = false;
+
+  function animate() {
     requestAnimationFrame(animate);
-    t+=0.008;
-    scene.rotation.y=Math.sin(t)*0.12;
-    scene.rotation.x=Math.sin(t*0.7)*0.05;
-    gL.intensity=1.0+Math.sin(t*2)*0.3;
-    renderer.render(scene,camera);
+    t += 0.016;
+
+    // background particles drift
+    for(let i=0;i<pCount;i++){
+      pPos[i*3+1]+=0.015; if(pPos[i*3+1]>15) pPos[i*3+1]=-15;
+    }
+    pGeo.attributes.position.needsUpdate=true;
+
+    // light pulse
+    goldL.intensity = 2.5 + Math.sin(t*2)*0.8;
+    blueL.intensity = 3 + Math.sin(t*1.3+1)*1;
+    redL.intensity  = 3 + Math.sin(t*1.7+2)*1;
+
+    // ── PHASE 0: Walk in ──
+    if (phase === 0) {
+      mannequin.position.x = Math.max(-8 + t * 1.8, -2.5);
+      mannequin.rotation.y = Math.PI * 0.1;
+      // walking bob
+      mannequin.position.y = -2 + Math.abs(Math.sin(t*5))*0.15;
+      pkg.rotation.y = Math.sin(t*3)*0.15;
+      if (t > 3.2) { phase = 1; }
+    }
+
+    // ── PHASE 1: Present package ──
+    if (phase === 1) {
+      const pt = t - 3.2;
+      mannequin.position.x = -2.5;
+      mannequin.position.y = -2 + Math.sin(pt*1.5)*0.05;
+      // raise package
+      pkg.position.y = 1.0 + Math.min(pt*0.6, 0.8);
+      pkg.rotation.y += 0.04;
+      pkg.rotation.x = Math.sin(pt*2)*0.1;
+      // spotlight narrows on package
+      spot.intensity = 3 + pt*2;
+      if (pt > 1.8) { phase = 2; exploding = true; t = 0; }
+    }
+
+    // ── PHASE 2: Explosion + Logo reveal ──
+    if (phase === 2) {
+      const et = t;
+
+      if (exploding) {
+        // hide mannequin progressively
+        mannequin.position.x -= 0.08;
+        mannequin.scale.setScalar(Math.max(1.3 - et*0.4, 0));
+
+        // explode particles
+        exMat.opacity = Math.min(et*3, 1) * Math.max(1-et*0.4, 0);
+        exMat.size = 0.25 + et*0.3;
+        for(let i=0;i<explodeCount;i++){
+          exPos[i*3]   += exVel[i].x * (1+et);
+          exPos[i*3+1] += exVel[i].y * (1+et);
+          exPos[i*3+2] += exVel[i].z;
+        }
+        exGeo.attributes.position.needsUpdate=true;
+
+        // logo scale in with overshoot
+        const progress = Math.min(et/1.5, 1);
+        const eased = progress < 0.5
+          ? 4*progress*progress*progress
+          : 1-Math.pow(-2*progress+2,3)/2;
+        const overS = 1 + Math.max(0, Math.sin(progress*Math.PI))*0.15;
+        logoGroup.scale.setScalar(eased * overS);
+        logoGroup.rotation.y = (1-eased)*0.5;
+
+        // rings expand
+        rings.forEach((r,i)=>{
+          r.material.opacity = Math.max(0, 0.8-et*0.5);
+          r.scale.setScalar(1 + et*(2+i));
+        });
+
+        // camera push in
+        camera.position.z = 18 - Math.min(et*2, 5);
+
+        if (et > 2.5) { phase = 3; exploding = false; }
+      }
+    }
+
+    // ── PHASE 3: Breathe ──
+    if (phase === 3) {
+      const bt = t;
+      logoGroup.scale.setScalar(1 + Math.sin(bt*1.2)*0.03);
+      logoGroup.rotation.y = Math.sin(bt*0.5)*0.12;
+      logoGroup.rotation.x = Math.sin(bt*0.3)*0.04;
+      goldL.intensity = 2.5 + Math.sin(bt*2)*1.2;
+      camera.position.z = 13 + Math.sin(bt*0.3)*0.5;
+      exMat.opacity *= 0.95;
+      rings.forEach(r=>r.material.opacity*=0.95);
+    }
+
+    camera.lookAt(0, 1, 0);
+    renderer.render(scene, camera);
   }
   animate();
 }
 
 window.addEventListener('load', function() {
-  buildLogo('navLogo', 0.34);
-  buildLogo('heroLogo', 1.05);
+  buildNavLogo('navLogo');
+  buildHeroCinematic();
   initBgAnimation();
 });
 
