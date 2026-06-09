@@ -346,6 +346,23 @@
   </div>
 </div>
 
+<!-- PASSWORD MODAL -->
+<div id="pwOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:400;align-items:center;justify-content:center;backdrop-filter:blur(6px);">
+  <div style="background:var(--gris2);border:1px solid rgba(212,175,55,.25);border-radius:6px;padding:40px 32px;width:90%;max-width:340px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:16px;">🔐</div>
+    <div style="font-family:'Oswald',sans-serif;font-size:1.2rem;letter-spacing:2px;text-transform:uppercase;color:var(--or);margin-bottom:6px;">Accès Admin</div>
+    <div style="font-size:.8rem;color:rgba(245,240,232,.4);margin-bottom:24px;">Entre ton mot de passe</div>
+    <input id="pwInput" type="password" placeholder="Mot de passe..."
+      onkeydown="if(event.key==='Enter')checkPassword()"
+      style="width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.3);color:var(--ivoire);padding:12px 16px;border-radius:3px;font-size:1rem;font-family:'Inter',sans-serif;outline:none;margin-bottom:8px;">
+    <div id="pwError" style="display:none;color:#C0392B;font-size:.8rem;margin-bottom:10px;">❌ Mot de passe incorrect</div>
+    <div style="display:flex;gap:10px;margin-top:8px;">
+      <button onclick="closePwOverlay()" style="flex:1;background:transparent;border:1px solid rgba(245,240,232,.2);color:rgba(245,240,232,.6);padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;letter-spacing:1px;font-size:.85rem;">Annuler</button>
+      <button onclick="checkPassword()" style="flex:1;background:var(--rouge);border:none;color:white;padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;letter-spacing:1px;font-size:.85rem;text-transform:uppercase;">Entrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- HIDDEN FILE INPUT -->
 <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
 
@@ -578,17 +595,41 @@ function orderWhatsApp() {
 }
 
 // ─── ADMIN PANEL ─────────────────────────────────────────
+const ADMIN_PASSWORD = 'mike2025'; // ← change ton mot de passe ici
+
 function toggleAdmin(e) {
-  e.preventDefault();
-  adminMode = !adminMode;
-  document.body.classList.toggle('admin-mode', adminMode);
+  if (e) e.preventDefault();
   if (adminMode) {
+    closeAdminPanel();
+  } else {
+    document.getElementById('pwOverlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('pwInput').focus(), 100);
+  }
+}
+
+function checkPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('pwOverlay').style.display = 'none';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwError').style.display = 'none';
+    adminMode = true;
+    document.body.classList.add('admin-mode');
     document.getElementById('adminPanel').classList.add('open');
     renderAdminList();
   } else {
-    document.getElementById('adminPanel').classList.remove('open');
+    document.getElementById('pwError').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
   }
 }
+
+function closePwOverlay() {
+  document.getElementById('pwOverlay').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').style.display = 'none';
+}
+
 function closeAdminPanel() {
   adminMode = false;
   document.body.classList.remove('admin-mode');
