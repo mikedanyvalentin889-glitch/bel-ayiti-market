@@ -887,7 +887,7 @@ function buildLogo(canvasId, scale) {
   box(13,0.12,0.2,matGold,-0.5,2.6,0); box(13,0.12,0.2,matGold,-0.5,-1.05,0);
   box(13,0.06,0.15,matBlue,-0.5,2.45,0); box(13,0.06,0.15,matRed,-0.5,-1.18,0);
   // corner stars
-  [[−6.3,2.6],[5.3,2.6],[−6.3,−1.05],[5.3,−1.05]].forEach(([x,y])=>{
+  [[-6.3,2.6],[5.3,2.6],[-6.3,-1.05],[5.3,-1.05]].forEach(([x,y])=>{
     for(let a=0;a<4;a++){const st=new THREE.Mesh(new THREE.BoxGeometry(0.5*s,0.1*s,0.2*s),matGold); st.position.set(x*s,y*s,0.1*s); st.rotation.z=a*Math.PI/4; scene.add(st);}
   });
 
