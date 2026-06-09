@@ -447,14 +447,9 @@ const CATEGORIES = [
 ];
 
 let products = [
-  {id:1, category:'Alimentation', name:'Café Haïtien Premium',   desc:'Café de montagne 100% haïtien, torréfaction artisanale. Arôme intense, saveur unique.', price:350, emoji:'☕', badge:'Bestseller', badgeType:'or'},
-  {id:2, category:'Alimentation', name:'Épices Ajan Blan',        desc:"Mélange d'épices haïtiennes — piman, thym, laurier. Indispensable en cuisine.",           price:180, emoji:'🌶️', badge:null},
-  {id:3, category:'Beauté',       name:'Huile Maskreti Naturelle',desc:'Huile de ricin pure pressée à froid. Pour cheveux, peau et ongles. Sans additifs.',       price:420, emoji:'🌿', badge:'Nouveau',   badgeType:'rouge'},
-  {id:4, category:'Artisanat',    name:'Tableau Peinture Locale', desc:'Peinture haïtienne faite main par des artistes de Jacmel. Unique et authentique.',         price:1800,emoji:'🎨', badge:'Artisan',   badgeType:'or'},
-  {id:5, category:'Mode',         name:'Wòb Madras Traditionnel',desc:'Robe en tissu madras coloré, couture haïtienne. Disponible en plusieurs tailles.',           price:950, emoji:'👗', badge:null},
-  {id:6, category:'Alimentation', name:'Sirop Grenadine Natif',   desc:'Sirop de grenadine naturel produit localement. Parfait pour jus et cuisine.',               price:250, emoji:'🍹', badge:null},
-  {id:7, category:'Maison',       name:'Panye Vann (Panier)',     desc:'Panier en osier tressé main, design haïtien. Robuste et élégant.',                          price:600, emoji:'🏺', badge:'Artisan',   badgeType:'or'},
-  {id:8, category:'Beauté',       name:'Savon Kòk Natif',         desc:"Savon artisanal à l'huile de coco haïtienne. Nettoyant, hydratant, 100% naturel.",          price:150, emoji:'🧼', badge:'Nouveau',   badgeType:'rouge'},
+  {id:1, category:'Mode', name:'Kepi',     desc:'A ba pri, pran kepi paw la!',      price:2500, emoji:'🧢', image:'images/kepi.jpg',     badge:'Bestseller', badgeType:'or'},
+  {id:2, category:'Mode', name:'Maillot',  desc:'Pran maillot paw la, bon pri!',    price:2000, emoji:'👕', image:'images/maillot.jpg',  badge:null},
+  {id:3, category:'Mode', name:'Pantalon', desc:'Pran pantalon paw la, bon kalite!',price:2000, emoji:'👖', image:'images/pantalon.jpg', badge:null},
 ];
 
 // ─── STATE ──────────────────────────────────────────────
@@ -488,18 +483,19 @@ function renderProducts() {
   const grid = document.getElementById('productsGrid');
   const filtered = filterCat ? products.filter(p => p.category === filterCat) : products;
   grid.innerHTML = filtered.map(p => {
-    const photoUrl = photos[p.id];
+    const photoUrl = photos[p.id] || p.image || null;
     const imgContent = photoUrl
-      ? `<img src="${photoUrl}" alt="${p.name}">`
-      : `<div class="no-photo">${p.emoji}</div>`;
+      ? `<img src="${photoUrl}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : '';
+    const fallback = `<div class="no-photo" style="${photoUrl?'display:none':'display:flex'};align-items:center;justify-content:center;width:100%;height:100%;">${p.emoji}</div>`;
     return `
     <div class="product-card" onclick="openProduct(${p.id})">
       <div class="product-img">
-        ${imgContent}
+        ${imgContent}${fallback}
         ${p.badge ? `<div class="product-badge ${p.badgeType==='or'?'or':''}">${p.badge}</div>` : ''}
         <div class="photo-overlay">
           <button class="photo-overlay-btn" onclick="event.stopPropagation();triggerUpload(${p.id})">📷 Changer photo</button>
-          <div class="photo-overlay-text">${photoUrl ? 'Photo uploadée ✓' : 'Aucune photo'}</div>
+          <div class="photo-overlay-text">${photoUrl ? 'Photo ✓' : 'Aucune photo'}</div>
         </div>
       </div>
       <div class="product-info">
@@ -724,12 +720,12 @@ function openProduct(id) {
 
 function updateModalPhoto(id) {
   const container = document.getElementById('modal-img-container');
-  const photoUrl = photos[id];
   const p = products.find(x => x.id === id);
+  const photoUrl = photos[id] || (p && p.image) || null;
   if (photoUrl) {
-    container.innerHTML = `<img src="${photoUrl}" alt="${p.name}">`;
+    container.innerHTML = `<img src="${photoUrl}" alt="${p ? p.name : ''}" onerror="this.outerHTML='<div class=modal-emoji>${p ? p.emoji : '🛍️'}</div>'">`;
   } else {
-    container.innerHTML = `<div class="modal-emoji">${p ? p.emoji : ''}</div>`;
+    container.innerHTML = `<div class="modal-emoji">${p ? p.emoji : '🛍️'}</div>`;
   }
 }
 
