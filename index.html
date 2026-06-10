@@ -212,7 +212,13 @@
 <!-- NAV -->
 <nav>
   <div class="logo-3d-wrap">
-    <canvas id="navLogo" width="180" height="52" style="display:block;cursor:pointer;" onclick="location.href='#'"></canvas>
+    <div id="siteTitle"
+      onmouseover="this.style.textShadow='none';this.style.letterSpacing='6px'"
+      onmouseout="this.style.textShadow=titleShadow;this.style.letterSpacing='3px'"
+      style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;font-style:italic;color:white;cursor:pointer;letter-spacing:3px;text-transform:uppercase;transition:all 0.2s ease;"
+      onclick="location.href='#'">
+      BÈL AYITI MARKET
+    </div>
   </div>
   <ul class="nav-links">
     <li><a href="#categories">Catégories</a></li>
@@ -1320,12 +1326,48 @@ function buildHeroCinematic() {
 
 window.addEventListener('load', function() {
   setTimeout(function() {
-    buildNavLogo('navLogo');
     initGlobalBg();
     initSpotlight();
     initSpline();
+    initTitleAnimation();
   }, 100);
 });
+
+function initTitleAnimation() {
+  const el = document.getElementById('siteTitle');
+  if (!el) return;
+
+  // Couleurs drapeau haïtien + gold
+  window.titleShadow = `
+    4px 4px 0px #00209F,
+    8px 8px 0px #D21034,
+    12px 12px 0px #D4AF37,
+    16px 16px 0px #D21034,
+    28px 28px 12px rgba(212,175,55,0.4)
+  `;
+  el.style.textShadow = window.titleShadow;
+
+  // Pulse animation — shadow changes intensity
+  let t = 0;
+  let hovered = false;
+  el.addEventListener('mouseover', () => hovered = true);
+  el.addEventListener('mouseout',  () => hovered = false);
+
+  setInterval(() => {
+    if (hovered) return;
+    t += 0.05;
+    const pulse = 1 + Math.sin(t) * 0.3;
+    const op = Math.round(180 * pulse).toString(16).padStart(2,'0');
+    window.titleShadow = `
+      4px 4px 0px #00209F,
+      8px 8px 0px #D21034,
+      12px 12px 0px #D4AF37,
+      16px 16px 0px #D21034,
+      28px 28px 14px rgba(212,175,55,${0.3 + Math.sin(t)*0.2})
+    `;
+    el.style.textShadow = window.titleShadow;
+  }, 50);
+}
 
 // ── SPOTLIGHT MOUSE EFFECT ──────────────────────────────
 function initSpotlight() {
