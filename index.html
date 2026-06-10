@@ -907,68 +907,157 @@ function buildHeroCinematic() {
   const pGeo=new THREE.BufferGeometry(); pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3)); pGeo.setAttribute('color',new THREE.BufferAttribute(pCol,3));
   scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({size:0.2,vertexColors:true,transparent:true,opacity:0.6})));
 
-  // ── MANNEQUIN ──
+  // ── MANNEQUIN RÉALISTE ET ÉLÉGANT ──
   const mannequin = new THREE.Group();
-  const skinMat = new THREE.MeshPhongMaterial({color:0xc8a882, shininess:60});
-  const clothMat= new THREE.MeshPhongMaterial({color:0x1a1a2e, shininess:40});
-  const shoesMat= new THREE.MeshPhongMaterial({color:0x111111, shininess:80});
-  const boxMat  = new THREE.MeshPhongMaterial({color:0xD4AF37, shininess:120, emissive:0x332200});
 
-  function part(geo,mat,x,y,z,rx,ry,rz){
-    const m=new THREE.Mesh(geo,mat); m.position.set(x,y,z);
+  // Materials réalistes
+  const skinMat = new THREE.MeshPhongMaterial({
+    color:0xC68642, shininess:40, specular:0x331100,
+  });
+  const suitMat = new THREE.MeshPhongMaterial({
+    color:0x0a0a14, shininess:120, specular:0x334466,
+  });
+  const shirtMat= new THREE.MeshPhongMaterial({color:0xffffff, shininess:60, specular:0xaaaaaa});
+  const tieMat  = new THREE.MeshPhongMaterial({color:0xD21034, shininess:150, specular:0xff8888, emissive:0x220000});
+  const shoesMat= new THREE.MeshPhongMaterial({color:0x080808, shininess:200, specular:0x888888});
+  const beltMat = new THREE.MeshPhongMaterial({color:0x1a0a00, shininess:160, specular:0xD4AF37});
+  const goldBut = new THREE.MeshPhongMaterial({color:0xD4AF37, shininess:250, specular:0xffffaa, emissive:0x221100, emissiveIntensity:0.4});
+  const hairMat = new THREE.MeshPhongMaterial({color:0x0a0500, shininess:80, specular:0x221100});
+  const boxMat  = new THREE.MeshPhongMaterial({color:0xD4AF37, shininess:200, specular:0xffffcc, emissive:0x221100, emissiveIntensity:0.2});
+
+  function pm(geo,mat,x,y,z,rx,ry,rz){
+    const m=new THREE.Mesh(geo,mat);
+    m.position.set(x,y,z);
     if(rx)m.rotation.x=rx; if(ry)m.rotation.y=ry; if(rz)m.rotation.z=rz;
     m.castShadow=true; mannequin.add(m); return m;
   }
 
-  // Body parts
-  part(new THREE.SphereGeometry(0.42,16,16),skinMat,0,3.4,0);             // head
-  part(new THREE.BoxGeometry(1.0,1.4,0.55),clothMat,0,2.1,0);             // torso
-  part(new THREE.BoxGeometry(0.95,0.6,0.5),clothMat,0,1.25,0);            // hips
-  // left leg
-  part(new THREE.BoxGeometry(0.38,1.1,0.38),clothMat,-0.27,0.3,0);
-  part(new THREE.BoxGeometry(0.34,1.0,0.34),clothMat,-0.27,-0.85,0);
-  part(new THREE.BoxGeometry(0.38,0.22,0.55),shoesMat,-0.27,-1.44,0.08);
-  // right leg
-  part(new THREE.BoxGeometry(0.38,1.1,0.38),clothMat,0.27,0.3,0);
-  part(new THREE.BoxGeometry(0.34,1.0,0.34),clothMat,0.27,-0.85,0);
-  part(new THREE.BoxGeometry(0.38,0.22,0.55),shoesMat,0.27,-1.44,0.08);
-  // left arm (holding box)
-  const leftArm=part(new THREE.BoxGeometry(0.3,1.0,0.3),clothMat,-0.72,2.0,0,0,0,0.35);
-  const leftFore=part(new THREE.BoxGeometry(0.28,0.9,0.28),skinMat,-1.1,1.3,0,0,0,-0.6);
-  // right arm
-  part(new THREE.BoxGeometry(0.3,1.0,0.3),clothMat,0.72,2.0,0,0,0,-0.35);
-  part(new THREE.BoxGeometry(0.28,0.9,0.28),skinMat,1.1,1.3,0,0,0,0.6);
+  // ── HEAD ──
+  const head = pm(new THREE.SphereGeometry(0.38,32,32), skinMat, 0, 3.55, 0);
+  // Neck
+  pm(new THREE.CylinderGeometry(0.16,0.18,0.3,16), skinMat, 0, 3.1, 0);
+  // Hair (cap on top)
+  pm(new THREE.SphereGeometry(0.39,32,16,0,Math.PI*2,0,Math.PI*0.45), hairMat, 0, 3.62, 0);
+  // Ear L
+  pm(new THREE.SphereGeometry(0.07,8,8), skinMat, -0.38, 3.55, 0);
+  // Ear R
+  pm(new THREE.SphereGeometry(0.07,8,8), skinMat,  0.38, 3.55, 0);
+  // Nose
+  pm(new THREE.SphereGeometry(0.06,8,8), skinMat, 0, 3.5, 0.36);
+  // Eyes
+  pm(new THREE.SphereGeometry(0.05,8,8), new THREE.MeshPhongMaterial({color:0x111111}), -0.13, 3.6, 0.34);
+  pm(new THREE.SphereGeometry(0.05,8,8), new THREE.MeshPhongMaterial({color:0x111111}),  0.13, 3.6, 0.34);
 
-  // Package box held by mannequin
+  // ── TORSO (suit jacket) ──
+  pm(new THREE.CylinderGeometry(0.52,0.45,1.5,20), suitMat, 0, 2.15, 0);
+  // Shirt front
+  pm(new THREE.PlaneGeometry(0.32,1.1), shirtMat, 0, 2.2, 0.52);
+  // Tie
+  pm(new THREE.BoxGeometry(0.1,0.85,0.02), tieMat, 0, 2.15, 0.53);
+  // Tie knot
+  pm(new THREE.BoxGeometry(0.12,0.1,0.04), tieMat, 0, 2.65, 0.52);
+  // Jacket lapels
+  const lapL=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.6,0.05),suitMat); lapL.position.set(-0.18,2.55,0.48); lapL.rotation.z=0.35; mannequin.add(lapL);
+  const lapR=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.6,0.05),suitMat); lapR.position.set( 0.18,2.55,0.48); lapR.rotation.z=-0.35; mannequin.add(lapR);
+  // Gold buttons
+  pm(new THREE.SphereGeometry(0.04,8,8), goldBut, 0, 2.6, 0.52);
+  pm(new THREE.SphereGeometry(0.04,8,8), goldBut, 0, 2.35,0.52);
+  pm(new THREE.SphereGeometry(0.04,8,8), goldBut, 0, 2.1, 0.52);
+  // Pocket square (gold)
+  pm(new THREE.BoxGeometry(0.12,0.08,0.02), goldBut, -0.37, 2.6, 0.49);
+
+  // ── HIPS / PANTS ──
+  pm(new THREE.CylinderGeometry(0.44,0.42,0.55,20), suitMat, 0, 1.28, 0);
+  // Belt
+  pm(new THREE.CylinderGeometry(0.455,0.455,0.09,20), beltMat, 0, 1.52, 0);
+  // Belt buckle
+  pm(new THREE.BoxGeometry(0.18,0.09,0.06), goldBut, 0, 1.52, 0.46);
+
+  // ── LEGS ──
+  // Left thigh
+  pm(new THREE.CylinderGeometry(0.2,0.18,0.85,16), suitMat, -0.24, 0.62, 0);
+  // Left shin
+  pm(new THREE.CylinderGeometry(0.16,0.14,0.85,16), suitMat, -0.24,-0.3, 0);
+  // Left shoe
+  const shoeL=new THREE.Group();
+  shoeL.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.28,0.15,0.55),shoesMat),{castShadow:true}));
+  const toeL=new THREE.Mesh(new THREE.SphereGeometry(0.14,16,8,0,Math.PI*2,0,Math.PI*0.5),shoesMat); toeL.position.set(0,0,0.22); toeL.rotation.x=-Math.PI*0.08; shoeL.add(toeL);
+  shoeL.position.set(-0.24,-0.84,0.08); mannequin.add(shoeL);
+
+  // Right thigh
+  pm(new THREE.CylinderGeometry(0.2,0.18,0.85,16), suitMat,  0.24, 0.62, 0);
+  // Right shin
+  pm(new THREE.CylinderGeometry(0.16,0.14,0.85,16), suitMat,  0.24,-0.3, 0);
+  // Right shoe
+  const shoeR=new THREE.Group();
+  shoeR.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.28,0.15,0.55),shoesMat),{castShadow:true}));
+  const toeR=new THREE.Mesh(new THREE.SphereGeometry(0.14,16,8,0,Math.PI*2,0,Math.PI*0.5),shoesMat); toeR.position.set(0,0,0.22); toeR.rotation.x=-Math.PI*0.08; shoeR.add(toeR);
+  shoeR.position.set(0.24,-0.84,0.08); mannequin.add(shoeR);
+
+  // ── LEFT ARM (holding box) ──
+  const lShoulder=new THREE.Group();
+  const lUpperArm=pm(new THREE.CylinderGeometry(0.14,0.13,0.75,16),suitMat,-0.68,2.3,0,0,0,0.5);
+  const lElbow=new THREE.Mesh(new THREE.SphereGeometry(0.13,12,12),suitMat); lElbow.position.set(-0.98,1.84,0); mannequin.add(lElbow);
+  pm(new THREE.CylinderGeometry(0.12,0.11,0.7,16),suitMat,-1.12,1.4,0.2,0.5,0,-0.3);
+  // Left hand
+  pm(new THREE.SphereGeometry(0.1,12,12),skinMat,-1.22,1.05,0.4);
+  // Shirt cuff L
+  pm(new THREE.CylinderGeometry(0.125,0.12,0.12,16),shirtMat,-1.08,1.15,0.22,0.5,0,-0.3);
+
+  // ── RIGHT ARM ──
+  pm(new THREE.CylinderGeometry(0.14,0.13,0.75,16),suitMat,0.68,2.3,0,0,0,-0.5);
+  const rElbow=new THREE.Mesh(new THREE.SphereGeometry(0.13,12,12),suitMat); rElbow.position.set(0.98,1.84,0); mannequin.add(rElbow);
+  pm(new THREE.CylinderGeometry(0.12,0.11,0.7,16),suitMat,1.12,1.4,0.2,0.5,0,0.3);
+  pm(new THREE.SphereGeometry(0.1,12,12),skinMat,1.22,1.05,0.4);
+  pm(new THREE.CylinderGeometry(0.125,0.12,0.12,16),shirtMat,1.08,1.15,0.22,0.5,0,0.3);
+
+  // ── LUXURY PACKAGE ──
   const pkg = new THREE.Group();
-  const pkgBox = new THREE.Mesh(new THREE.BoxGeometry(1.1,0.9,0.9), boxMat);
-  pkgBox.castShadow=true; pkg.add(pkgBox);
-  // ribbon on box
-  const ribH = new THREE.Mesh(new THREE.BoxGeometry(1.12,0.08,0.08), new THREE.MeshPhongMaterial({color:0xD21034,shininess:120}));
-  ribH.position.set(0,0,0.46); pkg.add(ribH);
-  const ribV = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.92,0.08), new THREE.MeshPhongMaterial({color:0xD21034,shininess:120}));
-  ribV.position.set(0,0,0.46); pkg.add(ribV);
-  // BOW
-  const bowL=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.04,8,16,Math.PI),new THREE.MeshPhongMaterial({color:0xD21034}));
-  bowL.position.set(-0.12,0.05,0.47); bowL.rotation.z=0.4; pkg.add(bowL);
-  const bowR=new THREE.Mesh(new THREE.TorusGeometry(0.18,0.04,8,16,Math.PI),new THREE.MeshPhongMaterial({color:0xD21034}));
-  bowR.position.set(0.12,0.05,0.47); bowR.rotation.z=-0.4+Math.PI; pkg.add(bowR);
-  // MARKET text on box (just a colored plane)
-  const labelGeo=new THREE.PlaneGeometry(0.8,0.35);
-  const labelMat=new THREE.MeshPhongMaterial({color:0x00209F,shininess:60});
-  const label=new THREE.Mesh(labelGeo,labelMat); label.position.set(0,0,0.46); pkg.add(label);
-  pkg.position.set(-1.05,1.0,0.5);
+  // Main box with rounded feel
+  const pkgBox=new THREE.Mesh(new THREE.BoxGeometry(1.0,0.85,0.85), boxMat); pkgBox.castShadow=true; pkg.add(pkgBox);
+  // Glossy lid
+  const lid=new THREE.Mesh(new THREE.BoxGeometry(1.02,0.12,0.87), new THREE.MeshPhongMaterial({color:0xE8C84A,shininess:300,specular:0xffffcc}));
+  lid.position.set(0,0.48,0); pkg.add(lid);
+  // Ribbon H
+  const ribMat=new THREE.MeshPhongMaterial({color:0xD21034,shininess:180,specular:0xff9999});
+  pkg.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1.04,0.07,0.07),ribMat),{position:new THREE.Vector3(0,0,0.44)}));
+  pkg.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(1.04,0.07,0.07),ribMat),{position:new THREE.Vector3(0,0,-0.44)}));
+  pkg.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.07,0.07,0.87),ribMat),{position:new THREE.Vector3(0.5,0,0)}));
+  pkg.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.07,0.07,0.87),ribMat),{position:new THREE.Vector3(-0.5,0,0)}));
+  // Vertical ribbon
+  pkg.add(Object.assign(new THREE.Mesh(new THREE.BoxGeometry(0.07,0.87,0.07),ribMat),{position:new THREE.Vector3(0,0,0.44)}));
+  // Bow loops
+  const bowMat=new THREE.MeshPhongMaterial({color:0xD21034,shininess:180,specular:0xff9999});
+  for(let side=-1;side<=1;side+=2){
+    const bow=new THREE.Mesh(new THREE.TorusGeometry(0.15,0.035,10,24,Math.PI),bowMat);
+    bow.position.set(side*0.13,0.52,0.44); bow.rotation.z=side>0?0.5:-0.5+Math.PI; pkg.add(bow);
+  }
+  // Gold label
+  const glabel=new THREE.Mesh(new THREE.PlaneGeometry(0.65,0.28),new THREE.MeshPhongMaterial({color:0xffffff,shininess:60}));
+  glabel.position.set(0,0,0.435); pkg.add(glabel);
+  // HAïTI text plane (blue)
+  const htlabel=new THREE.Mesh(new THREE.PlaneGeometry(0.55,0.14),new THREE.MeshPhongMaterial({color:0x00209F,shininess:60}));
+  htlabel.position.set(0,-0.06,0.436); pkg.add(htlabel);
+
+  pkg.position.set(-1.1,1.1,0.5);
   mannequin.add(pkg);
 
-  mannequin.position.set(-8, -2, 0);
-  mannequin.scale.set(1.3,1.3,1.3);
+  // ── SPOTLIGHT CONE on mannequin ──
+  const cone=new THREE.Mesh(
+    new THREE.ConeGeometry(1.2,4,32,1,true),
+    new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0.04,side:THREE.BackSide})
+  );
+  cone.position.set(0,8,0); mannequin.add(cone);
+
+  mannequin.position.set(-8,-2,0);
+  mannequin.scale.set(1.2,1.2,1.2);
   scene.add(mannequin);
 
-  // ── LOGO LETTERS (hidden initially) ──
+  // ── LOGO LETTERS — ÉLÉGANT ──
   const logoGroup = new THREE.Group();
-  const matBlue=new THREE.MeshPhongMaterial({color:0x00209F,shininess:150,specular:0x4488ff});
-  const matRed =new THREE.MeshPhongMaterial({color:0xD21034,shininess:150,specular:0xff4466});
-  const matGold=new THREE.MeshPhongMaterial({color:0xD4AF37,shininess:250,specular:0xffffaa,emissive:0x221100,emissiveIntensity:0.3});
+  const matBlue=new THREE.MeshPhongMaterial({color:0x1a3a8f,shininess:300,specular:0x88aaff,emissive:0x050d2a,emissiveIntensity:0.4});
+  const matRed =new THREE.MeshPhongMaterial({color:0xb02020,shininess:300,specular:0xff8888,emissive:0x200505,emissiveIntensity:0.4});
+  const matGold=new THREE.MeshPhongMaterial({color:0xD4AF37,shininess:400,specular:0xfffff0,emissive:0x2a1800,emissiveIntensity:0.5});
 
   const s=0.9, dp=0.7;
   function lb(w,h,d,mat,x,y){const m=new THREE.Mesh(new THREE.BoxGeometry(w*s,h*s,d),mat);m.position.set(x*s,y*s,0);m.castShadow=true;logoGroup.add(m);}
