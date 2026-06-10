@@ -194,6 +194,14 @@
     .cta-section{padding:72px 18px;}
     .admin-panel{width:100%;}
   }
+  /* Spline loader spinner */
+  .spin-loader{width:36px;height:36px;border:3px solid rgba(212,175,55,.2);border-top-color:var(--or);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* Hero flex on mobile */
+  @media(max-width:700px){
+    #heroSection > div:last-child{flex-direction:column;}
+    #heroSection > div:last-child > div:last-child{height:300px;min-width:100%;}
+  }
 </style>
 </head>
 <body>
@@ -217,23 +225,48 @@
 <div class="admin-mode-badge">MODE ADMIN ACTIF</div>
 
 <!-- HERO -->
-<section class="hero">
-  <!-- THREE.JS BACKGROUND CANVAS -->
-  <canvas id="bgCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+<section class="hero" id="heroSection">
+  <!-- Spotlight effect -->
+  <div id="spotlight" style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle at center,rgba(255,255,255,0.08) 0%,transparent 70%);pointer-events:none;z-index:1;transform:translate(-50%,-50%);transition:opacity 0.2s;opacity:0;"></div>
+
   <div class="hero-bg" style="z-index:1;"></div>
   <div class="flag-stripes" style="z-index:1;"><div class="stripe-blue"></div><div class="stripe-red"></div></div>
-  <div class="hero-content" style="position:relative;z-index:2;">
-    <canvas id="heroLogo" width="700" height="380" style="display:block;width:100%;margin-bottom:24px;border-radius:8px;"></canvas>
-    <p class="hero-desc">Produits locaux authentiques — kepi, maillot, pantalon ak plis. Kalite haïtienne, bon pri, livrezon rapid.</p>
-    <div class="hero-btns">
-      <a href="#produits" class="btn-primary">Voir les produits</a>
-      <a href="#commande" class="btn-secondary">Commander WhatsApp</a>
+
+  <!-- Split layout: left text + right Spline -->
+  <div style="position:relative;z-index:2;display:flex;align-items:center;width:100%;gap:32px;flex-wrap:wrap;">
+
+    <!-- LEFT: Text content -->
+    <div class="hero-content" style="flex:1;min-width:280px;">
+      <div class="hero-eyebrow">Fièt pou Ayiti</div>
+      <h1>
+        <span class="sub">Le meilleur de</span>
+        <span class="highlight">Haïti</span>
+        livré chez toi
+      </h1>
+      <p class="hero-desc">Produits locaux authentiques — kepi, maillot, pantalon, robe ak plis. Kalite haïtienne, bon pri, livrezon rapid.</p>
+      <div class="hero-btns">
+        <a href="#produits" class="btn-primary">Voir les produits</a>
+        <a href="#commande" class="btn-secondary">Commander WhatsApp</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">4+</div><div class="stat-label">Produits locaux</div></div>
+        <div><div class="stat-num">24h</div><div class="stat-label">Délai livraison</div></div>
+        <div><div class="stat-num">100%</div><div class="stat-label">Haïtien</div></div>
+      </div>
     </div>
-    <div class="hero-stats">
-      <div><div class="stat-num">3+</div><div class="stat-label">Produits locaux</div></div>
-      <div><div class="stat-num">24h</div><div class="stat-label">Délai livraison</div></div>
-      <div><div class="stat-num">100%</div><div class="stat-label">Haïtien</div></div>
+
+    <!-- RIGHT: Spline 3D scene -->
+    <div style="flex:1;min-width:280px;height:480px;position:relative;border-radius:12px;overflow:hidden;">
+      <!-- Loading state -->
+      <div id="splineLoader" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);z-index:5;border-radius:12px;">
+        <div style="text-align:center;">
+          <div class="spin-loader"></div>
+          <div style="font-family:'Oswald',sans-serif;color:var(--or);letter-spacing:2px;font-size:.8rem;margin-top:12px;">CHARGEMENT 3D...</div>
+        </div>
+      </div>
+      <canvas id="spline3d" style="width:100%;height:100%;border-radius:12px;"></canvas>
     </div>
+
   </div>
 </section>
 
@@ -831,7 +864,8 @@ renderProducts();
 function buildNavLogo(canvasId) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const W = canvas.width, H = canvas.height;
+  const W = canvas.clientWidth  || canvas.width  || 180;
+  const H = canvas.clientHeight || canvas.height || 52;
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
   renderer.setSize(W, H);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
@@ -865,7 +899,12 @@ function buildNavLogo(canvasId) {
 function buildHeroCinematic() {
   const canvas = document.getElementById('heroLogo');
   if (!canvas || typeof THREE === 'undefined') return;
-  const W = canvas.width, H = canvas.height;
+
+  // Size canvas properly from its CSS dimensions
+  const W = canvas.clientWidth  || 700;
+  const H = canvas.clientHeight || 380;
+  canvas.width  = W;
+  canvas.height = H;
   const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
   renderer.setSize(W, H);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
@@ -1224,11 +1263,58 @@ function buildHeroCinematic() {
 }
 
 window.addEventListener('load', function() {
-  buildNavLogo('navLogo');
-  buildHeroCinematic();
-  initBgAnimation();
-  initGlobalBg();
+  setTimeout(function() {
+    buildNavLogo('navLogo');
+    initGlobalBg();
+    initSpotlight();
+    initSpline();
+  }, 100);
 });
+
+// ── SPOTLIGHT MOUSE EFFECT ──────────────────────────────
+function initSpotlight() {
+  const hero = document.getElementById('heroSection');
+  const spot = document.getElementById('spotlight');
+  if (!hero || !spot) return;
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    spot.style.left = (e.clientX - r.left) + 'px';
+    spot.style.top  = (e.clientY - r.top)  + 'px';
+    spot.style.opacity = '1';
+  });
+  hero.addEventListener('mouseleave', () => { spot.style.opacity = '0'; });
+}
+
+// ── SPLINE 3D SCENE ────────────────────────────────────
+function initSpline() {
+  const canvas = document.getElementById('spline3d');
+  const loader = document.getElementById('splineLoader');
+  if (!canvas) return;
+
+  // Use Spline runtime directly
+  const script = document.createElement('script');
+  script.type = 'module';
+  script.textContent = `
+    import { Application } from 'https://unpkg.com/@splinetool/runtime@1.0.65/build/runtime.js';
+    const canvas = document.getElementById('spline3d');
+    const loader = document.getElementById('splineLoader');
+    const app = new Application(canvas);
+    app.load('https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode')
+      .then(() => {
+        if (loader) {
+          loader.style.transition = 'opacity 0.5s';
+          loader.style.opacity = '0';
+          setTimeout(() => loader.style.display = 'none', 500);
+        }
+      })
+      .catch(() => {
+        if (loader) {
+          loader.innerHTML = '<div style="color:rgba(245,240,232,0.4);font-size:.8rem;font-family:Inter,sans-serif;text-align:center;">Scène 3D<br>non disponible</div>';
+        }
+      });
+  `;
+  document.body.appendChild(script);
+}
 
 function initBgAnimation() {
   const canvas = document.getElementById('bgCanvas');
