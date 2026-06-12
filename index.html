@@ -686,30 +686,49 @@ function renderStockSummary() {
 
 // ─── EXPORT SITE ─────────────────────────────────────────
 function exportSite() {
-  // Update products array in the HTML source with current data
-  const html = document.documentElement.outerHTML;
+  const btn = event ? event.target : document.querySelector('[onclick="exportSite()"]');
 
-  // Build updated products JS with current prices, stock, photos
+  // Merge in-memory photos into products
+  products.forEach(p => {
+    if (photos[p.id]) {
+      p.image = photos[p.id]; // embed photo directly in product
+    }
+  });
+
+  // Build full products JS string with all data including embedded photos
   const productsJS = `let products = [\n` + products.map(p => {
-    const imgVal = photos[p.id] ? `'${photos[p.id]}'` : (p.image ? `'${p.image}'` : 'null');
-    return `  {id:${p.id}, category:'${p.category}', name:${JSON.stringify(p.name)}, desc:${JSON.stringify(p.desc||'')}, price:${p.price}, stock:${p.stock !== undefined ? p.stock : 'undefined'}, emoji:'${p.emoji||'🛍️'}', image:${imgVal}, badge:${p.badge ? `'${p.badge}'` : 'null'}, badgeType:${p.badgeType ? `'${p.badgeType}'` : 'null'}}`;
+    const imgVal = p.image ? `'${p.image}'` : 'null';
+    const stockVal = p.stock !== undefined ? p.stock : 'undefined';
+    return `  {id:${p.id}, category:${JSON.stringify(p.category)}, name:${JSON.stringify(p.name)}, desc:${JSON.stringify(p.desc||'')}, price:${p.price}, stock:${stockVal}, emoji:${JSON.stringify(p.emoji||'🛍️')}, image:${imgVal}, badge:${p.badge ? JSON.stringify(p.badge) : 'null'}, badgeType:${p.badgeType ? JSON.stringify(p.badgeType) : 'null'}}`;
   }).join(',\n') + `\n];`;
 
-  // Replace products array in HTML
-  const updated = html.replace(/let products = \[[\s\S]*?\];/, productsJS);
+  // Get current HTML and replace the products array
+  let html = document.documentElement.outerHTML;
+  html = html.replace(/let products = \[[\s\S]*?\];/, productsJS);
+
+  // Also clear in-memory photos var so exported site starts clean
+  html = html.replace(/let photos = \{\};/, `let photos = {};`);
 
   // Download
-  const blob = new Blob([updated], {type: 'text/html;charset=utf-8'});
+  const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'index.html';
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
   URL.revokeObjectURL(a.href);
 
-  // Confirmation
-  const btn = event.target;
-  btn.textContent = '✅ Téléchargé!';
-  setTimeout(() => btn.textContent = '⬇️ Télécharger index.html', 2000);
+  if (btn) {
+    btn.textContent = '✅ Téléchargé!';
+    btn.style.background = '#25D366';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = '⬇️ Télécharger index.html';
+      btn.style.background = 'var(--or)';
+      btn.style.color = 'var(--noir)';
+    }, 2500);
+  }
 }
 
 // ─── TABS ────────────────────────────────────────────────
