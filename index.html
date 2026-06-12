@@ -435,76 +435,71 @@
 <!-- ADMIN PANEL -->
 <div class="admin-panel" id="adminPanel">
   <div class="admin-header">
-    <h4>⚙ Gestion produits</h4>
+    <h4>⚙ Contrôle Admin</h4>
     <button class="admin-close" onclick="closeAdminPanel()">✕</button>
   </div>
-
-  <!-- TABS -->
   <div style="display:flex;border-bottom:1px solid rgba(212,175,55,.15);flex-shrink:0;">
-    <button class="admin-tab active" id="tab-list" onclick="switchTab('list')">📦 Produits</button>
-    <button class="admin-tab" id="tab-add" onclick="switchTab('add')">➕ Ajouter</button>
+    <button class="admin-tab active" id="tab-list"   onclick="switchTab('list')">📦 Stock</button>
+    <button class="admin-tab"        id="tab-add"    onclick="switchTab('add')">➕ Ajouter</button>
+    <button class="admin-tab"        id="tab-export" onclick="switchTab('export')">💾 Exporter</button>
   </div>
 
-  <!-- TAB: LISTE PRODUITS -->
+  <!-- STOCK LIST -->
   <div class="admin-scroll" id="view-list">
-    <div class="admin-hint">Clique sur 📷 pour changer la photo, ✏️ pour modifier, 🗑 pour supprimer.</div>
+    <div class="admin-hint">Modifie prix et stock directement puis clique 💾 Sauver. Clique 💾 Exporter pour mettre à jour le site.</div>
     <div id="adminProductList"></div>
   </div>
 
-  <!-- TAB: AJOUTER / MODIFIER -->
+  <!-- ADD / EDIT FORM -->
   <div class="admin-scroll" id="view-add" style="display:none;">
     <div id="form-title" style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;color:var(--or);letter-spacing:2px;margin-bottom:18px;">Nouveau produit</div>
-
-    <div class="form-group">
-      <label class="form-label">Nom du produit *</label>
-      <input class="form-input" id="f-name" type="text" placeholder="Ex: Café Haïtien Premium">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Catégorie *</label>
+    <div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="f-name" type="text" placeholder="Ex: Kepi NBA"></div>
+    <div class="form-group"><label class="form-label">Catégorie *</label>
       <select class="form-input" id="f-cat">
         <option value="">Choisir...</option>
-        <option>Alimentation</option>
-        <option>Artisanat</option>
-        <option>Beauté</option>
-        <option>Mode</option>
-        <option>Maison</option>
+        <option>Alimentation</option><option>Artisanat</option>
+        <option>Beauté</option><option>Mode</option><option>Maison</option>
       </select>
     </div>
-    <div class="form-group">
-      <label class="form-label">Prix (HTG) *</label>
-      <input class="form-input" id="f-price" type="number" placeholder="Ex: 350">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Description</label>
-      <textarea class="form-input" id="f-desc" rows="3" placeholder="Décris ton produit..."></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Badge (optionnel)</label>
+    <div class="form-group"><label class="form-label">Prix (HTG) *</label><input class="form-input" id="f-price" type="number" placeholder="2500"></div>
+    <div class="form-group"><label class="form-label">Stock disponible</label><input class="form-input" id="f-stock" type="number" placeholder="10" min="0"></div>
+    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="f-desc" rows="3" placeholder="Décris ton produit..."></textarea></div>
+    <div class="form-group"><label class="form-label">Badge</label>
       <select class="form-input" id="f-badge">
         <option value="">Aucun</option>
-        <option value="Nouveau|rouge">Nouveau</option>
-        <option value="Bestseller|or">Bestseller</option>
-        <option value="Artisan|or">Artisan</option>
-        <option value="Promo|rouge">Promo</option>
+        <option value="Nouveau|rouge">Nouveau</option><option value="Bestseller|or">Bestseller</option>
+        <option value="Artisan|or">Artisan</option><option value="Promo|rouge">Promo</option>
+        <option value="Rare|or">Rare</option><option value="Rupture|rouge">Rupture</option>
       </select>
     </div>
+    <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="f-emoji" type="text" placeholder="🧢" maxlength="4"></div>
     <div class="form-group">
-      <label class="form-label">Emoji (si pas de photo)</label>
-      <input class="form-input" id="f-emoji" type="text" placeholder="Ex: ☕" maxlength="4">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Photo produit</label>
+      <label class="form-label">Photo</label>
       <div id="f-photo-preview" style="width:100%;height:120px;background:var(--noir);border:2px dashed rgba(212,175,55,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;overflow:hidden;cursor:pointer;" onclick="document.getElementById('f-file').click()">
-        <span style="color:rgba(245,240,232,.3);font-size:.85rem;">Cliquer pour ajouter une photo</span>
+        <span style="color:rgba(245,240,232,.3);font-size:.85rem;">Cliquer pour ajouter</span>
       </div>
       <input type="file" id="f-file" accept="image/*" style="display:none" onchange="previewFormPhoto(event)">
-      <button class="admin-upload-btn" onclick="document.getElementById('f-file').click()" style="width:100%;text-align:center;">📷 Choisir une photo</button>
+      <button class="admin-upload-btn" onclick="document.getElementById('f-file').click()" style="width:100%;text-align:center;">📷 Choisir photo</button>
     </div>
-
     <input type="hidden" id="f-edit-id" value="">
     <div style="display:flex;gap:10px;margin-top:8px;">
-      <button onclick="cancelForm()" style="flex:1;background:transparent;border:1px solid rgba(245,240,232,.15);color:rgba(245,240,232,.5);padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:1px;">Annuler</button>
+      <button onclick="cancelForm()" style="flex:1;background:transparent;border:1px solid rgba(245,240,232,.15);color:rgba(245,240,232,.5);padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.85rem;">Annuler</button>
       <button onclick="saveProduct()" style="flex:2;background:var(--rouge);border:none;color:white;padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.9rem;letter-spacing:1px;text-transform:uppercase;">💾 Enregistrer</button>
+    </div>
+  </div>
+
+  <!-- EXPORT TAB -->
+  <div class="admin-scroll" id="view-export" style="display:none;">
+    <div style="text-align:center;padding:16px 0;">
+      <div style="font-size:3rem;margin-bottom:10px;">💾</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;color:var(--or);letter-spacing:2px;margin-bottom:8px;">Sauvegarder le site</div>
+      <div style="font-size:.78rem;color:rgba(245,240,232,.5);margin-bottom:20px;line-height:1.6;">Télécharge le site complet avec tous tes changements. Uploade-le sur GitHub pour mettre à jour en ligne.</div>
+      <button onclick="exportSite()" style="background:var(--or);color:var(--noir);border:none;padding:14px;border-radius:4px;font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;width:100%;margin-bottom:16px;">⬇️ Télécharger index.html</button>
+      <div style="font-size:.7rem;color:rgba(245,240,232,.25);">Photos + produits + modifications inclus</div>
+    </div>
+    <div style="border-top:1px solid rgba(212,175,55,.1);padding-top:16px;margin-top:8px;">
+      <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;color:var(--or);letter-spacing:1px;margin-bottom:12px;">📊 Résumé du stock</div>
+      <div id="stockSummary"></div>
     </div>
   </div>
 </div>
@@ -601,7 +596,9 @@ function renderProducts() {
         <div class="product-desc">${p.desc}</div>
         <div class="product-footer">
           <div class="product-price">${p.price} <span>HTG</span></div>
-          <button class="btn-add" onclick="event.stopPropagation();quickAdd(${p.id})">+ Panier</button>
+          ${p.stock === 0 ? `<div style="font-size:.72rem;color:#C0392B;font-family:'Oswald',sans-serif;letter-spacing:1px;">RUPTURE</div>` :
+            p.stock <= 3 && p.stock !== undefined ? `<div style="font-size:.68rem;color:#D4AF37;">⚡ ${p.stock} restant${p.stock>1?'s':''}</div>` : ''}
+          <button class="btn-add" onclick="event.stopPropagation();quickAdd(${p.id})" ${p.stock === 0 ? 'disabled style="opacity:.4;cursor:not-allowed;"' : ''}>+ Panier</button>
         </div>
       </div>
     </div>`; }).join('');
@@ -612,38 +609,124 @@ function renderAdminList() {
   const list = document.getElementById('adminProductList');
   if (!list) return;
   list.innerHTML = products.map(p => {
-    const photoUrl = photos[p.id];
+    const photoUrl = photos[p.id] || p.image || null;
+    const stock = p.stock !== undefined ? p.stock : '∞';
+    const stockColor = p.stock === 0 ? '#C0392B' : p.stock <= 3 ? '#D4AF37' : '#25D366';
     return `
-    <div class="admin-product">
-      <div class="admin-thumb" onclick="triggerUpload(${p.id})" title="Changer photo">
-        ${photoUrl ? `<img src="${photoUrl}" alt="">` : `<div class="thumb-emoji">${p.emoji}</div>`}
-        <div class="thumb-add">📷</div>
-      </div>
-      <div class="admin-info">
-        <div class="admin-pcat">${p.category}</div>
-        <div class="admin-pname">${p.name}</div>
-        <div class="photo-status ${photoUrl ? 'has-photo' : 'no-photo'}">${photoUrl ? '✓ Photo ok' : '○ Pas de photo'}</div>
-        <div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;">
-          <button class="admin-upload-btn" onclick="triggerUpload(${p.id})">📷 Photo</button>
-          <button class="admin-upload-btn" onclick="editProduct(${p.id})" style="border-color:rgba(212,175,55,.4);color:var(--or);">✏️ Modifier</button>
-          <button class="admin-upload-btn" onclick="deleteProduct(${p.id})" style="border-color:rgba(192,57,43,.4);color:#C0392B;">🗑 Supprimer</button>
+    <div class="admin-product" style="flex-direction:column;gap:10px;">
+      <div style="display:flex;gap:12px;align-items:center;">
+        <div class="admin-thumb" onclick="triggerUpload(${p.id})" title="Changer photo" style="flex-shrink:0;">
+          ${photoUrl ? `<img src="${photoUrl}" alt="" style="width:100%;height:100%;object-fit:cover;">` : `<div class="thumb-emoji">${p.emoji}</div>`}
+          <div class="thumb-add">📷</div>
         </div>
+        <div style="flex:1;min-width:0;">
+          <div class="admin-pcat">${p.category}</div>
+          <div class="admin-pname" style="white-space:normal;font-size:.85rem;">${p.name}</div>
+          <div style="font-size:.7rem;color:${stockColor};margin-top:2px;">
+            Stock: <strong>${stock}</strong> ${p.stock === 0 ? '⚠️ Rupture' : p.stock <= 3 ? '⚡ Faible' : '✓ Disponible'}
+          </div>
+        </div>
+      </div>
+
+      <!-- Inline price & stock edit -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <div style="font-size:.65rem;color:var(--or);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Prix HTG</div>
+          <input type="number" id="price-${p.id}" value="${p.price}"
+            style="width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.3);color:var(--ivoire);padding:6px 10px;border-radius:3px;font-size:.9rem;font-family:'Oswald',sans-serif;">
+        </div>
+        <div>
+          <div style="font-size:.65rem;color:var(--or);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Stock</div>
+          <input type="number" id="stock-${p.id}" value="${p.stock !== undefined ? p.stock : ''}" placeholder="∞"
+            style="width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.3);color:var(--ivoire);padding:6px 10px;border-radius:3px;font-size:.9rem;font-family:'Oswald',sans-serif;" min="0">
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button onclick="saveInlineEdit(${p.id})" style="flex:2;background:var(--or);border:none;color:var(--noir);padding:7px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;">💾 Sauver</button>
+        <button onclick="triggerUpload(${p.id})" class="admin-upload-btn">📷</button>
+        <button onclick="editProduct(${p.id})" class="admin-upload-btn" style="border-color:rgba(212,175,55,.4);color:var(--or);">✏️</button>
+        <button onclick="deleteProduct(${p.id})" class="admin-upload-btn" style="border-color:rgba(192,57,43,.4);color:#C0392B;">🗑</button>
       </div>
     </div>`; }).join('');
 }
 
+// ─── INLINE PRICE/STOCK SAVE ─────────────────────────────
+function saveInlineEdit(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const newPrice = parseInt(document.getElementById('price-'+id).value);
+  const newStock = document.getElementById('stock-'+id).value;
+  if (!isNaN(newPrice) && newPrice > 0) p.price = newPrice;
+  p.stock = newStock === '' ? undefined : parseInt(newStock);
+  renderProducts();
+  renderAdminList();
+  // Flash confirmation
+  const btn = event.target;
+  btn.textContent = '✅ Sauvé!';
+  btn.style.background = '#25D366';
+  setTimeout(() => { btn.textContent = '💾 Sauver'; btn.style.background = 'var(--or)'; }, 1500);
+}
+
+// ─── STOCK SUMMARY ───────────────────────────────────────
+function renderStockSummary() {
+  const el = document.getElementById('stockSummary');
+  if (!el) return;
+  el.innerHTML = products.map(p => {
+    const stock = p.stock !== undefined ? p.stock : '∞';
+    const color = p.stock === 0 ? '#C0392B' : p.stock <= 3 ? '#D4AF37' : '#25D366';
+    return `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(245,240,232,.06);">
+      <div style="font-size:.82rem;color:var(--ivoire);flex:1;">${p.name}</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--or);margin:0 12px;">${p.price} HTG</div>
+      <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:${color};min-width:40px;text-align:right;">${stock}</div>
+    </div>`; }).join('');
+}
+
+// ─── EXPORT SITE ─────────────────────────────────────────
+function exportSite() {
+  // Update products array in the HTML source with current data
+  const html = document.documentElement.outerHTML;
+
+  // Build updated products JS with current prices, stock, photos
+  const productsJS = `let products = [\n` + products.map(p => {
+    const imgVal = photos[p.id] ? `'${photos[p.id]}'` : (p.image ? `'${p.image}'` : 'null');
+    return `  {id:${p.id}, category:'${p.category}', name:${JSON.stringify(p.name)}, desc:${JSON.stringify(p.desc||'')}, price:${p.price}, stock:${p.stock !== undefined ? p.stock : 'undefined'}, emoji:'${p.emoji||'🛍️'}', image:${imgVal}, badge:${p.badge ? `'${p.badge}'` : 'null'}, badgeType:${p.badgeType ? `'${p.badgeType}'` : 'null'}}`;
+  }).join(',\n') + `\n];`;
+
+  // Replace products array in HTML
+  const updated = html.replace(/let products = \[[\s\S]*?\];/, productsJS);
+
+  // Download
+  const blob = new Blob([updated], {type: 'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'index.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+
+  // Confirmation
+  const btn = event.target;
+  btn.textContent = '✅ Téléchargé!';
+  setTimeout(() => btn.textContent = '⬇️ Télécharger index.html', 2000);
+}
+
 // ─── TABS ────────────────────────────────────────────────
 function switchTab(tab) {
-  document.getElementById('view-list').style.display = tab === 'list' ? 'flex' : 'none';
-  document.getElementById('view-add').style.display  = tab === 'add'  ? 'flex' : 'none';
-  document.getElementById('view-list').style.flexDirection = 'column';
-  document.getElementById('tab-list').classList.toggle('active', tab === 'list');
-  document.getElementById('tab-add').classList.toggle('active', tab === 'add');
+  ['list','add','export'].forEach(t => {
+    const v = document.getElementById('view-'+t);
+    const b = document.getElementById('tab-'+t);
+    if (v) v.style.display = tab === t ? 'flex' : 'none';
+    if (v && tab === t) v.style.flexDirection = 'column';
+    if (b) b.classList.toggle('active', tab === t);
+  });
   if (tab === 'add') {
     document.getElementById('form-title').textContent = 'Nouveau produit';
     document.getElementById('f-edit-id').value = '';
     clearForm();
   }
+  if (tab === 'export') renderStockSummary();
 }
 
 // ─── FORM PHOTO PREVIEW ──────────────────────────────────
