@@ -405,9 +405,24 @@
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
   <div class="modal">
     <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
+    
+    <!-- Media tabs if video exists -->
+    <div id="modal-media-tabs" style="display:none;position:absolute;top:8px;left:8px;z-index:10;display:flex;gap:6px;">
+      <button id="tab-photo-btn" onclick="showMediaTab('photo')" style="background:rgba(0,0,0,.6);border:1px solid var(--or);color:var(--or);padding:4px 10px;border-radius:3px;font-size:.7rem;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;">📷 PHOTO</button>
+      <button id="tab-video-btn" onclick="showMediaTab('video')" style="background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);color:white;padding:4px 10px;border-radius:3px;font-size:.7rem;font-family:'Oswald',sans-serif;letter-spacing:1px;cursor:pointer;">▶ VIDÉO</button>
+    </div>
+
     <div class="modal-img" id="modal-img-container">
       <span class="modal-emoji" id="modal-emoji"></span>
     </div>
+
+    <!-- Video container -->
+    <div id="modal-video-container" style="display:none;height:240px;background:#000;position:relative;flex-shrink:0;">
+      <video id="modal-video" controls style="width:100%;height:100%;object-fit:contain;" playsinline>
+        <source id="modal-video-src" src="" type="video/mp4">
+      </video>
+    </div>
+
     <div class="modal-body">
       <div class="modal-cat" id="modal-cat"></div>
       <h3 id="modal-name"></h3>
@@ -521,8 +536,9 @@
   </div>
 </div>
 
-<!-- HIDDEN FILE INPUT -->
-<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+<!-- HIDDEN FILE INPUTS -->
+<input type="file" id="fileInput"  accept="image/*" style="display:none" onchange="handleFileUpload(event)">
+<input type="file" id="videoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
 
 <script>
 // ─── DATA ───────────────────────────────────────────────
@@ -553,9 +569,12 @@ let adminMode = false;
 let pendingUploadId = null;
 let photos = {}; // {id: dataURL}
 
-// ─── PHOTOS: in-memory only ──────────────────────────────
+// ─── PHOTOS & VIDEOS: in-memory ──────────────────────────
 function loadPhotos() { /* in-memory, nothing to load */ }
 function savePhotos()  { /* in-memory, nothing to save  */ }
+
+let videos = {}; // {id: dataURL}
+let pendingVideoId = null;
 
 // ─── RENDER CATEGORIES ──────────────────────────────────
 function renderCategories() {
@@ -585,8 +604,9 @@ function renderProducts() {
       <div class="product-img">
         ${imgContent}${fallback}
         ${p.badge ? `<div class="product-badge ${p.badgeType==='or'?'or':''}">${p.badge}</div>` : ''}
+        ${videos[p.id] ? `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:.9rem;">▶</div>` : ''}
         <div class="photo-overlay">
-          <button class="photo-overlay-btn" onclick="event.stopPropagation();triggerUpload(${p.id})">📷 Changer photo</button>
+          <button class="photo-overlay-btn" onclick="event.stopPropagation();triggerUpload(${p.id})">📷 Photo</button>
           <div class="photo-overlay-text">${photoUrl ? 'Photo ✓' : 'Aucune photo'}</div>
         </div>
       </div>
@@ -646,6 +666,7 @@ function renderAdminList() {
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button onclick="saveInlineEdit(${p.id})" style="flex:2;background:var(--or);border:none;color:var(--noir);padding:7px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;">💾 Sauver</button>
         <button onclick="triggerUpload(${p.id})" class="admin-upload-btn">📷</button>
+        <button onclick="triggerVideoUpload(${p.id})" class="admin-upload-btn" style="border-color:rgba(0,150,255,.4);color:#4af;">▶ Vidéo${videos[p.id]?' ✓':''}</button>
         <button onclick="editProduct(${p.id})" class="admin-upload-btn" style="border-color:rgba(212,175,55,.4);color:var(--or);">✏️</button>
         <button onclick="deleteProduct(${p.id})" class="admin-upload-btn" style="border-color:rgba(192,57,43,.4);color:#C0392B;">🗑</button>
       </div>
@@ -851,7 +872,60 @@ function deleteProduct(id) {
   renderAdminList();
 }
 
-// ─── UPLOAD LOGIC ────────────────────────────────────────
+// ─── VIDEO UPLOAD ────────────────────────────────────────
+function triggerVideoUpload(id) {
+  pendingVideoId = id;
+  document.getElementById('videoInput').value = '';
+  document.getElementById('videoInput').click();
+}
+
+function handleVideoUpload(event) {
+  const file = event.target.files[0];
+  if (!file || pendingVideoId === null) return;
+  const maxMB = 50;
+  if (file.size > maxMB * 1024 * 1024) {
+    alert(`Vidéo trop grande. Maximum ${maxMB}MB.`);
+    pendingVideoId = null; return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    videos[pendingVideoId] = e.target.result;
+    pendingVideoId = null;
+    renderProducts();
+    renderAdminList();
+  };
+  reader.onerror = function() {
+    alert("Erreur lecture vidéo."); pendingVideoId = null;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── MODAL MEDIA TABS ────────────────────────────────────
+function showMediaTab(tab) {
+  const imgC = document.getElementById('modal-img-container');
+  const vidC = document.getElementById('modal-video-container');
+  const pBtn = document.getElementById('tab-photo-btn');
+  const vBtn = document.getElementById('tab-video-btn');
+  const vid  = document.getElementById('modal-video');
+
+  if (tab === 'photo') {
+    imgC.style.display = 'flex';
+    vidC.style.display = 'none';
+    vid.pause();
+    pBtn.style.background = 'rgba(212,175,55,.3)';
+    pBtn.style.borderColor = 'var(--or)';
+    vBtn.style.background = 'rgba(0,0,0,.6)';
+    vBtn.style.borderColor = 'rgba(255,255,255,.3)';
+  } else {
+    imgC.style.display = 'none';
+    vidC.style.display = 'block';
+    vid.play();
+    vBtn.style.background = 'rgba(212,175,55,.3)';
+    vBtn.style.borderColor = 'var(--or)';
+    pBtn.style.background = 'rgba(0,0,0,.6)';
+    pBtn.style.borderColor = 'rgba(255,255,255,.3)';
+  }
+}
 function triggerUpload(id) {
   pendingUploadId = id;
   document.getElementById('fileInput').value = '';
@@ -914,6 +988,26 @@ function openProduct(id) {
   document.getElementById('modal-desc').textContent = p.desc;
   document.getElementById('qty-display').textContent = 1;
   updateModalPhoto(id);
+
+  // Handle video
+  const hasVideo = !!videos[id];
+  const tabs = document.getElementById('modal-media-tabs');
+  const vidSrc = document.getElementById('modal-video-src');
+  const vid = document.getElementById('modal-video');
+
+  if (hasVideo) {
+    tabs.style.display = 'flex';
+    vidSrc.src = videos[id];
+    vid.load();
+    showMediaTab('photo'); // start on photo
+  } else {
+    tabs.style.display = 'none';
+    document.getElementById('modal-video-container').style.display = 'none';
+    document.getElementById('modal-img-container').style.display = 'flex';
+    vid.pause();
+    vidSrc.src = '';
+  }
+
   document.getElementById('modal').classList.add('open');
 }
 
@@ -929,8 +1023,11 @@ function updateModalPhoto(id) {
 }
 
 function closeModal(event) {
-  if (event.target === document.getElementById('modal'))
+  if (event.target === document.getElementById('modal')) {
     document.getElementById('modal').classList.remove('open');
+    const vid = document.getElementById('modal-video');
+    if (vid) vid.pause();
+  }
 }
 function changeQty(delta) {
   currentQty = Math.max(1, currentQty + delta);
