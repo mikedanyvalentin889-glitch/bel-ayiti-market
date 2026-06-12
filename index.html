@@ -573,7 +573,7 @@ let photos = {}; // {id: dataURL}
 function loadPhotos() { /* in-memory, nothing to load */ }
 function savePhotos()  { /* in-memory, nothing to save  */ }
 
-let videos = {}; // {id: dataURL}
+let videos = JSON.parse(localStorage.getItem('belayiti_videos') || '{}'); // {id: dataURL}
 let pendingVideoId = null;
 
 // ─── RENDER CATEGORIES ──────────────────────────────────
