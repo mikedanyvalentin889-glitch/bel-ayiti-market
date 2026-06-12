@@ -4,254 +4,1023 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bèl Ayiti Market — Produits 100% Haïtiens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
   :root {
-    --rouge:#C0392B; --or:#D4AF37; --noir:#0D0D0D;
-    --ivoire:#F5F0E8; --gris:#1a1a1a; --gris2:#2a2a2a;
+    --primary: #E8B4B8;
+    --secondary: #A8D5BA;
+    --accent: #D4AF37;
+    --dark: #1a1a2e;
+    --light: #FFF5F5;
+    --text: #2D3436;
+    --text-light: #5a5a5a;
+    --success: #25D366;
+    --danger: #C0392B;
+    --border: #e0e0e0;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'Inter',sans-serif;background:var(--noir);color:var(--ivoire);overflow-x:hidden;}
 
-  /* ── NAV ── */
-  nav{position:fixed;top:0;width:100%;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:16px 40px;background:rgba(13,13,13,.93);backdrop-filter:blur(10px);border-bottom:1px solid rgba(212,175,55,.1);}
-  .logo-3d-wrap{display:flex;align-items:center;flex-shrink:0;}
-  .nav-links{display:flex;gap:28px;list-style:none;}
-  .nav-links a{color:var(--ivoire);text-decoration:none;font-size:.82rem;letter-spacing:1px;text-transform:uppercase;font-weight:500;transition:color .2s;}
-  .nav-links a:hover{color:var(--or);}
-  .nav-cta{background:var(--rouge);color:white!important;padding:7px 18px;border-radius:2px;}
-  .admin-btn{background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.3);color:var(--or);padding:8px 16px;border-radius:2px;cursor:pointer;font-size:.8rem;font-family:'Inter',sans-serif;letter-spacing:1px;transition:all .2s;}
-  .admin-btn:hover{background:rgba(212,175,55,.25);}
-
-  /* ── HERO ── */
-  .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 40px 60px;}
-  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(192,57,43,.15) 0%,transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(212,175,55,.1) 0%,transparent 50%),var(--noir);}
-  .flag-stripes{position:absolute;right:-60px;top:0;bottom:0;width:50%;display:flex;opacity:.04;transform:skewX(-8deg);}
-  .stripe-blue{flex:1;background:#00209F;} .stripe-red{flex:1;background:#D21034;}
-  .hero-content{position:relative;max-width:640px;}
-  .hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--or);margin-bottom:22px;font-weight:500;}
-  .hero-eyebrow::before{content:'';width:30px;height:1px;background:var(--or);}
-  h1{font-family:'Oswald',sans-serif;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:700;line-height:1;text-transform:uppercase;margin-bottom:22px;}
-  h1 .highlight{color:var(--rouge);display:block;}
-  h1 .sub{color:var(--or);font-size:.52em;display:block;letter-spacing:4px;}
-  .hero-desc{font-size:1rem;line-height:1.7;color:rgba(245,240,232,.7);margin-bottom:34px;max-width:480px;}
-  .hero-btns{display:flex;gap:14px;flex-wrap:wrap;}
-  .btn-primary{background:var(--rouge);color:white;padding:13px 30px;border:none;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.95rem;letter-spacing:2px;text-transform:uppercase;border-radius:2px;transition:all .3s;}
-  .btn-primary:hover{background:#a93226;transform:translateY(-2px);}
-  .btn-secondary{background:transparent;color:var(--or);padding:13px 30px;border:1px solid var(--or);cursor:pointer;font-family:'Oswald',sans-serif;font-size:.95rem;letter-spacing:2px;text-transform:uppercase;border-radius:2px;transition:all .3s;}
-  .btn-secondary:hover{background:var(--or);color:var(--noir);}
-  .hero-stats{display:flex;gap:48px;margin-top:56px;padding-top:28px;border-top:1px solid rgba(212,175,55,.2);}
-  .stat-num{font-family:'Oswald',sans-serif;font-size:1.9rem;font-weight:700;color:var(--or);}
-  .stat-label{font-size:.72rem;color:rgba(245,240,232,.5);letter-spacing:1px;text-transform:uppercase;}
-
-  /* ── TICKER ── */
-  .ticker{background:var(--rouge);padding:11px 0;overflow:hidden;}
-  .ticker-inner{display:flex;gap:60px;animation:tick 20s linear infinite;white-space:nowrap;}
-  .ticker-item{font-family:'Oswald',sans-serif;font-size:.82rem;letter-spacing:3px;text-transform:uppercase;color:white;display:flex;align-items:center;gap:20px;}
-  .ticker-item::after{content:'✦';color:rgba(255,255,255,.5);}
-  @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-  /* ── SECTION ── */
-  .section{padding:80px 40px;}
-  .section-label{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--or);margin-bottom:10px;font-weight:500;display:flex;align-items:center;gap:12px;}
-  .section-label::after{content:'';flex:1;max-width:60px;height:1px;background:var(--or);}
-  .section-title{font-family:'Oswald',sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:700;text-transform:uppercase;margin-bottom:44px;line-height:1.1;}
-  .section-title em{color:var(--rouge);font-style:normal;}
-
-  /* ── CATEGORIES ── */
-  .categories-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;}
-  .cat-card{background:var(--gris);border:1px solid rgba(212,175,55,.1);padding:28px 20px;text-align:center;cursor:pointer;transition:all .3s;border-radius:4px;}
-  .cat-card:hover,.cat-card.active{border-color:var(--or);background:var(--gris2);transform:translateY(-3px);}
-  .cat-icon{font-size:2.2rem;margin-bottom:10px;}
-  .cat-name{font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:1px;text-transform:uppercase;}
-  .cat-count{font-size:.72rem;color:rgba(245,240,232,.4);margin-top:4px;}
-
-  /* ── PRODUCTS ── */
-  .products-section{padding:80px 40px;background:var(--gris);}
-  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:22px;}
-  .product-card{background:var(--noir);border:1px solid rgba(212,175,55,.08);border-radius:4px;overflow:hidden;transition:all .3s;cursor:pointer;}
-  .product-card:hover{border-color:rgba(212,175,55,.4);transform:translateY(-4px);}
-  .product-img{height:220px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:var(--gris2);}
-  .product-img img{width:100%;height:100%;object-fit:cover;display:block;}
-  .product-img .no-photo{font-size:4rem;opacity:.5;}
-  .product-badge{position:absolute;top:10px;left:10px;background:var(--rouge);color:white;font-size:.62rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:2px;}
-  .product-badge.or{background:var(--or);color:var(--noir);}
-
-  /* ADMIN PHOTO OVERLAY on card */
-  .photo-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;backdrop-filter:blur(2px);}
-  .admin-mode .product-card:hover .photo-overlay{display:flex;}
-  .photo-overlay-btn{background:var(--or);color:var(--noir);border:none;padding:8px 18px;font-family:'Oswald',sans-serif;letter-spacing:1px;font-size:.85rem;text-transform:uppercase;border-radius:2px;cursor:pointer;transition:all .2s;}
-  .photo-overlay-btn:hover{background:#c9a227;}
-  .photo-overlay-text{font-size:.75rem;color:rgba(255,255,255,.7);letter-spacing:1px;}
-
-  .product-info{padding:18px;}
-  .product-category{font-size:.68rem;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;}
-  .product-name{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:600;text-transform:uppercase;margin-bottom:7px;}
-  .product-desc{font-size:.8rem;color:rgba(245,240,232,.5);line-height:1.5;margin-bottom:14px;}
-  .product-footer{display:flex;justify-content:space-between;align-items:center;}
-  .product-price{font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:700;color:var(--or);}
-  .product-price span{font-size:.72rem;color:rgba(245,240,232,.4);font-family:'Inter',sans-serif;font-weight:400;}
-  .btn-add{background:var(--rouge);color:white;border:none;cursor:pointer;padding:7px 14px;font-size:.78rem;letter-spacing:1px;text-transform:uppercase;font-family:'Oswald',sans-serif;border-radius:2px;transition:all .2s;}
-  .btn-add:hover{background:#a93226;}
-
-  /* ── WHY ── */
-  .why-section{padding:80px 40px;}
-  .why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;margin-top:44px;}
-  .why-card{padding:28px;border-left:2px solid var(--rouge);background:rgba(192,57,43,.04);}
-  .why-icon{font-size:1.8rem;margin-bottom:14px;}
-  .why-title{font-family:'Oswald',sans-serif;font-size:1.05rem;text-transform:uppercase;margin-bottom:9px;}
-  .why-text{font-size:.84rem;color:rgba(245,240,232,.6);line-height:1.6;}
-
-  /* ── PAYMENT ── */
-  .payment-section{padding:56px 40px;background:var(--gris);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:28px;}
-  .payment-title{font-family:'Oswald',sans-serif;font-size:1.4rem;text-transform:uppercase;}
-  .payment-title span{color:var(--or);}
-  .payment-methods{display:flex;gap:14px;flex-wrap:wrap;}
-  .payment-badge{background:var(--noir);border:1px solid rgba(212,175,55,.2);padding:10px 18px;border-radius:4px;font-family:'Oswald',sans-serif;font-size:.88rem;letter-spacing:1px;display:flex;align-items:center;gap:8px;}
-
-  /* ── CTA ── */
-  .cta-section{padding:100px 40px;text-align:center;background:radial-gradient(ellipse at center,rgba(192,57,43,.2) 0%,transparent 70%),var(--noir);position:relative;overflow:hidden;}
-  .cta-section::before{content:'AYITI';position:absolute;font-family:'Oswald',sans-serif;font-size:20vw;font-weight:700;color:rgba(212,175,55,.03);top:50%;left:50%;transform:translate(-50%,-50%);white-space:nowrap;z-index:0;}
-  .cta-section h2{font-family:'Oswald',sans-serif;font-size:clamp(2rem,5vw,3.5rem);text-transform:uppercase;margin-bottom:18px;position:relative;}
-  .cta-section p{color:rgba(245,240,232,.6);max-width:460px;margin:0 auto 36px;line-height:1.7;position:relative;}
-  .whatsapp-btn{display:inline-flex;align-items:center;gap:12px;background:#25D366;color:white;padding:15px 34px;border-radius:2px;font-family:'Oswald',sans-serif;font-size:1.05rem;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;transition:all .3s;}
-  .whatsapp-btn:hover{background:#1da851;transform:translateY(-2px);}
-
-  /* ── FOOTER ── */
-  footer{padding:44px 40px;border-top:1px solid rgba(212,175,55,.15);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px;}
-  .footer-logo{font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;color:var(--or);letter-spacing:2px;}
-  .footer-logo span{color:var(--rouge);}
-  .footer-text{font-size:.78rem;color:rgba(245,240,232,.3);}
-
-  /* ── MODAL PRODUIT ── */
-  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
-  .modal-overlay.open{display:flex;}
-  .modal{background:var(--gris);border:1px solid rgba(212,175,55,.2);border-radius:4px;padding:0;max-width:520px;width:92%;position:relative;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
-  .modal-img{height:240px;overflow:hidden;position:relative;background:var(--gris2);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .modal-img img{width:100%;height:100%;object-fit:cover;}
-  .modal-img .modal-emoji{font-size:5rem;opacity:.4;}
-  .modal-close{position:absolute;top:12px;right:14px;background:rgba(0,0,0,.5);border:none;color:white;font-size:1.3rem;cursor:pointer;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:5;}
-  .modal-body{padding:28px;overflow-y:auto;}
-  .modal-cat{font-size:.7rem;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
-  .modal h3{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;margin-bottom:6px;}
-  .modal-price{font-family:'Oswald',sans-serif;font-size:2rem;color:var(--or);margin-bottom:14px;}
-  .modal p{font-size:.88rem;color:rgba(245,240,232,.6);line-height:1.7;margin-bottom:20px;}
-  .qty-selector{display:flex;align-items:center;gap:14px;margin-bottom:18px;}
-  .qty-btn{background:var(--noir);border:1px solid rgba(212,175,55,.3);color:var(--ivoire);width:36px;height:36px;border-radius:2px;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-  .qty-num{font-family:'Oswald',sans-serif;font-size:1.2rem;min-width:28px;text-align:center;}
-  .modal-actions{display:flex;gap:10px;flex-wrap:wrap;}
-
-  /* ── CART BAR ── */
-  .cart-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--rouge);padding:15px 40px;justify-content:space-between;align-items:center;z-index:150;cursor:pointer;transition:background .2s;}
-  .cart-bar.visible{display:flex;}
-  .cart-bar-text{font-family:'Oswald',sans-serif;letter-spacing:2px;text-transform:uppercase;font-size:.95rem;}
-  .cart-total{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;}
-
-  /* ── ADMIN PANEL ── */
-  .admin-panel{display:none;position:fixed;top:0;right:0;bottom:0;width:360px;background:var(--gris2);z-index:300;border-left:1px solid rgba(212,175,55,.2);flex-direction:column;overflow:hidden;}
-  .admin-panel.open{display:flex;}
-  .admin-header{padding:20px 24px;background:var(--gris);border-bottom:1px solid rgba(212,175,55,.15);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
-  .admin-header h4{font-family:'Oswald',sans-serif;font-size:1.1rem;text-transform:uppercase;color:var(--or);letter-spacing:2px;}
-  .admin-close{background:none;border:none;color:var(--ivoire);font-size:1.4rem;cursor:pointer;}
-  .admin-scroll{flex:1;overflow-y:auto;padding:16px;}
-  .admin-product{background:var(--gris);border:1px solid rgba(212,175,55,.1);border-radius:4px;padding:14px;margin-bottom:12px;display:flex;gap:14px;align-items:center;}
-  .admin-thumb{width:64px;height:64px;border-radius:3px;overflow:hidden;background:var(--noir);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;border:2px dashed rgba(212,175,55,.2);position:relative;}
-  .admin-thumb:hover{border-color:var(--or);}
-  .admin-thumb img{width:100%;height:100%;object-fit:cover;}
-  .admin-thumb .thumb-emoji{font-size:1.8rem;opacity:.5;}
-  .admin-thumb .thumb-add{position:absolute;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;font-size:1.5rem;color:var(--or);}
-  .admin-thumb:hover .thumb-add{display:flex;}
-  .admin-info{flex:1;min-width:0;}
-  .admin-pname{font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .admin-pcat{font-size:.7rem;color:var(--or);margin-bottom:6px;}
-  .admin-upload-btn{background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.25);color:var(--or);padding:5px 12px;border-radius:2px;font-size:.72rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
-  .admin-upload-btn:hover{background:rgba(212,175,55,.2);}
-  .admin-hint{font-size:.72rem;color:rgba(245,240,232,.35);margin-bottom:16px;padding:12px;border:1px dashed rgba(212,175,55,.15);border-radius:3px;line-height:1.5;text-align:center;}
-  .admin-tab{flex:1;background:transparent;border:none;color:rgba(245,240,232,.5);padding:12px;font-family:'Oswald',sans-serif;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;}
-  .admin-tab.active{color:var(--or);border-bottom-color:var(--or);}
-  .form-group{margin-bottom:16px;}
-  .form-label{display:block;font-size:.72rem;color:var(--or);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
-  .form-input{width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.25);color:var(--ivoire);padding:10px 14px;border-radius:3px;font-size:.9rem;font-family:'Inter',sans-serif;outline:none;transition:border .2s;}
-  .form-input:focus{border-color:var(--or);}
-  .form-input option{background:var(--gris2);}
-  textarea.form-input{resize:vertical;}
-  .photo-status{font-size:.68rem;margin-top:3px;}
-  .photo-status.has-photo{color:#25D366;}
-  .photo-status.no-photo{color:rgba(245,240,232,.3);}
-
-  /* ADMIN MODE indicator */
-  .admin-mode-badge{display:none;position:fixed;top:72px;right:16px;background:var(--or);color:var(--noir);padding:5px 14px;border-radius:2px;font-family:'Oswald',sans-serif;font-size:.75rem;letter-spacing:1px;z-index:110;}
-  .admin-mode .admin-mode-badge{display:block;}
-
-  @media(max-width:700px){
-    nav{padding:14px 18px;}
-    .nav-links{display:none;}
-    .section,.products-section,.why-section{padding:56px 18px;}
-    .hero{padding:95px 18px 56px;}
-    .hero-stats{gap:20px;flex-wrap:wrap;}
-    .payment-section{padding:36px 18px;}
-    footer{padding:28px 18px;}
-    .cta-section{padding:72px 18px;}
-    .admin-panel{width:100%;}
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-  /* Spline loader spinner */
-  .spin-loader{width:36px;height:36px;border:3px solid rgba(212,175,55,.2);border-top-color:var(--or);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  /* Hero flex on mobile */
-  @media(max-width:700px){
-    #heroSection > div:last-child{flex-direction:column;}
-    #heroSection > div:last-child > div:last-child{height:300px;min-width:100%;}
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--light);
+    color: var(--text);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* TYPOGRAPHY */
+  h1, h2, h3, h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 8vw, 4rem);
+    color: var(--dark);
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    color: var(--dark);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    color: var(--dark);
+  }
+
+  p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: var(--text-light);
+    line-height: 1.8;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+  }
+
+  /* NAVIGATION */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2.5rem;
+    background: rgba(255, 245, 245, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 2px;
+  }
+
+  .logo span {
+    color: var(--accent);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text);
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: var(--transition);
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+
+  .admin-btn {
+    background: linear-gradient(135deg, var(--primary), #F5D5DA);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (max-width: 768px) {
+    nav {
+      padding: 1rem 1.5rem;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    .logo {
+      font-size: 1.3rem;
+    }
+  }
+
+  /* HERO SECTION */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 2.5rem 60px;
+    background: linear-gradient(135deg, var(--light) 0%, #F5E8EB 50%, #FAFAFA 100%);
+    position: relative;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(232, 180, 184, 0.15) 0%, transparent 70%);
+    animation: float 20s ease-in-out infinite;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -30%;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, rgba(168, 213, 186, 0.1) 0%, transparent 70%);
+    animation: float 25s ease-in-out infinite reverse;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(30px, -30px) rotate(180deg); }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-weight: 600;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(212, 175, 55, 0.1);
+    border-radius: 50px;
+  }
+
+  .hero h1 {
+    margin: 1.5rem 0;
+    background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin: 2rem 0 2.5rem;
+    line-height: 1.8;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .btn {
+    font-family: 'Montserrat', sans-serif;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: var(--transition);
+    display: inline-block;
+    text-align: center;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), #F5D5DA);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+
+  .btn-secondary:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-3px);
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+  }
+
+  /* TICKER */
+  .ticker {
+    background: linear-gradient(90deg, var(--primary), #F5D5DA);
+    padding: 1rem 0;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .ticker-inner {
+    display: flex;
+    gap: 3rem;
+    animation: scroll 30s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: white;
+    font-weight: 500;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+  }
+
+  .ticker-item::before {
+    content: '✦';
+    margin-right: 1rem;
+    opacity: 0.7;
+  }
+
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  .section {
+    padding: 5rem 2.5rem;
+    background: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .section.light {
+    background: var(--light);
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-tag {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+  }
+
+  .section-title em {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .section-desc {
+    font-size: 1rem;
+    color: var(--text-light);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* CATEGORIES */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .category-card {
+    background: white;
+    border: 2px solid var(--border);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .category-card:hover,
+  .category-card.active {
+    border-color: var(--primary);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, rgba(232, 180, 184, 0.1), rgba(168, 213, 186, 0.1));
+  }
+
+  .category-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .category-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .category-desc {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+  }
+
+  /* PRODUCTS */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .product-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: var(--transition);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+  }
+
+  .product-img {
+    height: 240px;
+    background: linear-gradient(135deg, rgba(232, 180, 184, 0.1), rgba(168, 213, 186, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--accent);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .product-info {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-category {
+    font-size: 0.8rem;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .product-desc {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    flex: 1;
+    margin-bottom: 1rem;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .btn-add {
+    background: linear-gradient(135deg, var(--primary), #F5D5DA);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+
+  .btn-add:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* WHY US */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .why-card {
+    padding: 2rem;
+    background: white;
+    border-left: 4px solid var(--primary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+  }
+
+  .why-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .why-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .why-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+  }
+
+  .why-text {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.8;
+  }
+
+  /* PAYMENT */
+  .payment-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+
+  .payment-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    transition: var(--transition);
+  }
+
+  .payment-card:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .payment-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .payment-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .payment-method {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .payment-info {
+    background: linear-gradient(135deg, rgba(232, 180, 184, 0.05), rgba(168, 213, 186, 0.05));
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
+  .payment-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .payment-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .whatsapp-btn {
+    background: var(--success);
+    color: white;
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: var(--transition);
+    margin-top: 1rem;
+  }
+
+  .whatsapp-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  @media (max-width: 768px) {
+    .payment-section {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark);
+    color: white;
+    padding: 3rem 2.5rem;
+    text-align: center;
+    border-top: 2px solid var(--accent);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-logo span {
+    color: var(--accent);
+  }
+
+  .footer-text {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.5rem;
+  }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-header {
+    position: relative;
+    padding: 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .modal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: var(--transition);
+  }
+
+  .modal-close:hover {
+    color: var(--dark);
+  }
+
+  .modal-body {
+    padding: 2rem;
+  }
+
+  .modal-img {
+    width: 100%;
+    height: 300px;
+    background: linear-gradient(135deg, rgba(232, 180, 184, 0.1), rgba(168, 213, 186, 0.1));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 1rem 0;
+  }
+
+  .modal-desc {
+    color: var(--text-light);
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+
+  .qty-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .qty-btn {
+    background: var(--light);
+    border: 1px solid var(--border);
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+  }
+
+  .qty-btn:hover {
+    background: var(--primary);
+    color: white;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .modal-actions .btn {
+    flex: 1;
+  }
+
+  /* CART BAR */
+  .cart-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--primary), #F5D5DA);
+    padding: 1rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 150;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .cart-bar.visible {
+    display: flex;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .cart-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+  }
+
+  .cart-total {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  /* ADMIN */
+  .admin-mode-badge {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: var(--accent);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 110;
+    box-shadow: var(--shadow-md);
+  }
+
+  .admin-mode .admin-mode-badge {
+    display: block;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .section {
+      padding: 3rem 1.5rem;
+    }
+
+    .categories-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .modal {
+      width: 95%;
+      max-height: 95vh;
+    }
+
+    .why-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+
+  /* LOADER */
+  .loader {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(232, 180, 184, 0.2);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>
 </head>
 <body>
 
-<!-- GLOBAL 3D BACKGROUND -->
-<canvas id="globalBg" style="position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;"></canvas>
-
-<!-- NAV -->
+<!-- NAVIGATION -->
 <nav>
-  <div class="logo-3d-wrap">
-    <div id="siteTitle"
-      onmouseover="this.style.textShadow='none';this.style.letterSpacing='6px'"
-      onmouseout="this.style.textShadow=titleShadow;this.style.letterSpacing='3px'"
-      style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;font-style:italic;color:white;cursor:pointer;letter-spacing:3px;text-transform:uppercase;transition:all 0.2s ease;"
-      onclick="location.href='#'">
-      BÈL AYITI MARKET
-    </div>
-  </div>
+  <div class="logo">Bèl<span>Ayiti</span> Market</div>
   <ul class="nav-links">
     <li><a href="#categories">Catégories</a></li>
     <li><a href="#produits">Produits</a></li>
-    <li><a href="#commande">Commander</a></li>
+    <li><a href="#paiement">Paiement</a></li>
   </ul>
-  <button class="admin-btn" onclick="toggleAdmin(event)">⚙ Admin</button>
+  <button class="admin-btn" onclick="toggleAdmin()">⚙ Admin</button>
 </nav>
 
 <div class="admin-mode-badge">MODE ADMIN ACTIF</div>
 
 <!-- HERO -->
-<section class="hero" id="heroSection">
-  <div class="hero-bg" style="z-index:1;"></div>
-  <div class="flag-stripes" style="z-index:1;"><div class="stripe-blue"></div><div class="stripe-red"></div></div>
-
-  <div style="position:relative;z-index:2;display:flex;align-items:center;width:100%;gap:32px;flex-wrap:wrap;">
-    <div class="hero-content" style="flex:1;min-width:280px;">
-      <div class="hero-eyebrow">Fièt pou Ayiti</div>
-      <h1>
-        <span class="sub">Le meilleur de</span>
-        <span class="highlight">Haïti</span>
-        livré chez toi
-      </h1>
-      <p class="hero-desc">Produits locaux authentiques — kepi, maillot, pantalon, robe ak plis. Kalite haïtienne, bon pri, livrezon rapid.</p>
-      <div class="hero-btns">
-        <a href="#produits" class="btn-primary">Voir les produits</a>
-        <a href="#commande" class="btn-secondary">Commander WhatsApp</a>
+<section class="hero">
+  <div class="hero-content fade-in">
+    <div class="hero-tag">Fièt pou Ayiti 🇭🇹</div>
+    <h1>Le Meilleur de <em>Haïti</em> Livré Chez Toi</h1>
+    <p class="hero-desc">Découvrez nos produits 100% haïtiens: qualité, artisanat et tradition. Soutien direct aux familles et artisans locaux.</p>
+    <div class="hero-btns">
+      <a href="#produits" class="btn btn-primary">Voir les produits</a>
+      <a href="#paiement" class="btn btn-secondary">Commander maintenant</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">4+</div>
+        <div class="stat-label">Catégories</div>
       </div>
-      <div class="hero-stats">
-        <div><div class="stat-num">4+</div><div class="stat-label">Produits locaux</div></div>
-        <div><div class="stat-num">24h</div><div class="stat-label">Délai livraison</div></div>
-        <div><div class="stat-num">100%</div><div class="stat-label">Haïtien</div></div>
+      <div class="stat">
+        <div class="stat-num">24h</div>
+        <div class="stat-label">Livraison PAP</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Haïtien</div>
       </div>
     </div>
   </div>
@@ -267,579 +1036,253 @@
     <span class="ticker-item">Artisans locaux soutenus</span>
     <span class="ticker-item">Livraison PAP & Cap-Haïtien</span>
     <span class="ticker-item">Paiement MonCash accepté</span>
-    <span class="ticker-item">Produits 100% Haïtiens</span>
-    <span class="ticker-item">Commande via WhatsApp</span>
-    <span class="ticker-item">Artisans locaux soutenus</span>
   </div>
 </div>
 
 <!-- CATEGORIES -->
-<section class="section" id="categories">
-  <div class="section-label">Parcourir</div>
-  <h2 class="section-title">Nos <em>Catégories</em></h2>
+<section class="section light" id="categories">
+  <div class="section-header">
+    <div class="section-tag">Parcourir</div>
+    <h2 class="section-title">Nos <em>Catégories</em></h2>
+  </div>
   <div class="categories-grid" id="catGrid"></div>
 </section>
 
 <!-- PRODUCTS -->
-<section class="products-section" id="produits">
-  <div class="section-label">Notre sélection</div>
-  <h2 class="section-title">Produits <em>Featured</em></h2>
+<section class="section" id="produits">
+  <div class="section-header">
+    <div class="section-tag">Notre sélection</div>
+    <h2 class="section-title">Produits <em>Featured</em></h2>
+  </div>
   <div class="products-grid" id="productsGrid"></div>
 </section>
 
-<!-- WHY -->
-<section class="why-section">
-  <div class="section-label">Pourquoi nous</div>
-  <h2 class="section-title">Acheter <em>Local</em></h2>
+<!-- WHY US -->
+<section class="section light">
+  <div class="section-header">
+    <div class="section-tag">Pourquoi nous</div>
+    <h2 class="section-title">Acheter <em>Local</em></h2>
+  </div>
   <div class="why-grid">
-    <div class="why-card"><div class="why-icon">🤝</div><div class="why-title">Soutenir les artisans</div><div class="why-text">Chaque achat soutient directement des familles haïtiennes et nos artisans locaux.</div></div>
-    <div class="why-card"><div class="why-icon">✅</div><div class="why-title">Qualité garantie</div><div class="why-text">Tous les produits sont vérifiés et sélectionnés avec soin. Satisfait ou remboursé!</div></div>
-    <div class="why-card"><div class="why-icon">🚚</div><div class="why-title">Livraison rapide</div><div class="why-text">24-48h à Port-au-Prince. Disponible aussi à Cap-Haïtien sur commande spéciale.</div></div>
-    <div class="why-card"><div class="why-icon">💳</div><div class="why-title">Paiement facile</div><div class="why-text">MonCash, cash à la livraison ou virement. On s'adapte à toi sans stress.</div></div>
+    <div class="why-card">
+      <div class="why-icon">🤝</div>
+      <div class="why-title">Soutenir les artisans</div>
+      <div class="why-text">Chaque achat soutient directement des familles haïtiennes et nos artisans locaux qui créent avec passion.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">✅</div>
+      <div class="why-title">Qualité garantie</div>
+      <div class="why-text">Tous les produits sont vérifiés et sélectionnés avec soin. Satisfait ou remboursé!</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🚚</div>
+      <div class="why-title">Livraison rapide</div>
+      <div class="why-text">24-48h à Port-au-Prince. Disponible aussi à Cap-Haïtien sur commande spéciale.</div>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">💳</div>
+      <div class="why-title">Paiement facile</div>
+      <div class="why-text">MonCash, cash à la livraison ou virement. On s'adapte à toi sans stress.</div>
+    </div>
   </div>
 </section>
 
 <!-- PAYMENT -->
-<section class="payment-section" id="paiement">
-  <div>
-    <div class="payment-title">Méthodes de <span>Paiement</span></div>
-    <div style="font-size:.83rem;color:rgba(245,240,232,.5);margin-top:7px;">Simple, rapide et sécurisé</div>
+<section class="section" id="paiement">
+  <div class="section-header">
+    <div class="section-tag">Méthodes de paiement</div>
+    <h2 class="section-title">Comment <em>Payer</em></h2>
   </div>
-  <div class="payment-methods">
-    <div class="payment-badge">📱 MonCash</div>
-    <div class="payment-badge">💵 Cash livraison</div>
-    <div class="payment-badge">🏦 Virement local</div>
-    <div class="payment-badge">💬 WhatsApp</div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section" id="commande">
-  <h2>Comment Commander ? 🇭🇹</h2>
-  <p>Choisis ton mode de paiement et contacte-nous — on livre rapid!</p>
-
-  <div style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin:40px 0;position:relative;z-index:2;">
-    <div style="background:rgba(13,13,13,0.85);border:1px solid rgba(212,175,55,0.3);border-radius:12px;padding:32px 28px;width:280px;text-align:center;backdrop-filter:blur(10px);">
-      <div style="font-size:3rem;margin-bottom:12px;">📱</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:1.2rem;letter-spacing:2px;text-transform:uppercase;color:var(--or);margin-bottom:16px;">MonCash</div>
-      <div style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);border-radius:8px;padding:16px;margin-bottom:8px;">
-        <div style="font-size:.72rem;color:rgba(245,240,232,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Numéro</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.6rem;color:white;letter-spacing:3px;">509 3895 4747</div>
+  <div class="payment-section">
+    <div class="payment-card">
+      <div class="payment-icon">📱</div>
+      <div class="payment-title">MonCash</div>
+      <div class="payment-info">
+        <div class="payment-label">Numéro</div>
+        <div class="payment-value">509 3895 4747</div>
       </div>
-      <div style="background:rgba(212,175,55,0.08);border:1px solid rgba(212,175,55,0.2);border-radius:8px;padding:12px;margin-bottom:16px;">
-        <div style="font-size:.72rem;color:rgba(245,240,232,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Nom du compte</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:var(--or);letter-spacing:1px;">MIKE VALENTIN</div>
+      <div class="payment-info">
+        <div class="payment-label">Nom du compte</div>
+        <div class="payment-value">MIKE VALENTIN</div>
       </div>
+      <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 1rem;">Fè peman an epi voye screenshot sou WhatsApp</p>
     </div>
-
-    <div style="background:rgba(13,13,13,0.85);border:1px solid rgba(37,211,102,0.3);border-radius:12px;padding:32px 28px;width:280px;text-align:center;backdrop-filter:blur(10px);">
-      <div style="font-size:3rem;margin-bottom:12px;">💬</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:1.2rem;letter-spacing:2px;text-transform:uppercase;color:#25D366;margin-bottom:16px;">WhatsApp</div>
-      <div style="background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:8px;padding:16px;margin-bottom:8px;">
-        <div style="font-size:.72rem;color:rgba(245,240,232,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Numéro</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.6rem;color:white;letter-spacing:3px;">509 3895 4747</div>
-      </div>
-      <div style="background:rgba(37,211,102,0.08);border:1px solid rgba(37,211,102,0.2);border-radius:8px;padding:12px;margin-bottom:16px;">
-        <div style="font-size:.72rem;color:rgba(245,240,232,.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">Nom</div>
-        <div style="font-family:'Oswald',sans-serif;font-size:1.1rem;color:#25D366;letter-spacing:1px;">MIKE VALENTIN</div>
-      </div>
-      <a href="https://wa.me/50938954747" target="_blank" class="whatsapp-btn">Envoyer message</a>
-    </div>
-  </div>
-
-  <!-- Steps -->
-  <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;position:relative;z-index:2;max-width:700px;margin:0 auto;">
-    <div style="background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.3);border-radius:8px;padding:16px 20px;flex:1;min-width:180px;text-align:left;">
-      <div style="font-family:'Oswald',sans-serif;color:var(--rouge);font-size:1.5rem;margin-bottom:4px;">01</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Choisis</div>
-      <div style="font-size:.78rem;color:rgba(245,240,232,.5);">Sélectionne tes produits et ajoute-les au panier</div>
-    </div>
-    <div style="background:rgba(212,175,55,0.1);border:1px solid rgba(212,175,55,0.3);border-radius:8px;padding:16px 20px;flex:1;min-width:180px;text-align:left;">
-      <div style="font-family:'Oswald',sans-serif;color:var(--or);font-size:1.5rem;margin-bottom:4px;">02</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Paye</div>
-      <div style="font-size:.78rem;color:rgba(245,240,232,.5);">Fè peman via MonCash oswa cash à la livraison</div>
-    </div>
-    <div style="background:rgba(0,32,159,0.1);border:1px solid rgba(0,32,159,0.4);border-radius:8px;padding:16px 20px;flex:1;min-width:180px;text-align:left;">
-      <div style="font-family:'Oswald',sans-serif;color:#4488ff;font-size:1.5rem;margin-bottom:4px;">03</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Reçois</div>
-      <div style="font-size:.78rem;color:rgba(245,240,232,.5);">Livrezon rapid 24-48h Port-au-Prince 🇭🇹</div>
+    <div class="payment-card">
+      <div class="payment-icon">💬</div>
+      <div class="payment-title">WhatsApp</div>
+      <div class="payment-method">509 3895 4747</div>
+      <p style="font-size: 0.9rem; color: var(--text-light); margin: 1rem 0;">Écris le nom de tes produits et on te confirmera le total</p>
+      <a href="https://wa.me/50938954747" target="_blank" class="whatsapp-btn">
+        💬 Envoyer message
+      </a>
     </div>
   </div>
 </section>
 
+<!-- FOOTER -->
 <footer>
   <div class="footer-logo">Bèl<span>Ayiti</span> Market</div>
-  <div class="footer-text">Port-au-Prince, Haïti · Fièt pou Ayiti 🇭🇹</div>
-  <div>🇭🇹</div>
+  <div class="footer-text">Port-au-Prince, Haïti · Fièt pou Ayiti 🇭🇹 · Soutenez l'artisanat haïtien</div>
 </footer>
 
-<!-- MODAL PRODUIT -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModal(event)">
-  <div class="modal">
-    <button class="modal-close" onclick="document.getElementById('modal').classList.remove('open')">✕</button>
-    
-    <div id="modal-media-tabs" style="display:none;position:absolute;top:8px;left:8px;z-index:10;display:flex;gap:6px;">
-      <button id="tab-photo-btn" onclick="showMediaTab('photo')" style="background:rgba(212,175,55,.3);border:1px solid var(--or);color:var(--or);padding:4px 10px;border-radius:3px;font-size:.7rem;font-family:'Oswald',sans-serif;cursor:pointer;">📷 Photo</button>
-      <button id="tab-video-btn" onclick="showMediaTab('video')" style="background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);color:white;padding:4px 10px;border-radius:3px;font-size:.7rem;font-family:'Oswald',sans-serif;cursor:pointer;">▶ Vidéo</button>
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Produit</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-
-    <div class="modal-img" id="modal-img-container">
-      <span class="modal-emoji" id="modal-emoji"></span>
-    </div>
-
-    <div id="modal-video-container" style="display:none;height:240px;background:#000;position:relative;flex-shrink:0;">
-      <video id="modal-video" controls style="width:100%;height:100%;object-fit:contain;" playsinline>
-        <source id="modal-video-src" src="" type="video/mp4">
-      </video>
-    </div>
-
     <div class="modal-body">
-      <div class="modal-cat" id="modal-cat"></div>
-      <h3 id="modal-name"></h3>
-      <div class="modal-price" id="modal-price"></div>
-      <p id="modal-desc"></p>
+      <div class="modal-img" id="modalImg">🛍️</div>
+      <div id="modalCategory" style="color: var(--accent); font-size: 0.9rem; text-transform: uppercase; margin-bottom: 0.5rem;"></div>
+      <div class="modal-price" id="modalPrice">0 HTG</div>
+      <div class="modal-desc" id="modalDesc"></div>
       <div class="qty-selector">
         <button class="qty-btn" onclick="changeQty(-1)">−</button>
-        <div class="qty-num" id="qty-display">1</div>
+        <span style="min-width: 40px; text-align: center;" id="qtyDisplay">1</span>
         <button class="qty-btn" onclick="changeQty(1)">+</button>
       </div>
       <div class="modal-actions">
-        <button class="btn-primary" onclick="addToCartFromModal()">Ajouter au panier</button>
-        <button class="btn-secondary" onclick="orderWhatsApp()">Commander WhatsApp</button>
+        <button class="btn btn-primary" onclick="addToCart()">Ajouter au panier</button>
+        <button class="btn btn-secondary" onclick="orderWhatsApp()">WhatsApp</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- CART BAR -->
-<div class="cart-bar" id="cartBar" onclick="openWhatsAppCart()">
-  <div class="cart-bar-text" id="cartText">🛒 Commander</div>
-  <div class="cart-total" id="cartTotalEl"></div>
+<div class="cart-bar" id="cartBar" onclick="openCart()">
+  <div class="cart-text">🛒 Voir le panier</div>
+  <div class="cart-total" id="cartTotal">0 HTG</div>
 </div>
-
-<!-- ADMIN PANEL -->
-<div class="admin-panel" id="adminPanel">
-  <div class="admin-header">
-    <h4>⚙ Contrôle Admin</h4>
-    <button class="admin-close" onclick="closeAdminPanel()">✕</button>
-  </div>
-  <div style="display:flex;border-bottom:1px solid rgba(212,175,55,.15);flex-shrink:0;">
-    <button class="admin-tab active" id="tab-list"   onclick="switchTab('list')">📦 Stock</button>
-    <button class="admin-tab"        id="tab-add"    onclick="switchTab('add')">➕ Ajouter</button>
-    <button class="admin-tab"        id="tab-export" onclick="switchTab('export')">💾 Exporter</button>
-  </div>
-
-  <div class="admin-scroll" id="view-list">
-    <div class="admin-hint">Modifie prix et stock puis clique 💾 Sauver. Clique 💾 Exporter pour télécharger le site avec TOUTES les vidéos!</div>
-    <div id="adminProductList"></div>
-  </div>
-
-  <div class="admin-scroll" id="view-add" style="display:none;">
-    <div id="form-title" style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;color:var(--or);letter-spacing:2px;margin-bottom:18px;">Nouveau produit</div>
-    <div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="f-name" type="text" placeholder="Ex: Kepi NBA"></div>
-    <div class="form-group"><label class="form-label">Catégorie *</label>
-      <select class="form-input" id="f-cat">
-        <option value="">Choisir...</option>
-        <option>Alimentation</option><option>Artisanat</option>
-        <option>Beauté</option><option>Mode</option><option>Maison</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Prix (HTG) *</label><input class="form-input" id="f-price" type="number" placeholder="2500"></div>
-    <div class="form-group"><label class="form-label">Stock disponible</label><input class="form-input" id="f-stock" type="number" placeholder="10" min="0"></div>
-    <div class="form-group"><label class="form-label">Description</label><textarea class="form-input" id="f-desc" rows="3" placeholder="Décris ton produit..."></textarea></div>
-    <div class="form-group"><label class="form-label">Badge</label>
-      <select class="form-input" id="f-badge">
-        <option value="">Aucun</option>
-        <option value="Nouveau|rouge">Nouveau</option><option value="Bestseller|or">Bestseller</option>
-        <option value="Artisan|or">Artisan</option><option value="Promo|rouge">Promo</option>
-        <option value="Rare|or">Rare</option><option value="Rupture|rouge">Rupture</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Emoji</label><input class="form-input" id="f-emoji" type="text" placeholder="🧢" maxlength="4"></div>
-    <div class="form-group">
-      <label class="form-label">Photo</label>
-      <div id="f-photo-preview" style="width:100%;height:120px;background:var(--noir);border:2px dashed rgba(212,175,55,.3);border-radius:4px;display:flex;align-items:center;justify-content:center;margin-bottom:8px;cursor:pointer;">
-        <span style="color:rgba(245,240,232,.3);font-size:.85rem;">Cliquer pour ajouter</span>
-      </div>
-      <input type="file" id="f-file" accept="image/*" style="display:none" onchange="previewFormPhoto(event)">
-      <button class="admin-upload-btn" onclick="document.getElementById('f-file').click()" style="width:100%;text-align:center;">📷 Choisir photo</button>
-    </div>
-    <input type="hidden" id="f-edit-id" value="">
-    <div style="display:flex;gap:10px;margin-top:8px;">
-      <button onclick="cancelForm()" style="flex:1;background:transparent;border:1px solid rgba(245,240,232,.15);color:rgba(245,240,232,.5);padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;">Annuler</button>
-      <button onclick="saveProduct()" style="flex:2;background:var(--rouge);border:none;color:white;padding:11px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.9rem;letter-spacing:1px;text-transform:uppercase;">Sauver</button>
-    </div>
-  </div>
-
-  <div class="admin-scroll" id="view-export" style="display:none;">
-    <div style="text-align:center;padding:16px 0;">
-      <div style="font-size:3rem;margin-bottom:10px;">💾</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:1rem;text-transform:uppercase;color:var(--or);letter-spacing:2px;margin-bottom:8px;">Sauvegarder le site</div>
-      <div style="font-size:.78rem;color:rgba(245,240,232,.5);margin-bottom:20px;line-height:1.6;">Télécharge le site complet avec TOUS tes changements, photos ET vidéos. Uploade-le sur GitHub.</div>
-      <button onclick="exportSite()" style="background:var(--or);color:var(--noir);border:none;padding:14px;border-radius:4px;font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;font-weight:700;">⬇️ Télécharger index.html</button>
-      <div style="font-size:.7rem;color:rgba(245,240,232,.25);">✅ Photos + Vidéos + Produits + Modifications inclus</div>
-    </div>
-    <div style="border-top:1px solid rgba(212,175,55,.1);padding-top:16px;margin-top:8px;">
-      <div style="font-family:'Oswald',sans-serif;font-size:.85rem;text-transform:uppercase;color:var(--or);letter-spacing:1px;margin-bottom:12px;">📊 Résumé du stock</div>
-      <div id="stockSummary"></div>
-    </div>
-  </div>
-</div>
-
-<input type="file" id="fileInput"  accept="image/*" style="display:none" onchange="handleFileUpload(event)">
-<input type="file" id="videoInput" accept="video/*" style="display:none" onchange="handleVideoUpload(event)">
 
 <script>
-// ─── DATA ───────────────────────────────────────────────
+// DATA
 const CATEGORIES = [
-  {name:'Alimentation', icon:'🌿', sub:'Épices, café, sirop'},
-  {name:'Artisanat',    icon:'🎨', sub:'Sculptures, peintures'},
-  {name:'Beauté',       icon:'🌺', sub:'Huiles, savons naturels'},
-  {name:'Mode',         icon:'👗', sub:'Wòb, chemiz, bijou'},
-  {name:'Maison',       icon:'🏺', sub:'Poterie, vannerie'},
+  {name: 'Alimentation', icon: '🌿', desc: 'Épices & café'},
+  {name: 'Artisanat', icon: '🎨', desc: 'Sculptures & peintures'},
+  {name: 'Beauté', icon: '🌺', desc: 'Huiles naturelles'},
+  {name: 'Mode', icon: '👗', desc: 'Vêtements & accessoires'},
+  {name: 'Maison', icon: '🏺', desc: 'Poterie & vannerie'},
 ];
 
 let products = [
-  {id:1, category:'Mode', name:'Kepi',     desc:'A ba pri, pran kepi paw la!',        price:2500, emoji:'🧢', image:null, video:null},
-  {id:2, category:'Mode', name:'Maillot',  desc:'Pran maillot paw la, bon pri!',      price:2000, emoji:'👕', image:null, video:null},
-  {id:3, category:'Mode', name:'Pantalon', desc:'Pran pantalon paw la, bon kalite!',  price:2000, emoji:'👖', image:null, video:null},
-  {id:4, category:'Mode', name:'Robe Femme', desc:'Robe élégante pou fanm, bèl style ak bon kalite!', price:1500, emoji:'👗', image:null, video:null, badge:'Nouveau', badgeType:'rouge'},
+  {id: 1, category: 'Mode', name: 'Kepi', desc: 'Kepi classique, bon pri!', price: 2500, emoji: '🧢', video: null},
+  {id: 2, category: 'Mode', name: 'Maillot', desc: 'Maillot 100% coton', price: 2000, emoji: '👕', video: null},
+  {id: 3, category: 'Mode', name: 'Pantalon', desc: 'Pantalon comfort', price: 2000, emoji: '👖', video: null},
+  {id: 4, category: 'Mode', name: 'Robe', desc: 'Robe élégante', price: 1500, emoji: '👗', video: null},
 ];
 
 let cart = [];
-let currentProduct = null;
 let currentQty = 1;
+let currentProduct = null;
 let filterCat = '';
 let adminMode = false;
-let pendingUploadId = null;
-let photos = {};
-let videos = {};
-let pendingVideoId = null;
 
-// ─── RENDER CATEGORIES ──────────────────────────────────
+// RENDER CATEGORIES
 function renderCategories() {
   const grid = document.getElementById('catGrid');
-  const all = {name:'', icon:'🇭🇹', sub:'200+ produits', label:'Tout voir'};
-  const cats = [...CATEGORIES, all];
-  grid.innerHTML = cats.map(c => `
-    <div class="cat-card ${filterCat === c.name ? 'active' : ''}" onclick="filterCategory('${c.name}')">
-      <div class="cat-icon">${c.icon}</div>
-      <div class="cat-name">${c.label || c.name}</div>
-      <div class="cat-count">${c.sub}</div>
-    </div>`).join('');
+  grid.innerHTML = CATEGORIES.map(c => `
+    <div class="category-card ${filterCat === c.name ? 'active' : ''}" onclick="filterCategory('${c.name}')">
+      <div class="category-icon">${c.icon}</div>
+      <div class="category-name">${c.name}</div>
+      <div class="category-desc">${c.desc}</div>
+    </div>
+  `).join('');
 }
 
-// ─── RENDER PRODUCTS ────────────────────────────────────
+// RENDER PRODUCTS
 function renderProducts() {
   const grid = document.getElementById('productsGrid');
   const filtered = filterCat ? products.filter(p => p.category === filterCat) : products;
-  grid.innerHTML = filtered.map(p => {
-    const photoUrl = photos[p.id] || p.image || null;
-    const imgContent = photoUrl
-      ? `<img src="${photoUrl}" alt="${p.name}">`
-      : '';
-    const fallback = `<div class="no-photo">${p.emoji}</div>`;
-    return `
-    <div class="product-card" onclick="openProduct(${p.id})">
-      <div class="product-img">
-        ${imgContent}${!photoUrl ? fallback : ''}
-        ${p.badge ? `<div class="product-badge ${p.badgeType==='or'?'or':''}">${p.badge}</div>` : ''}
-        ${videos[p.id] || p.video ? `<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.7);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">▶</div>` : ''}
-        <div class="photo-overlay">
-          <button class="photo-overlay-btn" onclick="event.stopPropagation();triggerUpload(${p.id})">📷 Photo</button>
-          <div class="photo-overlay-text">${photoUrl ? 'Photo ✓' : 'Aucune photo'}</div>
-        </div>
-      </div>
+  grid.innerHTML = filtered.map(p => `
+    <div class="product-card" onclick="openModal(${p.id})">
+      <div class="product-img">${p.emoji}</div>
       <div class="product-info">
         <div class="product-category">${p.category}</div>
         <div class="product-name">${p.name}</div>
         <div class="product-desc">${p.desc}</div>
         <div class="product-footer">
-          <div class="product-price">${p.price} <span>HTG</span></div>
-          <button class="btn-add" onclick="event.stopPropagation();quickAdd(${p.id})">+ Panier</button>
+          <div class="product-price">${p.price} HTG</div>
+          <button class="btn-add" onclick="event.stopPropagation(); quickAdd(${p.id})">+ Panier</button>
         </div>
       </div>
-    </div>`; }).join('');
+    </div>
+  `).join('');
 }
 
-// ─── RENDER ADMIN LIST ───────────────────────────────────
-function renderAdminList() {
-  const list = document.getElementById('adminProductList');
-  if (!list) return;
-  list.innerHTML = products.map(p => {
-    const photoUrl = photos[p.id] || p.image || null;
-    return `
-    <div class="admin-product" style="flex-direction:column;gap:10px;">
-      <div style="display:flex;gap:12px;align-items:center;">
-        <div class="admin-thumb" onclick="triggerUpload(${p.id})" title="Changer photo">
-          ${photoUrl ? `<img src="${photoUrl}" alt="">` : `<div class="thumb-emoji">${p.emoji}</div>`}
-          <div class="thumb-add">📷</div>
-        </div>
-        <div style="flex:1;">
-          <div class="admin-pcat">${p.category}</div>
-          <div class="admin-pname">${p.name}</div>
-        </div>
-      </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <div>
-          <div style="font-size:.65rem;color:var(--or);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Prix HTG</div>
-          <input type="number" id="price-${p.id}" value="${p.price}" style="width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.3);color:var(--ivoire);padding:6px 10px;border-radius:3px;font-size:.9rem;">
-        </div>
-        <div>
-          <div style="font-size:.65rem;color:var(--or);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;">Stock</div>
-          <input type="number" id="stock-${p.id}" value="${p.stock || ''}" placeholder="∞" style="width:100%;background:var(--noir);border:1px solid rgba(212,175,55,.3);color:var(--ivoire);padding:6px 10px;border-radius:3px;font-size:.9rem;">
-        </div>
-      </div>
-
-      <div style="display:flex;gap:6px;flex-wrap:wrap;">
-        <button onclick="saveInlineEdit(${p.id})" style="flex:2;background:var(--or);border:none;color:var(--noir);padding:7px;border-radius:3px;cursor:pointer;font-family:'Oswald',sans-serif;font-size:.8rem;font-weight:700;">💾 Sauver</button>
-        <button onclick="triggerUpload(${p.id})" class="admin-upload-btn">📷</button>
-        <button onclick="triggerVideoUpload(${p.id})" class="admin-upload-btn" style="border-color:rgba(0,150,255,.4);color:#4af;">▶ ${videos[p.id] || p.video ? '✓' : ''}</button>
-      </div>
-    </div>`; }).join('');
-}
-
-// ─── INLINE SAVE ────────────────────────────────────────
-function saveInlineEdit(id) {
-  const p = products.find(x => x.id === id);
-  if (!p) return;
-  p.price = parseInt(document.getElementById('price-'+id).value) || p.price;
-  p.stock = document.getElementById('stock-'+id).value === '' ? undefined : parseInt(document.getElementById('stock-'+id).value);
-  renderProducts();
-  renderAdminList();
-}
-
-// ─── STOCK SUMMARY ───────────────────────────────────────
-function renderStockSummary() {
-  const el = document.getElementById('stockSummary');
-  if (!el) return;
-  el.innerHTML = products.map(p => `
-    <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(245,240,232,.06);">
-      <div style="font-size:.82rem;flex:1;">${p.name}</div>
-      <div style="font-family:'Oswald',sans-serif;font-size:.9rem;color:var(--or);margin:0 12px;">${p.price} HTG</div>
-    </div>`).join('');
-}
-
-// ─── EXPORT SITE (FIX: EMBED VIDEOS!) ────────────────────
-function exportSite() {
-  const btn = event ? event.target : document.querySelector('[onclick="exportSite()"]');
-  
-  // ✅ EMBED VIDEOS + PHOTOS DIRECTLY IN PRODUCTS
-  products.forEach(p => {
-    if (photos[p.id]) p.image = photos[p.id];
-    if (videos[p.id]) p.video = videos[p.id];
-  });
-
-  // Generate products array with embedded media
-  const productsJS = `let products = [\n` + products.map(p => {
-    const img = p.image ? `'${p.image}'` : 'null';
-    const vid = p.video ? `'${p.video}'` : 'null';
-    const stock = p.stock !== undefined ? p.stock : 'undefined';
-    return `  {id:${p.id}, category:${JSON.stringify(p.category)}, name:${JSON.stringify(p.name)}, desc:${JSON.stringify(p.desc||'')}, price:${p.price}, emoji:${JSON.stringify(p.emoji)}, image:${img}, video:${vid}, stock:${stock}, badge:${p.badge ? JSON.stringify(p.badge) : 'null'}, badgeType:${p.badgeType ? JSON.stringify(p.badgeType) : 'null'}}`;
-  }).join(',\n') + `\n];\n`;
-
-  let html = document.documentElement.outerHTML;
-  html = html.replace(/let products = \[[\s\S]*?\];/, productsJS);
-  
-  // Reset in-memory stores for fresh export
-  html = html.replace(/let photos = \{\};/, `let photos = {};\nlet videos = {};`);
-
-  const blob = new Blob([html], {type: 'text/html;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'index.html';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(a.href);
-
-  if (btn) {
-    btn.textContent = '✅ Téléchargé!';
-    btn.style.background = '#25D366';
-    setTimeout(() => {
-      btn.textContent = '⬇️ Télécharger index.html';
-      btn.style.background = 'var(--or)';
-    }, 2500);
-  }
-}
-
-// ─── TABS ────────────────────────────────────────────────
-function switchTab(tab) {
-  ['list','add','export'].forEach(t => {
-    document.getElementById('view-'+t).style.display = tab === t ? 'flex' : 'none';
-    document.getElementById('tab-'+t).classList.toggle('active', tab === t);
-  });
-  if (tab === 'export') renderStockSummary();
-}
-
-// ─── PHOTO UPLOAD ───────────────────────────────────────
-function triggerUpload(id) {
-  pendingUploadId = id;
-  document.getElementById('fileInput').click();
-}
-
-function handleFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    photos[pendingUploadId] = e.target.result;
-    pendingUploadId = null;
-    renderProducts();
-    renderAdminList();
-  };
-  reader.readAsDataURL(file);
-}
-
-// ─── VIDEO UPLOAD ───────────────────────────────────────
-function triggerVideoUpload(id) {
-  pendingVideoId = id;
-  document.getElementById('videoInput').click();
-}
-
-function handleVideoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  if (file.size > 50 * 1024 * 1024) {
-    alert('Vidéo trop grande. Max 50MB.');
-    return;
-  }
-  const reader = new FileReader();
-  reader.onload = e => {
-    videos[pendingVideoId] = e.target.result;
-    pendingVideoId = null;
-    renderProducts();
-    renderAdminList();
-  };
-  reader.readAsDataURL(file);
-}
-
-// ─── SHOW MEDIA TABS ─────────────────────────────────────
-function showMediaTab(tab) {
-  const imgC = document.getElementById('modal-img-container');
-  const vidC = document.getElementById('modal-video-container');
-  const pBtn = document.getElementById('tab-photo-btn');
-  const vBtn = document.getElementById('tab-video-btn');
-  const vid  = document.getElementById('modal-video');
-
-  if (tab === 'photo') {
-    imgC.style.display = 'flex';
-    vidC.style.display = 'none';
-    vid.pause();
-    pBtn.style.background = 'rgba(212,175,55,.3)';
-    vBtn.style.background = 'rgba(0,0,0,.6)';
-  } else {
-    imgC.style.display = 'none';
-    vidC.style.display = 'block';
-    vid.play();
-    vBtn.style.background = 'rgba(212,175,55,.3)';
-    pBtn.style.background = 'rgba(0,0,0,.6)';
-  }
-}
-
-// ─── CATEGORY FILTER ─────────────────────────────────────
+// FILTER
 function filterCategory(cat) {
   filterCat = cat;
   renderCategories();
   renderProducts();
-  document.getElementById('produits').scrollIntoView({behavior:'smooth'});
 }
 
-// ─── OPEN PRODUCT MODAL ──────────────────────────────────
-function openProduct(id) {
+// MODAL
+function openModal(id) {
   const p = products.find(x => x.id === id);
   currentProduct = p;
   currentQty = 1;
-  document.getElementById('modal-cat').textContent = p.category;
-  document.getElementById('modal-name').textContent = p.name;
-  document.getElementById('modal-price').textContent = `${p.price} HTG`;
-  document.getElementById('modal-desc').textContent = p.desc;
-  document.getElementById('qty-display').textContent = 1;
-
-  const photoUrl = photos[id] || p.image;
-  const photoC = document.getElementById('modal-img-container');
-  if (photoUrl) {
-    photoC.innerHTML = `<img src="${photoUrl}" alt="${p.name}">`;
-  } else {
-    photoC.innerHTML = `<span class="modal-emoji">${p.emoji}</span>`;
-  }
-
-  const videoUrl = videos[id] || p.video;
-  const tabs = document.getElementById('modal-media-tabs');
-  if (videoUrl) {
-    tabs.style.display = 'flex';
-    document.getElementById('modal-video-src').src = videoUrl;
-  } else {
-    tabs.style.display = 'none';
-  }
-
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalImg').textContent = p.emoji;
+  document.getElementById('modalCategory').textContent = p.category;
+  document.getElementById('modalPrice').textContent = p.price + ' HTG';
+  document.getElementById('modalDesc').textContent = p.desc;
+  document.getElementById('qtyDisplay').textContent = 1;
   document.getElementById('modal').classList.add('open');
 }
 
 function closeModal(e) {
-  if (e.target.id === 'modal') document.getElementById('modal').classList.remove('open');
+  if (!e || e.target.id === 'modal') {
+    document.getElementById('modal').classList.remove('open');
+  }
 }
 
 function changeQty(delta) {
   currentQty = Math.max(1, currentQty + delta);
-  document.getElementById('qty-display').textContent = currentQty;
+  document.getElementById('qtyDisplay').textContent = currentQty;
 }
 
 function quickAdd(id) {
   const p = products.find(x => x.id === id);
-  if (!p) return;
   cart.push({...p, qty: 1});
-  updateCartBar();
+  updateCart();
 }
 
-function addToCartFromModal() {
+function addToCart() {
   if (!currentProduct) return;
   cart.push({...currentProduct, qty: currentQty});
-  document.getElementById('modal').classList.remove('open');
-  updateCartBar();
+  closeModal();
+  updateCart();
 }
 
-function updateCartBar() {
+function updateCart() {
   const total = cart.reduce((s, item) => s + (item.price * item.qty), 0);
   document.getElementById('cartBar').classList.toggle('visible', cart.length > 0);
-  document.getElementById('cartTotalEl').textContent = `${total.toLocaleString()} HTG`;
+  document.getElementById('cartTotal').textContent = total.toLocaleString() + ' HTG';
 }
 
-function openWhatsAppCart() {
-  const msg = cart.map(i => `${i.qty}x ${i.name} (${i.price} HTG)`).join(' | ');
-  const url = `https://wa.me/50938954747?text=${encodeURIComponent('Bonjou! Vwala kòmand mwen:\\n' + msg)}`;
-  window.open(url, '_blank');
+function openCart() {
+  const msg = cart.map(i => `${i.qty}x ${i.name}`).join(' | ');
+  window.open(`https://wa.me/50938954747?text=${encodeURIComponent('Bonjou! Vwala kòmand mwen: ' + msg)}`, '_blank');
 }
 
 function orderWhatsApp() {
+  if (!currentProduct) return;
   const msg = `${currentQty}x ${currentProduct.name}`;
-  const url = `https://wa.me/50938954747?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+  window.open(`https://wa.me/50938954747?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-// ─── ADMIN ──────────────────────────────────────────────
-function toggleAdmin(e) {
-  e.preventDefault();
-  if (!adminMode) {
-    document.body.classList.add('admin-mode');
-    document.getElementById('adminPanel').classList.add('open');
-    adminMode = true;
-    renderAdminList();
-  } else {
-    closeAdminPanel();
-  }
+// ADMIN
+function toggleAdmin() {
+  adminMode = !adminMode;
+  document.body.classList.toggle('admin-mode');
 }
 
-function closeAdminPanel() {
-  adminMode = false;
-  document.body.classList.remove('admin-mode');
-  document.getElementById('adminPanel').classList.remove('open');
-}
-
-// ─── INIT ───────────────────────────────────────────────
+// INIT
 renderCategories();
 renderProducts();
 </script>
+
 </body>
 </html>
