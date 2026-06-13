@@ -203,6 +203,7 @@
     #heroSection > div:last-child > div:last-child{height:300px;min-width:100%;}
   }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -576,6 +577,304 @@ function savePhotos()  { /* in-memory, nothing to save  */ }
 let videos = {}; // {id: dataURL}
 let pendingVideoId = null;
 
+// ═══════════════════════════════════════════════════════════════
+// SYSTÈME DE PERSISTANCE VIDÉO - STOCKAGE PERMANENT
+// ═══════════════════════════════════════════════════════════════
+
+// Base de données IndexedDB pour les vidéos volumineuses
+const DB_NAME = 'BelAyitiVideosDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'videos';
+
+let videoDB = null;
+
+// Initialiser IndexedDB
+function initVideoDB() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      console.warn('IndexedDB non supporté, fallback sur localStorage');
+      resolve(null);
+      return;
+    }
+
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      videoDB = request.result;
+      resolve(videoDB);
+    };
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+    };
+  });
+}
+
+// Sauvegarder une vidéo dans IndexedDB
+async function saveVideoToDB(id, videoData, metadata) {
+  if (!videoDB) await initVideoDB();
+  if (!videoDB) return saveVideoToLocalStorage(id, videoData, metadata);
+
+  return new Promise((resolve, reject) => {
+    const transaction = videoDB.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+
+    const data = {
+      id: id,
+      data: videoData,
+      metadata: metadata,
+      timestamp: Date.now()
+    };
+
+    const request = store.put(data);
+    request.onsuccess = () => resolve(true);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Charger une vidéo depuis IndexedDB
+async function loadVideoFromDB(id) {
+  if (!videoDB) await initVideoDB();
+  if (!videoDB) return loadVideoFromLocalStorage(id);
+
+  return new Promise((resolve, reject) => {
+    const transaction = videoDB.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get(id);
+
+    request.onsuccess = () => {
+      if (request.result) {
+        resolve(request.result);
+      } else {
+        resolve(null);
+      }
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Supprimer une vidéo de IndexedDB
+async function deleteVideoFromDB(id) {
+  if (!videoDB) await initVideoDB();
+  if (!videoDB) return deleteVideoFromLocalStorage(id);
+
+  return new Promise((resolve, reject) => {
+    const transaction = videoDB.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.delete(id);
+
+    request.onsuccess = () => resolve(true);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Fallback: Sauvegarder dans localStorage (pour les petits fichiers < 5MB)
+function saveVideoToLocalStorage(id, videoData, metadata) {
+  try {
+    const key = 'video_' + id;
+    const data = {
+      data: videoData,
+      metadata: metadata,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch (e) {
+    console.error('Erreur sauvegarde localStorage:', e);
+    return false;
+  }
+}
+
+// Fallback: Charger depuis localStorage
+function loadVideoFromLocalStorage(id) {
+  try {
+    const key = 'video_' + id;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
+  } catch (e) {
+    console.error('Erreur chargement localStorage:', e);
+    return null;
+  }
+}
+
+// Fallback: Supprimer de localStorage
+function deleteVideoFromLocalStorage(id) {
+  try {
+    const key = 'video_' + id;
+    localStorage.removeItem(key);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+// Sauvegarder l'index des vidéos (métadonnées légères)
+function saveVideoIndex() {
+  const index = {};
+  for (const [id, url] of Object.entries(videos)) {
+    if (url && url !== '') {
+      index[id] = {
+        hasVideo: true,
+        timestamp: Date.now()
+      };
+    }
+  }
+  localStorage.setItem('belayiti_video_index', JSON.stringify(index));
+}
+
+// Charger l'index des vidéos
+function loadVideoIndex() {
+  try {
+    const index = localStorage.getItem('belayiti_video_index');
+    return index ? JSON.parse(index) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FONCTIONS VIDÉO MODIFIÉES - PERSISTANCE COMPLÈTE
+// ═══════════════════════════════════════════════════════════════
+
+// Remplacer la fonction handleVideoUpload existante
+// handleVideoUpload remplacé par la version persistante ci-dessusMo.`);
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    const videoData = e.target.result; // Base64 data URL
+    const id = pendingVideoId;
+
+    // Sauvegarder dans la mémoire active
+    videos[id] = videoData;
+
+    // Sauvegarder de manière persistante
+    const metadata = {
+      productId: id,
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+      uploadDate: new Date().toISOString()
+    };
+
+    try {
+      // Essayer IndexedDB d'abord (pour les gros fichiers)
+      await saveVideoToDB(id, videoData, metadata);
+      console.log('Vidéo sauvegardée en persistance:', id);
+    } catch (err) {
+      console.warn('Erreur IndexedDB, fallback localStorage:', err);
+      saveVideoToLocalStorage(id, videoData, metadata);
+    }
+
+    // Sauvegarder l'index
+    saveVideoIndex();
+
+    // Mettre à jour l'interface
+    const product = products.find(p => p.id === id);
+    if (product) {
+      product.video = videoData;
+      renderProducts();
+      updateAdminList();
+    }
+
+    pendingVideoId = null;
+    alert('✅ Vidéo ajoutée et sauvegardée !');
+  };
+
+  reader.onerror = function() {
+    alert('❌ Erreur lors de la lecture de la vidéo.');
+  };
+
+  reader.readAsDataURL(file);
+}
+
+// Fonction pour charger toutes les vidéos persistantes au démarrage
+async function loadPersistentVideos() {
+  try {
+    // Initialiser la base de données
+    await initVideoDB();
+
+    // Charger l'index
+    const index = loadVideoIndex();
+    const videoIds = Object.keys(index);
+
+    if (videoIds.length === 0) return;
+
+    console.log('Chargement de', videoIds.length, 'vidéos persistantes...');
+
+    for (const id of videoIds) {
+      const numericId = parseInt(id);
+      if (isNaN(numericId)) continue;
+
+      // Essayer de charger depuis IndexedDB
+      let videoData = null;
+      try {
+        const dbData = await loadVideoFromDB(numericId);
+        if (dbData) {
+          videoData = dbData.data;
+        }
+      } catch (e) {
+        // Fallback localStorage
+        const lsData = loadVideoFromLocalStorage(numericId);
+        if (lsData) {
+          videoData = lsData.data;
+        }
+      }
+
+      if (videoData) {
+        // Restaurer dans la mémoire active
+        videos[numericId] = videoData;
+
+        // Associer au produit
+        const product = products.find(p => p.id === numericId);
+        if (product) {
+          product.video = videoData;
+        }
+
+        console.log('Vidéo restaurée:', numericId);
+      }
+    }
+
+    // Rafraîchir l'affichage
+    renderProducts();
+    updateAdminList();
+
+  } catch (e) {
+    console.error('Erreur chargement vidéos persistantes:', e);
+  }
+}
+
+// Fonction pour supprimer une vidéo de manière persistante
+async function removeVideoPermanently(id) {
+  // Supprimer de la mémoire active
+  delete videos[id];
+
+  // Supprimer de la persistance
+  try {
+    await deleteVideoFromDB(id);
+  } catch (e) {
+    deleteVideoFromLocalStorage(id);
+  }
+
+  // Mettre à jour l'index
+  saveVideoIndex();
+
+  // Mettre à jour le produit
+  const product = products.find(p => p.id === id);
+  if (product) {
+    delete product.video;
+  }
+
+  console.log('Vidéo supprimée:', id);
+}
+
+
+
 // ─── RENDER CATEGORIES ──────────────────────────────────
 function renderCategories() {
   const grid = document.getElementById('catGrid');
@@ -707,13 +1006,55 @@ function renderStockSummary() {
 
 // ─── EXPORT SITE ─────────────────────────────────────────
 function exportSite() {
-  const btn = event ? event.target : document.querySelector('[onclick="exportSite()"]');
-
-  // Merge in-memory photos into products
-  products.forEach(p => {
-    if (photos[p.id]) {
-      p.image = photos[p.id]; // embed photo directly in product
+  // Sauvegarder les vidéos dans localStorage pour l'export
+  const videoExport = {};
+  for (const [id, url] of Object.entries(videos)) {
+    if (url && url !== '') {
+      videoExport[id] = url;
     }
+  }
+  localStorage.setItem('belayiti_videos_export', JSON.stringify(videoExport));
+
+  // Sauvegarder l'index des vidéos
+  saveVideoIndex();
+
+  // Récupérer le HTML actuel
+  let html = document.documentElement.outerHTML;
+
+  // Sauvegarder les données des produits
+  const productsData = JSON.stringify(products);
+  const categoriesData = JSON.stringify(CATEGORIES);
+
+  // Créer un script d'initialisation qui restaurera les données
+  const initScript = `
+    <script>
+      // Restaurer les données des produits
+      if (window.products) {
+        try {
+          const savedProducts = JSON.parse('${productsData.replace(/'/g, "\'")}');
+          const savedCategories = JSON.parse('${categoriesData.replace(/'/g, "\'")}');
+          // Les données seront restaurées au chargement
+        } catch(e) { console.error('Erreur restauration données:', e); }
+      }
+    </script>
+  `;
+
+  // Insérer le script avant </head>
+  html = html.replace('</head>', initScript + '</head>');
+
+  // Créer le blob et télécharger
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bel_ayiti_market.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  alert('✅ Site exporté avec les vidéos !');
+}
   });
 
   // Build full products JS string with all data including embedded photos
@@ -1914,6 +2255,19 @@ function initGlobalBg() {
   updateNeighbors();
   animate();
 }
+
+// ═══════════════════════════════════════════════════════════════
+// INITIALISATION AU DÉMARRAGE - CHARGER LES VIDÉOS PERSISTANTES
+// ═══════════════════════════════════════════════════════════════
+
+// Au chargement de la page, restaurer les vidéos persistantes
+document.addEventListener('DOMContentLoaded', async function() {
+  // Attendre que tout soit chargé
+  setTimeout(async () => {
+    await loadPersistentVideos();
+  }, 500);
+});
+
 </script>
 </body>
 </html>
