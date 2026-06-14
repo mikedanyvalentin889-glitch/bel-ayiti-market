@@ -3,9 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BEL AYITI — Pieces Mecaniques & Boutique</title>
+<title>BEL AYITI — Pieces Mecaniques Premium</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,16 +12,11 @@
 tailwind.config = {
   theme: {
     extend: {
-      fontFamily: {
-        sans: ['Inter','sans-serif'],
-        display: ['Space Grotesk','sans-serif'],
-      },
+      fontFamily: { sans: ['Inter','sans-serif'], display: ['Space Grotesk','sans-serif'] },
       colors: {
-        bel: {
-          black:'#0a0a0a', dark:'#111111', charcoal:'#1a1a1a', gray:'#2a2a2a',
-          light:'#888888', white:'#ffffff', accent:'#ff6b35', gold:'#d4af37', teal:'#00d4aa',
-          red:'#ff3333', green:'#00d4aa', mech:'#e85d04', steel:'#a8a8a8'
-        }
+        bel: { black:'#050505', dark:'#0a0a0a', charcoal:'#111111', gray:'#1a1a1a',
+          light:'#888888', white:'#ffffff', accent:'#ff4d00', gold:'#d4af37', teal:'#00d4aa',
+          red:'#ff3333', mech:'#e85d04', steel:'#a8a8a8' }
       }
     }
   }
@@ -30,1025 +24,652 @@ tailwind.config = {
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0a;color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:#0a0a0a}
-::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#ff6b35}
+html{scroll-behavior:smooth}
+body{background:#050505;color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden}
 
-.admin-modal {position:fixed;inset:0;z-index:99999;background:rgba(10,10,10,0.95);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
-.admin-modal.active {opacity:1;pointer-events:all;}
-.admin-panel {position:fixed;top:0;right:0;width:100%;max-width:600px;height:100vh;background:#111;border-left:1px solid #2a2a2a;z-index:99998;transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);overflow-y:auto;}
-.admin-panel.active {transform:translateX(0);}
-.admin-overlay {position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99997;opacity:0;pointer-events:none;transition:opacity 0.3s ease;}
-.admin-overlay.active {opacity:1;pointer-events:all;}
+/* Animated Mesh Background */
+.mesh-bg {position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;}
+.mesh-bg::before {content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle, rgba(255,77,0,0.12) 0%, transparent 70%);top:-200px;left:-100px;animation:float1 20s ease-in-out infinite;}
+.mesh-bg::after {content:'';position:absolute;width:500px;height:500px;background:radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%);bottom:-100px;right:-100px;animation:float2 25s ease-in-out infinite;}
+@keyframes float1 {0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(100px,50px) scale(1.2);}66%{transform:translate(-50px,100px) scale(0.9);}}
+@keyframes float2 {0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-100px,-80px) scale(1.3);}}
 
-.noise-overlay {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");}
-#hero-canvas {position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
-.magnetic-btn {position:relative;display:inline-flex;align-items:center;justify-content:center;transition:transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);}
-.marquee-track {display:flex;animation:marquee 30s linear infinite;}
-.marquee-track:hover {animation-play-state:paused;}
+/* Glassmorphism */
+.glass {background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.08);}
+.glass-strong {background:rgba(255,255,255,0.05);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.1);}
+
+/* Noise */
+.noise {position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* Gradient Text */
+.gradient-text {background:linear-gradient(135deg, #ff4d00 0%, #ff8c00 30%, #d4af37 60%, #00d4aa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.gradient-text-alt {background:linear-gradient(90deg, #ff4d00, #ff8c00, #d4af37);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+/* Glow */
+.glow-orange {box-shadow:0 0 40px rgba(255,77,0,0.3), 0 0 80px rgba(255,77,0,0.1);}
+.glow-teal {box-shadow:0 0 40px rgba(0,212,170,0.3), 0 0 80px rgba(0,212,170,0.1);}
+.glow-gold {box-shadow:0 0 40px rgba(212,175,55,0.3), 0 0 80px rgba(212,175,55,0.1);}
+.text-glow {text-shadow:0 0 30px rgba(255,77,0,0.5);}
+
+/* Magnetic Button */
+.magnetic-btn {position:relative;display:inline-flex;align-items:center;justify-content:center;transition:all 0.4s cubic-bezier(0.23, 1, 0.32, 1);overflow:hidden;}
+.magnetic-btn::before {content:'';position:absolute;inset:0;background:linear-gradient(135deg, #ff4d00, #ff8c00);opacity:0;transition:opacity 0.4s ease;z-index:0;}
+.magnetic-btn:hover::before {opacity:1;}
+.magnetic-btn:hover {transform:translateY(-2px);box-shadow:0 10px 40px rgba(255,77,0,0.4);}
+.magnetic-btn span {position:relative;z-index:1;}
+
+/* Marquee */
+.marquee-container {overflow:hidden;white-space:nowrap;}
+.marquee-content {display:inline-block;animation:marquee 40s linear infinite;}
 @keyframes marquee {0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-.gradient-text {background:linear-gradient(135deg, #ff6b35 0%, #d4af37 50%, #00d4aa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.viewer-3d {position:relative;width:100%;height:500px;background:radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);border-radius:16px;overflow:hidden;}
-@keyframes float {0%,100%{transform:translateY(0px);}50%{transform:translateY(-20px);}}
-.floating {animation:float 6s ease-in-out infinite;}
-.nav-blur {backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10, 10, 10, 0.8);}
-.cat-pill {transition:all 0.3s ease;cursor:pointer;}
-.cat-pill:hover, .cat-pill.active {background:#ff6b35;color:#0a0a0a;transform:scale(1.05);}
-@keyframes pulse-ring {0%{transform:scale(0.8);opacity:1;}100%{transform:scale(2);opacity:0;}}
-.pulse-ring::before {content:'';position:absolute;inset:-4px;border:2px solid #ff6b35;border-radius:50%;animation:pulse-ring 2s ease-out infinite;}
-.custom-cursor {width:20px;height:20px;border:2px solid #ff6b35;border-radius:50%;position:fixed;pointer-events:none;z-index:10000;transition:transform 0.15s ease-out, width 0.2s, height 0.2s;mix-blend-mode:difference;}
-.custom-cursor.hover {width:50px;height:50px;border-color:#00d4aa;background:rgba(0, 212, 170, 0.1);}
-.product-card {transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);}
-.product-card:hover {transform:translateY(-10px) rotateX(5deg);}
-@keyframes bounce-in {0%{transform:scale(0);}50%{transform:scale(1.3);}100%{transform:scale(1);}}
-.bounce-in {animation:bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);}
-.reveal-section {opacity:0;transform:translateY(60px);}
-.admin-input {background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px 16px;color:#fff;width:100%;transition:all 0.3s ease;outline:none;}
-.admin-input:focus {border-color:#ff6b35;box-shadow:0 0 0 3px rgba(255,107,53,0.1);}
-.admin-input::placeholder {color:#888;}
-.admin-btn {background:linear-gradient(135deg, #ff6b35, #d4af37);border:none;border-radius:8px;padding:12px 24px;color:#0a0a0a;font-weight:700;cursor:pointer;transition:all 0.3s ease;}
-.admin-btn:hover {transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,107,53,0.3);}
-.admin-btn-danger {background:#ff3333;color:#fff;}
-.admin-btn-secondary {background:#2a2a2a;color:#fff;}
-.admin-table {width:100%;border-collapse:collapse;}
-.admin-table th {text-align:left;padding:12px;color:#888;font-size:12px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #2a2a2a;}
-.admin-table td {padding:12px;border-bottom:1px solid #1a1a1a;}
-.admin-table tr:hover td {background:#1a1a1a;}
-.admin-badge {display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
 
-.product-img-container {position:relative;width:100%;height:220px;overflow:hidden;border-radius:12px 12px 0 0;}
-.product-img-container img {width:100%;height:100%;object-fit:cover;transition:transform 0.6s ease;}
-.product-card:hover .product-img-container img {transform:scale(1.08);}
-.product-3d-overlay {position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 0.4s ease;}
-.product-card:hover .product-3d-overlay {opacity:1;}
-.mech-badge {position:absolute;top:12px;left:12px;background:linear-gradient(135deg, #e85d04, #ff6b35);color:#fff;font-size:10px;font-weight:800;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;z-index:10;}
-.mech-badge-3d {position:absolute;top:12px;right:12px;background:rgba(10,10,10,0.7);backdrop-filter:blur(10px);color:#00d4aa;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:4px;z-index:10;border:1px solid rgba(0,212,170,0.3);}
-.mech-badge-3d svg {width:12px;height:12px;animation:spin3d 2s linear infinite;}
+/* Product Card */
+.product-card {transform-style:preserve-3d;transition:all 0.6s cubic-bezier(0.23, 1, 0.32, 1);}
+.product-card:hover {transform:translateY(-12px) rotateX(2deg);}
+
+/* 3D Photo Rotation */
+.photo-3d-wrap {position:relative;width:100%;height:240px;perspective:1200px;overflow:hidden;border-radius:16px 16px 0 0;}
+.photo-3d-inner {position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);}
+.product-card:hover .photo-3d-inner {animation:photoSpin 5s ease-in-out infinite;}
+@keyframes photoSpin {0%{transform:rotateY(0deg) rotateX(0deg);}25%{transform:rotateY(12deg) rotateX(3deg) scale(1.05);}50%{transform:rotateY(0deg) rotateX(0deg) scale(1.02);}75%{transform:rotateY(-12deg) rotateX(3deg) scale(1.05);}100%{transform:rotateY(0deg) rotateX(0deg);}}
+.photo-3d-inner img {width:100%;height:100%;object-fit:cover;backface-visibility:hidden;transition:transform 0.6s ease;}
+.shine-effect {position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);transition:left 0.8s ease;pointer-events:none;z-index:5;}
+.product-card:hover .shine-effect {left:150%;}
+
+/* Floating */
+.float {animation:float 6s ease-in-out infinite;}
+.float-delay {animation:float 6s ease-in-out infinite 2s;}
+.float-delay-2 {animation:float 6s ease-in-out infinite 4s;}
+@keyframes float {0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+
+/* Scroll Reveal */
+.reveal {opacity:0;transform:translateY(60px);}
+.reveal.active {opacity:1;transform:translateY(0);transition:all 1s cubic-bezier(0.23, 1, 0.32, 1);}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#050505}
+::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#ff4d00}
+
+/* Nav */
+.nav-glass {background:rgba(5,5,5,0.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.05);}
+
+/* Category Pills */
+.cat-pill {transition:all 0.4s cubic-bezier(0.23, 1, 0.32, 1);cursor:pointer;position:relative;overflow:hidden;}
+.cat-pill::before {content:'';position:absolute;inset:0;background:linear-gradient(135deg, #ff4d00, #ff8c00);opacity:0;transition:opacity 0.4s ease;z-index:0;}
+.cat-pill:hover::before, .cat-pill.active::before {opacity:1;}
+.cat-pill:hover, .cat-pill.active {color:#fff;transform:scale(1.05);border-color:transparent;}
+.cat-pill span {position:relative;z-index:1;}
+
+/* Badges */
+.badge-mech {background:linear-gradient(135deg, #e85d04, #ff4d00);color:#fff;font-size:10px;font-weight:800;padding:4px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;z-index:10;box-shadow:0 4px 15px rgba(255,77,0,0.4);}
+.badge-3d {background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);color:#00d4aa;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;display:flex;align-items:center;gap:4px;z-index:10;border:1px solid rgba(0,212,170,0.3);}
+.badge-3d svg {width:12px;height:12px;animation:spin3d 2s linear infinite;}
 @keyframes spin3d {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 
-.mech-section-hero {background:linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a;}
-.mech-grid {display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:24px;}
-@media (min-width:1280px) {.mech-grid {grid-template-columns:repeat(4, 1fr);}}
+/* Hero */
+.hero-section {position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
+.hero-bg-text {position:absolute;font-size:20vw;font-weight:900;opacity:0.03;white-space:nowrap;pointer-events:none;user-select:none;font-family:'Space Grotesk',sans-serif;}
 
-/* 3D Photo Rotation Effect */
-.photo-3d-wrapper {
-  position: relative;
-  width: 100%;
-  height: 220px;
-  perspective: 1000px;
-  overflow: hidden;
-  border-radius: 12px 12px 0 0;
-}
-.photo-3d-inner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-}
-.product-card:hover .photo-3d-inner {
-  animation: photoRotate3D 4s linear infinite;
-}
-@keyframes photoRotate3D {
-  0% { transform: rotateY(0deg); }
-  25% { transform: rotateY(15deg) rotateX(5deg); }
-  50% { transform: rotateY(0deg) rotateX(0deg); }
-  75% { transform: rotateY(-15deg) rotateX(5deg); }
-  100% { transform: rotateY(0deg); }
-}
-.photo-3d-inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  backface-visibility: hidden;
-  transition: transform 0.6s ease;
-}
-.product-card:hover .photo-3d-inner img {
-  transform: scale(1.1);
-}
-.photo-3d-shine {
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.6s ease;
-  pointer-events: none;
-  z-index: 5;
-}
-.product-card:hover .photo-3d-shine {
-  left: 150%;
-  transition: left 0.8s ease;
-}
-.photo-3d-shadow {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40%;
-  background: linear-gradient(to top, rgba(10,10,10,0.8), transparent);
-  pointer-events: none;
-  z-index: 3;
-}
+/* Section Divider */
+.section-divider {height:1px;background:linear-gradient(90deg, transparent, rgba(255,77,0,0.3), rgba(0,212,170,0.3), transparent);}
+
+/* Stat Number */
+.stat-number {font-family:'Space Grotesk',sans-serif;font-weight:700;background:linear-gradient(135deg, #ff4d00, #ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* Admin */
+.admin-input {background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px 18px;color:#fff;width:100%;transition:all 0.3s ease;outline:none;}
+.admin-input:focus {border-color:#ff4d00;box-shadow:0 0 0 4px rgba(255,77,0,0.1);}
+.admin-btn {background:linear-gradient(135deg, #ff4d00, #ff8c00);border:none;border-radius:12px;padding:14px 28px;color:#fff;font-weight:700;cursor:pointer;transition:all 0.3s ease;}
+.admin-btn:hover {transform:translateY(-2px);box-shadow:0 10px 30px rgba(255,77,0,0.3);}
+
+/* Cart */
+.cart-glass {background:rgba(5,5,5,0.95);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);}
+
+/* Toast */
+.toast-enter {transform:translateY(100px) scale(0.9);opacity:0;}
+.toast-enter-active {transform:translateY(0) scale(1);opacity:1;transition:all 0.5s cubic-bezier(0.23, 1, 0.32, 1);}
+
+/* Responsive */
+@media (max-width:768px) {.hero-bg-text{font-size:30vw;} .photo-3d-wrap{height:200px;}}
 </style>
-<base target="_blank">
 <base target="_blank">
 </head>
 <body>
 
-<div class="noise-overlay"></div>
-<div class="custom-cursor" id="cursor"></div>
+<div class="mesh-bg"></div>
+<div class="noise"></div>
 
-<!-- ADMIN LOGIN MODAL -->
-<div class="admin-modal" id="admin-login-modal">
-  <div class="bg-bel-charcoal rounded-2xl p-8 w-full max-w-md mx-4 border border-bel-gray">
+<!-- ADMIN MODAL -->
+<div id="admin-modal" class="fixed inset-0 z-[99999] bg-black/90 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+  <div class="glass-strong rounded-3xl p-10 w-full max-w-md mx-4">
     <div class="text-center mb-8">
-      <div class="w-16 h-16 bg-bel-accent rounded-xl flex items-center justify-center mx-auto mb-4">
-        <svg class="w-8 h-8 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      <div class="w-16 h-16 bg-gradient-to-br from-bel-accent to-bel-gold rounded-2xl flex items-center justify-center mx-auto mb-4 glow-orange">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
       </div>
       <h2 class="font-display font-bold text-2xl">Panneau Admin</h2>
       <p class="text-bel-light text-sm mt-2">Authentification requise</p>
     </div>
     <div class="space-y-4">
-      <div>
-        <label class="block text-sm text-bel-light mb-2">Mot de passe</label>
-        <input type="password" id="admin-password-input" class="admin-input" placeholder="••••••••">
-      </div>
-      <p id="admin-login-error" class="text-bel-red text-sm hidden">Mot de passe incorrect</p>
-      <button class="admin-btn w-full" onclick="checkAdminPassword()">Connexion</button>
+      <input type="password" id="admin-pass" class="admin-input" placeholder="Mot de passe">
+      <p id="admin-error" class="text-red-500 text-sm hidden">Mot de passe incorrect</p>
+      <button class="admin-btn w-full" onclick="checkAdmin()">Connexion</button>
     </div>
   </div>
 </div>
 
-<!-- ADMIN PANEL SIDEBAR -->
-<div class="admin-overlay" id="admin-overlay" onclick="closeAdminPanel()"></div>
-<div class="admin-panel" id="admin-panel">
-  <div class="p-6">
-    <div class="flex items-center justify-between mb-8">
+<!-- ADMIN PANEL -->
+<div id="admin-overlay" class="fixed inset-0 bg-black/60 z-[99997] opacity-0 pointer-events-none transition-opacity" onclick="closeAdmin()"></div>
+<div id="admin-panel" class="fixed top-0 right-0 w-full max-w-xl h-screen cart-glass z-[99998] transform translate-x-full transition-transform duration-500 overflow-y-auto">
+  <div class="p-8">
+    <div class="flex items-center justify-between mb-10">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center">
-          <span class="font-display font-bold text-bel-black text-lg">B</span>
+        <div class="w-12 h-12 bg-gradient-to-br from-bel-accent to-bel-gold rounded-xl flex items-center justify-center glow-orange">
+          <span class="font-display font-bold text-white text-xl">B</span>
         </div>
-        <div>
-          <h2 class="font-display font-bold text-lg">Admin BEL AYITI</h2>
-          <p class="text-xs text-bel-light">Gestion des produits</p>
-        </div>
+        <div><h2 class="font-display font-bold text-xl">Admin BEL AYITI</h2><p class="text-xs text-bel-light">Gestion des produits</p></div>
       </div>
-      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors" onclick="closeAdminPanel()">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
+      <button onclick="closeAdmin()" class="p-2 hover:bg-white/5 rounded-full transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
     </div>
     <div class="grid grid-cols-3 gap-4 mb-8">
-      <div class="bg-bel-dark rounded-xl p-4 text-center">
-        <p class="text-2xl font-display font-bold text-bel-accent" id="admin-count-products">0</p>
-        <p class="text-xs text-bel-light">Produits</p>
-      </div>
-      <div class="bg-bel-dark rounded-xl p-4 text-center">
-        <p class="text-2xl font-display font-bold text-bel-teal" id="admin-count-categories">0</p>
-        <p class="text-xs text-bel-light">Categories</p>
-      </div>
-      <div class="bg-bel-dark rounded-xl p-4 text-center">
-        <p class="text-2xl font-display font-bold text-bel-gold" id="admin-total-value">0€</p>
-        <p class="text-xs text-bel-light">Valeur</p>
-      </div>
+      <div class="glass rounded-2xl p-5 text-center"><p class="text-3xl font-display font-bold stat-number" id="admin-count">0</p><p class="text-xs text-bel-light mt-1">Produits</p></div>
+      <div class="glass rounded-2xl p-5 text-center"><p class="text-3xl font-display font-bold text-bel-teal" id="admin-cats">0</p><p class="text-xs text-bel-light mt-1">Categories</p></div>
+      <div class="glass rounded-2xl p-5 text-center"><p class="text-3xl font-display font-bold text-bel-gold" id="admin-val">0€</p><p class="text-xs text-bel-light mt-1">Valeur</p></div>
     </div>
-    <div class="bg-bel-dark rounded-xl p-6 mb-8">
-      <h3 class="font-display font-bold text-lg mb-4">Ajouter un Produit</h3>
+    <div class="glass rounded-2xl p-6 mb-8">
+      <h3 class="font-display font-bold text-lg mb-6">Ajouter un Produit</h3>
       <div class="space-y-4">
-        <div><label class="block text-sm text-bel-light mb-2">Nom du produit</label><input type="text" id="admin-product-name" class="admin-input" placeholder="Ex: Moteur V-Twin"></div>
+        <input type="text" id="new-name" class="admin-input" placeholder="Nom du produit">
         <div class="grid grid-cols-2 gap-4">
-          <div><label class="block text-sm text-bel-light mb-2">Prix (€)</label><input type="number" id="admin-product-price" class="admin-input" placeholder="2499"></div>
-          <div><label class="block text-sm text-bel-light mb-2">Categorie</label>
-            <select id="admin-product-category" class="admin-input">
-              <option value="mecanique">Mecanique</option><option value="vetement">Vetement</option><option value="accessoire">Accessoire</option><option value="electronique">Electronique</option>
-            </select>
-          </div>
+          <input type="number" id="new-price" class="admin-input" placeholder="Prix (€)">
+          <select id="new-cat" class="admin-input">
+            <option value="moteur">Moteur</option><option value="suspension">Suspension</option><option value="freinage">Freinage</option>
+            <option value="transmission">Transmission</option><option value="refroidissement">Refroidissement</option><option value="electronique">Electronique</option>
+          </select>
         </div>
-        <div><label class="block text-sm text-bel-light mb-2">URL Image</label><input type="text" id="admin-product-image" class="admin-input" placeholder="https://..."></div>
-        <div class="grid grid-cols-2 gap-4">
-          <div><label class="block text-sm text-bel-light mb-2">Badge</label>
-            <select id="admin-product-badge" class="admin-input"><option value="3D">3D</option><option value="New">New</option><option value="Hot">Hot</option><option value="Sale">Sale</option><option value="">Aucun</option></select>
-          </div>
-          <div><label class="block text-sm text-bel-light mb-2">Couleur badge</label>
-            <select id="admin-product-color" class="admin-input"><option value="bel-accent">Orange</option><option value="bel-teal">Teal</option><option value="bel-gold">Gold</option><option value="bel-mech">Mecanique</option></select>
-          </div>
-        </div>
-        <div class="flex gap-3 pt-2">
+        <input type="text" id="new-img" class="admin-input" placeholder="URL Image">
+        <input type="text" id="new-desc" class="admin-input" placeholder="Description">
+        <div class="flex gap-3">
           <button class="admin-btn flex-1" onclick="addProduct()">Ajouter</button>
-          <button class="admin-btn admin-btn-secondary" onclick="clearAdminForm()">Reset</button>
+          <button class="px-6 py-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors" onclick="clearForm()">Reset</button>
         </div>
       </div>
     </div>
-    <div class="bg-bel-dark rounded-xl p-6">
-      <h3 class="font-display font-bold text-lg mb-4">Liste des Produits</h3>
+    <div class="glass rounded-2xl p-6">
+      <h3 class="font-display font-bold text-lg mb-4">Produits</h3>
       <div class="overflow-x-auto">
-        <table class="admin-table">
-          <thead><tr><th>Produit</th><th>Prix</th><th>Cat</th><th>Actions</th></tr></thead>
-          <tbody id="admin-products-list"></tbody>
+        <table class="w-full text-sm">
+          <thead><tr class="text-bel-light border-b border-white/10"><th class="text-left py-3">Produit</th><th class="text-left py-3">Prix</th><th class="text-left py-3">Cat</th><th class="text-right py-3">Actions</th></tr></thead>
+          <tbody id="admin-list"></tbody>
         </table>
       </div>
     </div>
-    <div class="bg-bel-dark rounded-xl p-6 mt-8">
+    <div class="glass rounded-2xl p-6 mt-6">
       <h3 class="font-display font-bold text-lg mb-4">Sauvegarde</h3>
       <div class="flex gap-3">
-        <button class="admin-btn admin-btn-secondary flex-1" onclick="exportProducts()">Exporter JSON</button>
-        <button class="admin-btn admin-btn-secondary flex-1" onclick="document.getElementById('import-file').click()">Importer JSON</button>
-        <input type="file" id="import-file" class="hidden" accept=".json" onchange="importProducts(this)">
+        <button class="px-6 py-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors flex-1" onclick="exportData()">Exporter JSON</button>
+        <button class="px-6 py-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors flex-1" onclick="document.getElementById('import-file').click()">Importer JSON</button>
+        <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(this)">
       </div>
-      <p class="text-xs text-bel-light mt-3">Les donnees sont stockees dans votre navigateur (localStorage).</p>
     </div>
   </div>
 </div>
 
-<!-- MAIN NAVIGATION -->
+<!-- NAVIGATION -->
 <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500">
   <div class="w-full px-6 lg:px-12 py-4 flex items-center justify-between">
-    <a href="#" class="flex items-center gap-2 group">
-      <div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform">
-        <span class="font-display font-bold text-bel-black text-lg">B</span>
+    <a href="#" class="flex items-center gap-3 group">
+      <div class="w-12 h-12 bg-gradient-to-br from-bel-accent to-bel-gold rounded-xl flex items-center justify-center glow-orange transition-transform group-hover:scale-110">
+        <span class="font-display font-bold text-white text-xl">B</span>
       </div>
-      <span class="font-display font-bold text-xl tracking-tight">BEL AYITI</span>
+      <span class="font-display font-bold text-2xl tracking-tight">BEL <span class="gradient-text-alt">AYITI</span></span>
     </a>
     <div class="hidden md:flex items-center gap-8">
-      <a href="#mecanique-hero" class="text-sm font-medium text-bel-accent hover:text-white transition-colors relative group">Mecanique<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-      <a href="#collections" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Collections<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-      <a href="#vetements" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Vetements<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-      <a href="#nouveautes" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Nouveautes<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+      <a href="#mecanique" class="text-sm font-medium text-white/70 hover:text-bel-accent transition-colors relative group">Mecanique<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+      <a href="#collections" class="text-sm font-medium text-white/70 hover:text-white transition-colors relative group">Collections<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+      <a href="#about" class="text-sm font-medium text-white/70 hover:text-white transition-colors relative group">A Propos<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
     </div>
     <div class="flex items-center gap-4">
-      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors" id="search-btn">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      </button>
-      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors relative" id="cart-btn">
+      <button class="p-2.5 hover:bg-white/5 rounded-full transition-colors" id="search-btn"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
+      <button class="p-2.5 hover:bg-white/5 rounded-full transition-colors relative" id="cart-btn">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-        <span class="absolute -top-1 -right-1 w-5 h-5 bg-bel-accent text-bel-black text-xs font-bold rounded-full flex items-center justify-center" id="cart-count">0</span>
+        <span class="absolute -top-1 -right-1 w-5 h-5 bg-bel-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center" id="cart-count">0</span>
       </button>
-      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors text-bel-light hover:text-bel-accent" onclick="openAdminLogin()" title="Admin">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      </button>
-      <button class="md:hidden p-2" id="menu-toggle">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-      </button>
+      <button class="p-2.5 hover:bg-white/5 rounded-full transition-colors text-white/50 hover:text-bel-accent" onclick="openAdmin()" title="Admin"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>
+      <button class="md:hidden p-2" id="menu-toggle"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     </div>
   </div>
 </nav>
 
-<div id="mobile-menu" class="fixed inset-0 z-40 bg-bel-black transform translate-x-full transition-transform duration-500">
+<div id="mobile-menu" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl transform translate-x-full transition-transform duration-500">
   <div class="flex flex-col items-center justify-center h-full gap-8">
-    <a href="#mecanique-hero" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Mecanique</a>
-    <a href="#collections" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Collections</a>
-    <a href="#vetements" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Vetements</a>
-    <a href="#nouveautes" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Nouveautes</a>
+    <a href="#mecanique" class="text-4xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Mecanique</a>
+    <a href="#collections" class="text-4xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Collections</a>
+    <a href="#about" class="text-4xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">A Propos</a>
   </div>
 </div>
 
-<!-- HERO SECTION -->
-<section id="hero" class="relative w-full h-screen overflow-hidden">
-  <canvas id="hero-canvas"></canvas>
-  <div class="absolute inset-0 z-10 flex items-center">
-    <div class="w-full px-6 lg:px-12">
-      <div class="max-w-4xl">
-        <p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4 hero-anim">Nouvelle Collection 2026</p>
-        <h1 class="font-display font-bold text-6xl md:text-8xl lg:text-9xl leading-none mb-6 hero-anim">
-          <span class="block">BEL</span>
-          <span class="block gradient-text">AYITI</span>
-        </h1>
-        <p class="text-bel-light text-lg md:text-xl max-w-xl mb-8 hero-anim">L'excellence haitienne reinventee. Des pieces mecaniques de precision aux vetements d'exception.</p>
-        <div class="flex gap-4 hero-anim">
-          <a href="#mecanique-hero" class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors">Pieces Mecaniques<svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-          <a href="#collections" class="magnetic-btn px-8 py-4 border border-bel-gray text-white font-bold rounded-full hover:bg-bel-charcoal transition-colors flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>Voir la video</a>
-        </div>
+<!-- HERO -->
+<section class="hero-section relative z-10">
+  <div class="hero-bg-text top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">BEL</div>
+  <div class="w-full px-6 lg:px-12 py-32">
+    <div class="max-w-5xl mx-auto text-center">
+      <p class="text-bel-accent font-medium tracking-[0.3em] uppercase text-sm mb-6 reveal">Catalogue 2026</p>
+      <h1 class="font-display font-bold text-6xl md:text-8xl lg:text-9xl leading-[0.9] mb-8 reveal">
+        <span class="block text-glow">PIECES</span>
+        <span class="block gradient-text">MECANIQUES</span>
+      </h1>
+      <p class="text-white/60 text-lg md:text-xl max-w-2xl mx-auto mb-12 reveal">L'excellence haitienne en ingenierie automobile. Des pieces de precision avec visualisation 3D immersive.</p>
+      <div class="flex gap-4 justify-center reveal">
+        <a href="#mecanique" class="magnetic-btn px-8 py-4 bg-bel-accent text-white font-bold rounded-full">
+          <span class="flex items-center gap-2">Explorer<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></span>
+        </a>
+        <a href="#about" class="magnetic-btn px-8 py-4 border border-white/20 text-white font-bold rounded-full hover:bg-white/5">
+          <span class="flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>Voir Video</span>
+        </a>
       </div>
     </div>
   </div>
-  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex flex-col items-center gap-2">
-    <span class="text-xs text-bel-light tracking-widest uppercase">Scroll</span>
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2">
+    <span class="text-xs text-white/40 tracking-widest uppercase">Scroll</span>
     <div class="w-px h-12 bg-gradient-to-b from-bel-accent to-transparent"></div>
   </div>
 </section>
 
 <!-- MARQUEE -->
-<section class="py-8 border-y border-bel-gray overflow-hidden bg-bel-dark">
-  <div class="marquee-track whitespace-nowrap">
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">BEL AYITI</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">MECANIQUE</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">PRECISION</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gold">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">INNOVATION</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">BEL AYITI</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">EXCELLENCE</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gold">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">PRECISION</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">INNOVATION</span>
-    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
+<section class="py-6 border-y border-white/5 overflow-hidden relative z-10">
+  <div class="marquee-container">
+    <div class="marquee-content">
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">BEL AYITI</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-accent">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">MECANIQUE</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-teal">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">PRECISION</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-gold">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">INNOVATION</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-accent">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">BEL AYITI</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-teal">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">MECANIQUE</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-gold">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">PRECISION</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-accent">•</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-white/10">INNOVATION</span>
+      <span class="inline-block px-8 text-3xl font-display font-bold text-bel-teal">•</span>
+    </div>
   </div>
 </section>
 
-<!-- ==================== MECANIQUE SECTION - ALL PARTS ==================== -->
-<section id="mecanique-hero" class="py-24 px-6 lg:px-12 mech-section-hero reveal-section">
+<!-- STATS -->
+<section class="py-12 relative z-10">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="glass rounded-2xl p-6 text-center reveal"><p class="text-4xl font-display font-bold stat-number">20+</p><p class="text-sm text-white/50 mt-1">Pieces Mecaniques</p></div>
+      <div class="glass rounded-2xl p-6 text-center reveal"><p class="text-4xl font-display font-bold text-bel-teal">6</p><p class="text-sm text-white/50 mt-1">Categories</p></div>
+      <div class="glass rounded-2xl p-6 text-center reveal"><p class="text-4xl font-display font-bold text-bel-gold">3D</p><p class="text-sm text-white/50 mt-1">Visualisation</p></div>
+      <div class="glass rounded-2xl p-6 text-center reveal"><p class="text-4xl font-display font-bold text-white">2026</p><p class="text-sm text-white/50 mt-1">Collection</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-6xl mx-auto"></div>
+
+<!-- MECANIQUE SECTION -->
+<section id="mecanique" class="py-24 px-6 lg:px-12 relative z-10">
   <div class="max-w-7xl mx-auto">
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
-      <div>
-        <p class="text-bel-mech font-medium tracking-widest uppercase text-sm mb-4">Catalogue Complet</p>
-        <h2 class="font-display font-bold text-4xl md:text-6xl">Pieces<br><span class="gradient-text">Mecaniques</span></h2>
+      <div class="reveal">
+        <p class="text-bel-accent font-medium tracking-[0.3em] uppercase text-sm mb-4">Catalogue Complet</p>
+        <h2 class="font-display font-bold text-4xl md:text-6xl lg:text-7xl">Pieces<br><span class="gradient-text">Mecaniques</span></h2>
       </div>
-      <p class="text-bel-light max-w-md mt-4 md:mt-0">Toutes les pieces mecaniques de precision pour votre vehicule. Photos reelles avec visualisation 3D interactive.</p>
+      <p class="text-white/50 max-w-md mt-4 md:mt-0 reveal">Toutes les pieces mecaniques de precision. Photos reelles avec effet 3D interactif au survol.</p>
     </div>
 
-    <!-- Filter pills for mech -->
-    <div class="flex gap-2 mb-12 overflow-x-auto pb-2">
-      <button class="cat-pill active px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="all" onclick="filterMechByCategory('all')">Toutes les Pieces</button>
-      <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="moteur" onclick="filterMechByCategory('moteur')">Moteur</button>
-      <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="suspension" onclick="filterMechByCategory('suspension')">Suspension</button>
-      <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="freinage" onclick="filterMechByCategory('freinage')">Freinage</button>
-      <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="transmission" onclick="filterMechByCategory('transmission')">Transmission</button>
-      <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="refroidissement" onclick="filterMechByCategory('refroidissement')">Refroidissement</button>
-      <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="electronique-mech" onclick="filterMechByCategory('electronique-mech')">Electronique Moteur</button>
+    <!-- Filter Pills -->
+    <div class="flex gap-3 mb-12 overflow-x-auto pb-2 reveal">
+      <button class="cat-pill active px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="all" onclick="filterMech('all')"><span>Toutes</span></button>
+      <button class="cat-pill px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="moteur" onclick="filterMech('moteur')"><span>Moteur</span></button>
+      <button class="cat-pill px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="suspension" onclick="filterMech('suspension')"><span>Suspension</span></button>
+      <button class="cat-pill px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="freinage" onclick="filterMech('freinage')"><span>Freinage</span></button>
+      <button class="cat-pill px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="transmission" onclick="filterMech('transmission')"><span>Transmission</span></button>
+      <button class="cat-pill px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="refroidissement" onclick="filterMech('refroidissement')"><span>Refroidissement</span></button>
+      <button class="cat-pill px-6 py-3 rounded-full border border-white/10 text-sm font-medium whitespace-nowrap" data-filter="electronique" onclick="filterMech('electronique')"><span>Electronique</span></button>
     </div>
 
-    <!-- MECHANICAL PRODUCTS GRID -->
-    <div class="mech-grid" id="mech-product-grid"></div>
+    <!-- Products Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="mech-grid"></div>
   </div>
 </section>
+
+<div class="section-divider max-w-6xl mx-auto"></div>
 
 <!-- CATEGORIES -->
-<section id="collections" class="py-24 px-6 lg:px-12 reveal-section">
+<section id="collections" class="py-24 px-6 lg:px-12 relative z-10">
   <div class="max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
-      <div>
-        <p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Nos Univers</p>
-        <h2 class="font-display font-bold text-4xl md:text-6xl">Collections<br><span class="gradient-text">Polyvalentes</span></h2>
-      </div>
-      <p class="text-bel-light max-w-md mt-4 md:mt-0">De l'ingenierie mecanique a la mode contemporaine.</p>
+    <div class="text-center mb-16 reveal">
+      <p class="text-bel-accent font-medium tracking-[0.3em] uppercase text-sm mb-4">Nos Univers</p>
+      <h2 class="font-display font-bold text-4xl md:text-6xl">Collections <span class="gradient-text">Polyvalentes</span></h2>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('mecanique')">
-        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-          <div class="w-full h-full flex items-center justify-center">
-            <div class="w-32 h-32 relative">
-              <div class="absolute inset-0 border-4 border-bel-accent/30 rounded-full animate-spin" style="animation-duration:8s"></div>
-              <div class="absolute inset-2 border-4 border-bel-teal/30 rounded-full animate-spin" style="animation-duration:6s;animation-direction:reverse"></div>
-              <div class="absolute inset-4 border-4 border-bel-gold/30 rounded-full animate-spin" style="animation-duration:4s"></div>
-              <div class="absolute inset-0 flex items-center justify-center">
-                <svg class="w-12 h-12 text-bel-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="absolute bottom-0 left-0 p-6 z-20">
-          <h3 class="font-display font-bold text-2xl mb-2">Mecanique</h3>
-          <p class="text-bel-light text-sm mb-4">Pieces de precision</p>
-          <span class="inline-flex items-center text-bel-accent font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-        </div>
-      </div>
-      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('vetement')">
-        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-          <div class="w-full h-full flex items-center justify-center">
-            <svg class="w-24 h-24 text-bel-teal floating" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-          </div>
-        </div>
-        <div class="absolute bottom-0 left-0 p-6 z-20">
-          <h3 class="font-display font-bold text-2xl mb-2">Vetements</h3>
-          <p class="text-bel-light text-sm mb-4">Streetwear premium</p>
-          <span class="inline-flex items-center text-bel-teal font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-        </div>
-      </div>
-      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('accessoire')">
-        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-          <div class="w-full h-full flex items-center justify-center">
-            <svg class="w-24 h-24 text-bel-gold floating" style="animation-delay:2s" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          </div>
-        </div>
-        <div class="absolute bottom-0 left-0 p-6 z-20">
-          <h3 class="font-display font-bold text-2xl mb-2">Accessoires</h3>
-          <p class="text-bel-light text-sm mb-4">Montres, bijoux</p>
-          <span class="inline-flex items-center text-bel-gold font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-        </div>
-      </div>
-      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('electronique')">
-        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-          <div class="w-full h-full flex items-center justify-center">
-            <svg class="w-24 h-24 text-bel-accent floating" style="animation-delay:4s" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          </div>
-        </div>
-        <div class="absolute bottom-0 left-0 p-6 z-20">
-          <h3 class="font-display font-bold text-2xl mb-2">Electronique</h3>
-          <p class="text-bel-light text-sm mb-4">Tech avancee</p>
-          <span class="inline-flex items-center text-bel-accent font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PRODUCT GRID -->
-<section id="vetements" class="py-24 px-6 lg:px-12 bg-bel-dark reveal-section">
-  <div class="max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
-      <div>
-        <p class="text-bel-teal font-medium tracking-widest uppercase text-sm mb-4">Boutique</p>
-        <h2 class="font-display font-bold text-4xl md:text-6xl">Tous nos<br><span class="gradient-text">Produits</span></h2>
-      </div>
-      <div class="flex gap-2 mt-6 md:mt-0 overflow-x-auto pb-2">
-        <button class="cat-pill active px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="all" onclick="filterByCategory('all')">Tous</button>
-        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="mecanique" onclick="filterByCategory('mecanique')">Mecanique</button>
-        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="vetement" onclick="filterByCategory('vetement')">Vetements</button>
-        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="accessoire" onclick="filterByCategory('accessoire')">Accessoires</button>
-        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="electronique" onclick="filterByCategory('electronique')">Electronique</button>
-      </div>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid"></div>
-    <div class="mt-16 text-center">
-      <button class="magnetic-btn px-8 py-4 border border-bel-gray text-white font-bold rounded-full hover:bg-bel-charcoal transition-colors" id="load-more">Charger Plus<svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURED 3D SHOWCASE -->
-<section id="mecanique" class="py-24 px-6 lg:px-12 reveal-section">
-  <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16">
-      <p class="text-bel-gold font-medium tracking-widest uppercase text-sm mb-4">Experience Immersive</p>
-      <h2 class="font-display font-bold text-4xl md:text-6xl mb-6">Explorez en <span class="gradient-text">3D</span></h2>
-      <p class="text-bel-light max-w-2xl mx-auto">Chaque produit BEL AYITI est visualisable en 3D interactive avec auto-rotation.</p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <div class="lg:col-span-2">
-        <div class="viewer-3d h-[600px]" id="showcase-viewer">
-          <canvas id="showcase-canvas"></canvas>
-          <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-            <div class="bg-bel-black/80 backdrop-blur rounded-2xl p-4">
-              <p class="text-sm font-medium mb-2">Controles</p>
-              <div class="flex gap-2">
-                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="zoom-in"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg></button>
-                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="zoom-out"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg></button>
-                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="reset-view"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
-                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="xray-toggle"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-              </div>
-            </div>
-            <div class="bg-bel-black/80 backdrop-blur rounded-2xl p-4">
-              <p class="text-xs text-bel-light mb-1">Rotation</p>
-              <input type="range" min="0" max="360" value="0" class="w-32 accent-bel-accent" id="rotation-slider">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col gap-4">
-        <div class="bg-bel-charcoal rounded-2xl p-6 flex-1">
-          <h3 class="font-display font-bold text-xl mb-4">Produits en Vedette</h3>
-          <div class="space-y-4" id="featured-list"></div>
-        </div>
-        <div class="bg-gradient-to-br from-bel-accent/20 to-bel-teal/20 rounded-2xl p-6 border border-bel-accent/20">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-full bg-bel-accent flex items-center justify-center">
-              <svg class="w-5 h-5 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-            </div>
-            <span class="font-bold">Vue 3D Avancee</span>
-          </div>
-          <p class="text-sm text-bel-light">Tous les produits disposent d'une vue 3D auto-rotative. Cliquez et faites glisser pour controler manuellement.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- VIDEO SECTION -->
-<section id="video" class="py-24 relative overflow-hidden reveal-section">
-  <div class="absolute inset-0 bg-bel-black">
-    <div class="absolute inset-0 bg-gradient-to-r from-bel-black via-transparent to-bel-black z-10"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-transparent to-bel-black z-10"></div>
-  </div>
-  <div class="relative z-20 px-6 lg:px-12">
-    <div class="max-w-7xl mx-auto text-center">
-      <p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Notre Histoire</p>
-      <h2 class="font-display font-bold text-4xl md:text-7xl mb-8">BEL AYITI<br><span class="gradient-text">Depuis 2020</span></h2>
-      <div class="relative max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden bg-bel-charcoal group cursor-pointer">
+      <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer glass reveal" onclick="filterMech('moteur')">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
         <div class="absolute inset-0 flex items-center justify-center">
-          <div class="w-20 h-20 rounded-full bg-bel-accent flex items-center justify-center group-hover:scale-110 transition-transform pulse-ring relative">
-            <svg class="w-8 h-8 text-bel-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <div class="w-24 h-24 relative float">
+            <div class="absolute inset-0 border-2 border-bel-accent/30 rounded-full"></div>
+            <div class="absolute inset-2 border-2 border-bel-teal/30 rounded-full animate-spin" style="animation-duration:10s"></div>
+            <div class="absolute inset-4 border-2 border-bel-gold/30 rounded-full animate-spin" style="animation-duration:6s;animation-direction:reverse"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <svg class="w-10 h-10 text-bel-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
           </div>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-bel-black/80 to-transparent"></div>
-        <div class="absolute bottom-6 left-6">
-          <p class="font-display font-bold text-xl">Documentaire BEL AYITI</p>
-          <p class="text-sm text-bel-light">3:45 • L'excellence haitienne</p>
+        <div class="absolute bottom-0 left-0 p-6 z-20"><h3 class="font-display font-bold text-xl mb-1">Moteur</h3><p class="text-white/50 text-sm">Pieces de precision</p></div>
+      </div>
+      <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer glass reveal" onclick="filterMech('suspension')">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <svg class="w-20 h-20 text-bel-teal float-delay" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20"><h3 class="font-display font-bold text-xl mb-1">Suspension</h3><p class="text-white/50 text-sm">Amortisseurs & Ressorts</p></div>
+      </div>
+      <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer glass reveal" onclick="filterMech('freinage')">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <svg class="w-20 h-20 text-bel-gold float-delay-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20"><h3 class="font-display font-bold text-xl mb-1">Freinage</h3><p class="text-white/50 text-sm">Etriers & Plaquettes</p></div>
+      </div>
+      <div class="group relative h-80 rounded-3xl overflow-hidden cursor-pointer glass reveal" onclick="filterMech('transmission')">
+        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <svg class="w-20 h-20 text-bel-accent float" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20"><h3 class="font-display font-bold text-xl mb-1">Transmission</h3><p class="text-white/50 text-sm">Embrayage & Cardan</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-6xl mx-auto"></div>
+
+<!-- ABOUT -->
+<section id="about" class="py-24 px-6 lg:px-12 relative z-10">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <p class="text-bel-accent font-medium tracking-[0.3em] uppercase text-sm mb-4">Notre Histoire</p>
+        <h2 class="font-display font-bold text-4xl md:text-5xl mb-6">BEL AYITI<br><span class="gradient-text">Depuis 2020</span></h2>
+        <p class="text-white/60 text-lg mb-6">L'excellence haitienne reinventee. Nous selectionnons les meilleures pieces mecaniques avec un service client impeccable et une livraison rapide.</p>
+        <div class="flex gap-4">
+          <div class="glass rounded-2xl p-5 flex-1 text-center"><p class="text-3xl font-display font-bold stat-number">15K+</p><p class="text-xs text-white/50">Clients</p></div>
+          <div class="glass rounded-2xl p-5 flex-1 text-center"><p class="text-3xl font-display font-bold text-bel-teal">99%</p><p class="text-xs text-white/50">Satisfaction</p></div>
+        </div>
+      </div>
+      <div class="relative reveal">
+        <div class="absolute -inset-4 bg-gradient-to-r from-bel-accent/20 to-bel-teal/20 rounded-3xl blur-2xl"></div>
+        <div class="relative glass rounded-3xl overflow-hidden aspect-video flex items-center justify-center cursor-pointer group">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+          <div class="w-20 h-20 rounded-full bg-gradient-to-br from-bel-accent to-bel-gold flex items-center justify-center glow-orange group-hover:scale-110 transition-transform relative z-20">
+            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="absolute bottom-6 left-6 z-20"><p class="font-display font-bold text-lg">Documentaire BEL AYITI</p><p class="text-sm text-white/50">3:45 • L'excellence haitienne</p></div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<div class="section-divider max-w-6xl mx-auto"></div>
 
 <!-- TESTIMONIALS -->
-<section class="py-24 px-6 lg:px-12 bg-bel-dark reveal-section">
+<section class="py-24 px-6 lg:px-12 relative z-10">
   <div class="max-w-7xl mx-auto">
-    <div class="text-center mb-16">
-      <p class="text-bel-teal font-medium tracking-widest uppercase text-sm mb-4">Temoignages</p>
-      <h2 class="font-display font-bold text-4xl md:text-6xl">Ce que disent<br><span class="gradient-text">nos clients</span></h2>
+    <div class="text-center mb-16 reveal">
+      <p class="text-bel-teal font-medium tracking-[0.3em] uppercase text-sm mb-4">Temoignages</p>
+      <h2 class="font-display font-bold text-4xl md:text-6xl">Ce que disent <span class="gradient-text">nos clients</span></h2>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <div class="bg-bel-charcoal rounded-2xl p-8 relative">
-        <div class="absolute -top-4 left-8 w-8 h-8 bg-bel-accent rounded-full flex items-center justify-center">
-          <svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="glass rounded-3xl p-8 relative reveal">
+        <div class="absolute -top-4 left-8 w-10 h-10 bg-gradient-to-br from-bel-accent to-bel-gold rounded-full flex items-center justify-center glow-orange">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
         </div>
-        <p class="text-bel-light mb-6 mt-4">"La qualite des pieces mecaniques est exceptionnelle. La visualisation 3D m'a permis de voir exactement ce que j'achetais."</p>
+        <p class="text-white/60 mb-6 mt-4">"La qualite des pieces mecaniques est exceptionnelle. La visualisation 3D m'a permis de voir exactement ce que j'achetais."</p>
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">JD</div>
-          <div><p class="font-bold">Jean Dupont</p><p class="text-sm text-bel-light">Mecanicien Professionnel</p></div>
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-bel-gray to-bel-charcoal flex items-center justify-center font-bold">JD</div>
+          <div><p class="font-bold">Jean Dupont</p><p class="text-sm text-white/50">Mecanicien Pro</p></div>
         </div>
       </div>
-      <div class="bg-bel-charcoal rounded-2xl p-8 relative">
-        <div class="absolute -top-4 left-8 w-8 h-8 bg-bel-teal rounded-full flex items-center justify-center">
-          <svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+      <div class="glass rounded-3xl p-8 relative reveal">
+        <div class="absolute -top-4 left-8 w-10 h-10 bg-gradient-to-br from-bel-teal to-bel-accent rounded-full flex items-center justify-center glow-teal">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
         </div>
-        <p class="text-bel-light mb-6 mt-4">"Les vetements sont incroyables. Le design est unique et la qualite des materiaux est au-dessus de tout ce que j'ai vu."</p>
+        <p class="text-white/60 mb-6 mt-4">"Service client impeccable et livraison rapide. BEL AYITI est devenu ma reference pour tout achat technique."</p>
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">SM</div>
-          <div><p class="font-bold">Sarah Martin</p><p class="text-sm text-bel-light">Directrice Artistique</p></div>
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-bel-gray to-bel-charcoal flex items-center justify-center font-bold">MK</div>
+          <div><p class="font-bold">Marc K.</p><p class="text-sm text-white/50">Entrepreneur</p></div>
         </div>
       </div>
-      <div class="bg-bel-charcoal rounded-2xl p-8 relative">
-        <div class="absolute -top-4 left-8 w-8 h-8 bg-bel-gold rounded-full flex items-center justify-center">
-          <svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+      <div class="glass rounded-3xl p-8 relative reveal">
+        <div class="absolute -top-4 left-8 w-10 h-10 bg-gradient-to-br from-bel-gold to-bel-accent rounded-full flex items-center justify-center glow-gold">
+          <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
         </div>
-        <p class="text-bel-light mb-6 mt-4">"Service client impeccable et livraison rapide. BEL AYITI est devenu ma reference pour tout achat technique et stylistique."</p>
+        <p class="text-white/60 mb-6 mt-4">"Les prix sont competitifs et la qualite est au rendez-vous. Je recommande a 100% pour les professionnels."</p>
         <div class="flex items-center gap-3">
-          <div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">MK</div>
-          <div><p class="font-bold">Marc K.</p><p class="text-sm text-bel-light">Entrepreneur</p></div>
+          <div class="w-12 h-12 rounded-full bg-gradient-to-br from-bel-gray to-bel-charcoal flex items-center justify-center font-bold">SM</div>
+          <div><p class="font-bold">Sarah M.</p><p class="text-sm text-white/50">Garagiste</p></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<div class="section-divider max-w-6xl mx-auto"></div>
+
 <!-- NEWSLETTER -->
-<section class="py-24 px-6 lg:px-12 reveal-section">
+<section class="py-24 px-6 lg:px-12 relative z-10">
   <div class="max-w-4xl mx-auto text-center">
-    <div class="bg-gradient-to-br from-bel-charcoal to-bel-dark rounded-3xl p-12 border border-bel-gray/30 relative overflow-hidden">
+    <div class="glass rounded-3xl p-12 relative overflow-hidden reveal">
       <div class="absolute top-0 right-0 w-64 h-64 bg-bel-accent/10 rounded-full blur-3xl"></div>
       <div class="absolute bottom-0 left-0 w-64 h-64 bg-bel-teal/10 rounded-full blur-3xl"></div>
       <div class="relative z-10">
         <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Rejoignez le <span class="gradient-text">Mouvement</span></h2>
-        <p class="text-bel-light mb-8 max-w-lg mx-auto">Inscrivez-vous pour recevoir en exclusivite nos nouveautes, offres speciales et acces prioritaire aux editions limitees.</p>
+        <p class="text-white/50 mb-8 max-w-lg mx-auto">Inscrivez-vous pour recevoir nos nouveautes et offres speciales.</p>
         <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" onsubmit="handleSubscribe(event)">
-          <input type="email" placeholder="votre@email.com" class="flex-1 px-6 py-4 bg-bel-black border border-bel-gray rounded-full focus:outline-none focus:border-bel-accent text-white placeholder-bel-light" required>
-          <button type="submit" class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors whitespace-nowrap">S'inscrire</button>
+          <input type="email" placeholder="votre@email.com" class="flex-1 px-6 py-4 bg-black/30 border border-white/10 rounded-full focus:outline-none focus:border-bel-accent text-white placeholder-white/30" required>
+          <button type="submit" class="magnetic-btn px-8 py-4 bg-bel-accent text-white font-bold rounded-full"><span>S'inscrire</span></button>
         </form>
-        <p class="text-xs text-bel-light mt-4">En vous inscrivant, vous acceptez notre politique de confidentialite.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- FOOTER -->
-<footer class="bg-bel-black border-t border-bel-gray py-16 px-6 lg:px-12">
+<footer class="border-t border-white/5 py-16 px-6 lg:px-12 relative z-10">
   <div class="max-w-7xl mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
       <div>
-        <div class="flex items-center gap-2 mb-6">
-          <div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center"><span class="font-display font-bold text-bel-black text-lg">B</span></div>
-          <span class="font-display font-bold text-xl">BEL AYITI</span>
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-12 h-12 bg-gradient-to-br from-bel-accent to-bel-gold rounded-xl flex items-center justify-center glow-orange"><span class="font-display font-bold text-white text-xl">B</span></div>
+          <span class="font-display font-bold text-xl">BEL <span class="gradient-text">AYITI</span></span>
         </div>
-        <p class="text-bel-light text-sm mb-6">L'excellence haitienne, reinventee. Des pieces mecaniques de precision aux vetements d'exception.</p>
-        <div class="flex gap-4">
-          <a href="#" class="w-10 h-10 rounded-full bg-bel-charcoal flex items-center justify-center hover:bg-bel-accent hover:text-bel-black transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-          </a>
-          <a href="#" class="w-10 h-10 rounded-full bg-bel-charcoal flex items-center justify-center hover:bg-bel-accent hover:text-bel-black transition-colors">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
+        <p class="text-white/50 text-sm mb-6">L'excellence haitienne, reinventee. Des pieces mecaniques de precision.</p>
+        <div class="flex gap-3">
+          <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-bel-accent transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg></a>
+          <a href="#" class="w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-bel-accent transition-colors"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
         </div>
       </div>
-      <div>
-        <h4 class="font-bold mb-6">Boutique</h4>
-        <ul class="space-y-3 text-sm text-bel-light">
-          <li><a href="#" class="hover:text-white transition-colors">Nouveautes</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Mecanique</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Vetements</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Accessoires</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Editions Limitees</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-bold mb-6">Aide</h4>
-        <ul class="space-y-3 text-sm text-bel-light">
-          <li><a href="#" class="hover:text-white transition-colors">Livraison</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Retours</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Guide des Tailles</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h4 class="font-bold mb-6">Entreprise</h4>
-        <ul class="space-y-3 text-sm text-bel-light">
-          <li><a href="#" class="hover:text-white transition-colors">A Propos</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Carrieres</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Presse</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Durabilite</a></li>
-          <li><a href="#" class="hover:text-white transition-colors">Affilies</a></li>
-        </ul>
-      </div>
+      <div><h4 class="font-bold mb-6">Boutique</h4><ul class="space-y-3 text-sm text-white/50"><li><a href="#" class="hover:text-white transition-colors">Moteur</a></li><li><a href="#" class="hover:text-white transition-colors">Suspension</a></li><li><a href="#" class="hover:text-white transition-colors">Freinage</a></li><li><a href="#" class="hover:text-white transition-colors">Transmission</a></li></ul></div>
+      <div><h4 class="font-bold mb-6">Aide</h4><ul class="space-y-3 text-sm text-white/50"><li><a href="#" class="hover:text-white transition-colors">Livraison</a></li><li><a href="#" class="hover:text-white transition-colors">Retours</a></li><li><a href="#" class="hover:text-white transition-colors">FAQ</a></li><li><a href="#" class="hover:text-white transition-colors">Contact</a></li></ul></div>
+      <div><h4 class="font-bold mb-6">Entreprise</h4><ul class="space-y-3 text-sm text-white/50"><li><a href="#" class="hover:text-white transition-colors">A Propos</a></li><li><a href="#" class="hover:text-white transition-colors">Carrieres</a></li><li><a href="#" class="hover:text-white transition-colors">Presse</a></li></ul></div>
     </div>
-    <div class="border-t border-bel-gray pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-      <p class="text-sm text-bel-light">© 2026 BEL AYITI. Tous droits reserves.</p>
-      <div class="flex gap-6 text-sm text-bel-light">
-        <a href="#" class="hover:text-white transition-colors">Confidentialite</a>
-        <a href="#" class="hover:text-white transition-colors">Conditions</a>
-        <a href="#" class="hover:text-white transition-colors">Cookies</a>
-      </div>
+    <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-sm text-white/40">2026 BEL AYITI. Tous droits reserves.</p>
+      <div class="flex gap-6 text-sm text-white/40"><a href="#" class="hover:text-white transition-colors">Confidentialite</a><a href="#" class="hover:text-white transition-colors">Conditions</a></div>
     </div>
   </div>
 </footer>
 
-<!-- CART SIDEBAR -->
-<div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-bel-black border-l border-bel-gray z-50 transform translate-x-full transition-transform duration-500">
-  <div class="p-6 h-full flex flex-col">
+<!-- CART -->
+<div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 cart-glass border-l border-white/10 z-50 transform translate-x-full transition-transform duration-500">
+  <div class="p-8 h-full flex flex-col">
     <div class="flex items-center justify-between mb-8">
       <h3 class="font-display font-bold text-2xl">Votre Panier</h3>
-      <button id="close-cart" class="p-2 hover:bg-bel-charcoal rounded-full transition-colors">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-      </button>
+      <button id="close-cart" class="p-2 hover:bg-white/5 rounded-full transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
     </div>
-    <div id="cart-items" class="flex-1 overflow-y-auto space-y-4">
-      <p class="text-bel-light text-center py-12">Votre panier est vide</p>
-    </div>
-    <div class="border-t border-bel-gray pt-6 mt-6">
-      <div class="flex justify-between mb-4">
-        <span class="text-bel-light">Sous-total</span>
-        <span class="font-bold" id="cart-total">0 €</span>
-      </div>
-      <button class="w-full py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors">Commander</button>
+    <div id="cart-items" class="flex-1 overflow-y-auto space-y-4"><p class="text-white/50 text-center py-12">Votre panier est vide</p></div>
+    <div class="border-t border-white/10 pt-6 mt-6">
+      <div class="flex justify-between mb-4"><span class="text-white/50">Sous-total</span><span class="font-bold" id="cart-total">0 €</span></div>
+      <button class="w-full py-4 bg-gradient-to-r from-bel-accent to-bel-gold text-white font-bold rounded-full hover:shadow-lg hover:shadow-bel-accent/30 transition-all">Commander</button>
     </div>
   </div>
 </div>
-<div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<div id="cart-overlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none transition-opacity"></div>
 
 <!-- TOAST -->
-<div id="toast" class="fixed bottom-8 right-8 bg-bel-charcoal border border-bel-gray rounded-2xl p-4 flex items-center gap-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-  <div class="w-10 h-10 rounded-full bg-bel-accent flex items-center justify-center">
-    <svg class="w-5 h-5 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+<div id="toast" class="fixed bottom-8 right-8 glass rounded-2xl p-4 flex items-center gap-4 transform translate-y-24 opacity-0 transition-all duration-500 z-50">
+  <div class="w-10 h-10 rounded-full bg-gradient-to-br from-bel-accent to-bel-gold flex items-center justify-center glow-orange">
+    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
   </div>
-  <div>
-    <p class="font-bold text-sm">Ajoute au panier</p>
-    <p class="text-xs text-bel-light" id="toast-message">Produit ajoute avec succes</p>
-  </div>
+  <div><p class="font-bold text-sm">Ajoute au panier</p><p class="text-xs text-white/50" id="toast-msg">Produit ajoute</p></div>
 </div>
 
 <script>
-// ==================== CONFIG ====================
-const ADMIN_PASSWORD = "Dany2004";
-const STORAGE_KEY = "bel_ayiti_products";
-const ADMIN_SESSION_KEY = "bel_ayiti_admin";
+// ==================== DATA ====================
+const ADMIN_PASS = "Dany2004";
+const STORAGE_KEY = "bel_ayiti_v2";
 
-// ==================== MECHANICAL PRODUCTS WITH REAL IMAGES ====================
 const mechProducts = [
-  {
-    id: 101, name: "Moteur V-Twin", price: 2499, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/www.shutterstock.com/34b41b167090408fe1444ffd1bce96d0ee2599f1.jpg",
-    badge: "3D", color: "bel-mech", has3D: true,
-    description: "Moteur V-Twin haute performance, refroidissement par air"
-  },
-  {
-    id: 102, name: "Pompe Hydraulique Delta", price: 459, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/www.axesindustries.com/df27ca4431af00f13913436dbe7feb7d911eb96f.JPG",
-    badge: "Hot", color: "bel-accent", has3D: true,
-    description: "Pompe hydraulique industrielle haute pression"
-  },
-  {
-    id: 103, name: "Compresseur Pro NU-AIR", price: 899, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/cdn1.prozon.com/cfa2ec04f3481282a0242acc2005b3fbc241c95f.jpg",
-    badge: "Sale", color: "bel-teal", has3D: true,
-    description: "Compresseur d'air professionnel 270L, 5.5HP"
-  },
-  {
-    id: 104, name: "Compresseur ABAC Pro", price: 1299, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/www.hidraflex.com/be8dc2640d5952ffb1a2336a06fb1aa5958b713f.jpg",
-    badge: "New", color: "bel-gold", has3D: true,
-    description: "Compresseur professionnel ABAC 270L, haute performance"
-  },
-  {
-    id: 105, name: "Courroie de Distribution", price: 89, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/admin.allure-automobile.com/495e5fb8959e24bb39c8265ac0720eac23c12726.webp",
-    badge: "3D", color: "bel-mech", has3D: true,
-    description: "Kit courroie de distribution complete avec galet tendeur"
-  },
-  {
-    id: 106, name: "Moteur 4 Cylindres", price: 3499, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/admin.allure-automobile.com/cf429b521bedce34273abe31fc894a2470d30cf6.jpg",
-    badge: "3D", color: "bel-accent", has3D: true,
-    description: "Bloc moteur 4 cylindres avec arbre a cames et pistons"
-  },
-  {
-    id: 107, name: "Turbo Compresseur", price: 1599, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/www.europeturbo.fr/e53996e43f927eb070a229013911d0f5c6113c85.jpg",
-    badge: "Hot", color: "bel-gold", has3D: true,
-    description: "Turbo compresseur a haute performance pour moteur essence"
-  },
-  {
-    id: 108, name: "Filtre a Huile Premium", price: 29, category: "moteur", subcategory: "moteur",
-    image: "https://kimi-web-img.moonshot.cn/img/www.lerepairedesmotards.com/84c57923082d79ca643562558fd66cdc0b48c30e.jpg",
-    badge: "New", color: "bel-teal", has3D: true,
-    description: "Lot de filtres a huile haute qualite pour moteur"
-  },
-  {
-    id: 109, name: "Bougie Iridium BOSCH", price: 45, category: "electronique-mech", subcategory: "electronique-mech",
-    image: "https://kimi-web-img.moonshot.cn/img/s1.medias-auto5.be/473e692e9d85a25337f300851fd1593a884a016f.jpg",
-    badge: "3D", color: "bel-mech", has3D: true,
-    description: "Bougie d'allumage iridium BOSCH haute performance"
-  },
-  {
-    id: 110, name: "Injecteur Carburant Diesel", price: 189, category: "electronique-mech", subcategory: "electronique-mech",
-    image: "https://kimi-web-img.moonshot.cn/img/image.made-in-china.com/0b75afde369b5f09d61af25c49fce027e91171d6.webp",
-    badge: "3D", color: "bel-accent", has3D: true,
-    description: "Injecteur carburant diesel rampe commune haute precision"
-  },
-  {
-    id: 111, name: "Injecteur Bosch Common Rail", price: 249, category: "electronique-mech", subcategory: "electronique-mech",
-    image: "https://kimi-web-img.moonshot.cn/img/media.cdn.kaufland.de/240975bb1f7fc3c52d7dda23d92f82f18419985f.webp",
-    badge: "Hot", color: "bel-gold", has3D: true,
-    description: "Injecteur diesel Bosch Common Rail haute performance"
-  },
-  {
-    id: 112, name: "Alternateur 12V 90A", price: 299, category: "electronique-mech", subcategory: "electronique-mech",
-    image: "https://kimi-web-img.moonshot.cn/img/image.made-in-china.com/892a446916d31933c47800efed4250be9cf4e47c.webp",
-    badge: "3D", color: "bel-teal", has3D: true,
-    description: "Alternateur 12V 90A pour vehicules Volkswagen"
-  },
-  {
-    id: 113, name: "Alternateur 24V 35A", price: 399, category: "electronique-mech", subcategory: "electronique-mech",
-    image: "https://kimi-web-img.moonshot.cn/img/image.made-in-china.com/f9461c2171c76775f6d4f271de0f3687321e02bf.webp",
-    badge: "New", color: "bel-mech", has3D: true,
-    description: "Alternateur 24V 35A pour engins de chantier"
-  },
-  {
-    id: 114, name: "Amortisseur Complet", price: 159, category: "suspension", subcategory: "suspension",
-    image: "https://kimi-web-img.moonshot.cn/img/m.media-amazon.com/49c34b4381f7d1c2fe6a06c3cb1993f15f17067b.jpg",
-    badge: "3D", color: "bel-accent", has3D: true,
-    description: "Amortisseur avant complet avec ressort et coupelle"
-  },
-  {
-    id: 115, name: "Ressort de Suspension", price: 79, category: "suspension", subcategory: "suspension",
-    image: "https://kimi-web-img.moonshot.cn/img/www.transmico.com/53d125f55ad49cbe0cfa7cf72fbd67a2ec4da56b.jpg",
-    badge: "Hot", color: "bel-teal", has3D: true,
-    description: "Ressort de suspension renforce pour sport"
-  },
-  {
-    id: 116, name: "Embrayage Complet", price: 349, category: "transmission", subcategory: "transmission",
-    image: "https://kimi-web-img.moonshot.cn/img/wordpress-content.vroomly.com/af03ee6c4e605dca458d7b9f8cd875a64be63698.jpg",
-    badge: "3D", color: "bel-mech", has3D: true,
-    description: "Kit embrayage complet avec disque et mecanisme"
-  },
-  {
-    id: 117, name: "Cardan de Transmission", price: 199, category: "transmission", subcategory: "transmission",
-    image: "https://kimi-web-img.moonshot.cn/img/dam-static.mister-auto.com/bb67a886c76b167c9e3114a7afd92c9be8f6df77.png",
-    badge: "3D", color: "bel-accent", has3D: true,
-    description: "Cardan de transmission avec soufflet de protection"
-  },
-  {
-    id: 118, name: "Radiateur Aluminium", price: 279, category: "refroidissement", subcategory: "refroidissement",
-    image: "https://kimi-web-img.moonshot.cn/img/retrocarconcept.fr/be026f94187e611547514b956eb6eb614aac03b6.jpg",
-    badge: "New", color: "bel-teal", has3D: true,
-    description: "Radiateur tout aluminium grand volume haute performance"
-  },
-  {
-    id: 119, name: "Catalyseur Echappement", price: 599, category: "refroidissement", subcategory: "refroidissement",
-    image: "https://kimi-web-img.moonshot.cn/img/img-4.linternaute.com/ea135d84999becce92344b83144b8f5e7072cc32.jpg",
-    badge: "3D", color: "bel-gold", has3D: true,
-    description: "Catalyseur d'echappement homologue haute performance"
-  },
-  {
-    id: 120, name: "Etrier de Frein AP Racing", price: 499, category: "freinage", subcategory: "freinage",
-    image: "https://kimi-web-img.moonshot.cn/img/www.giefferacing.com/0e628cc8b7ac20824dc51e59953cded54eba39ba.jpg",
-    badge: "Hot", color: "bel-mech", has3D: true,
-    description: "Etrier de frein 4 pistons AP Racing competition"
-  }
-];
-
-// ==================== DEFAULT PRODUCTS (non-mech) ====================
-const defaultProducts = [
-  {id:1,name:"Veste Technique",price:189,category:"vetement",image:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",badge:"New",color:"bel-teal",has3D:true},
-  {id:2,name:"Sneakers Premium",price:229,category:"vetement",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",badge:"Hot",color:"bel-gold",has3D:true},
-  {id:3,name:"Montre Chronographe",price:599,category:"accessoire",image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent",has3D:true},
-  {id:4,name:"T-Shirt Edition",price:59,category:"vetement",image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",badge:"New",color:"bel-teal",has3D:true},
-  {id:5,name:"Lunettes Connectees",price:349,category:"accessoire",image:"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent",has3D:true},
+  {id:101,name:"Moteur V-Twin",price:2499,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/www.shutterstock.com/34b41b167090408fe1444ffd1bce96d0ee2599f1.jpg",badge:"3D",desc:"Moteur V-Twin haute performance, refroidissement par air"},
+  {id:102,name:"Pompe Hydraulique",price:459,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/www.axesindustries.com/df27ca4431af00f13913436dbe7feb7d911eb96f.JPG",badge:"Hot",desc:"Pompe hydraulique industrielle haute pression"},
+  {id:103,name:"Compresseur NU-AIR",price:899,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/cdn1.prozon.com/cfa2ec04f3481282a0242acc2005b3fbc241c95f.jpg",badge:"Sale",desc:"Compresseur d'air professionnel 270L, 5.5HP"},
+  {id:104,name:"Compresseur ABAC",price:1299,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/www.hidraflex.com/be8dc2640d5952ffb1a2336a06fb1aa5958b713f.jpg",badge:"New",desc:"Compresseur professionnel ABAC 270L"},
+  {id:105,name:"Courroie Distribution",price:89,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/admin.allure-automobile.com/495e5fb8959e24bb39c8265ac0720eac23c12726.webp",badge:"3D",desc:"Kit courroie de distribution complete avec galet tendeur"},
+  {id:106,name:"Moteur 4 Cylindres",price:3499,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/admin.allure-automobile.com/cf429b521bedce34273abe31fc894a2470d30cf6.jpg",badge:"3D",desc:"Bloc moteur 4 cylindres avec arbre a cames et pistons"},
+  {id:107,name:"Turbo Compresseur",price:1599,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/www.europeturbo.fr/e53996e43f927eb070a229013911d0f5c6113c85.jpg",badge:"Hot",desc:"Turbo compresseur haute performance pour moteur essence"},
+  {id:108,name:"Filtre Huile Premium",price:29,cat:"moteur",img:"https://kimi-web-img.moonshot.cn/img/www.lerepairedesmotards.com/84c57923082d79ca643562558fd66cdc0b48c30e.jpg",badge:"New",desc:"Lot de filtres a huile haute qualite pour moteur"},
+  {id:109,name:"Bougie Iridium BOSCH",price:45,cat:"electronique",img:"https://kimi-web-img.moonshot.cn/img/s1.medias-auto5.be/473e692e9d85a25337f300851fd1593a884a016f.jpg",badge:"3D",desc:"Bougie d'allumage iridium BOSCH haute performance"},
+  {id:110,name:"Injecteur Diesel",price:189,cat:"electronique",img:"https://kimi-web-img.moonshot.cn/img/image.made-in-china.com/0b75afde369b5f09d61af25c49fce027e91171d6.webp",badge:"3D",desc:"Injecteur carburant diesel rampe commune haute precision"},
+  {id:111,name:"Injecteur Bosch",price:249,cat:"electronique",img:"https://kimi-web-img.moonshot.cn/img/media.cdn.kaufland.de/240975bb1f7fc3c52d7dda23d92f82f18419985f.webp",badge:"Hot",desc:"Injecteur diesel Bosch Common Rail haute performance"},
+  {id:112,name:"Alternateur 12V",price:299,cat:"electronique",img:"https://kimi-web-img.moonshot.cn/img/image.made-in-china.com/892a446916d31933c47800efed4250be9cf4e47c.webp",badge:"3D",desc:"Alternateur 12V 90A pour vehicules Volkswagen"},
+  {id:113,name:"Alternateur 24V",price:399,cat:"electronique",img:"https://kimi-web-img.moonshot.cn/img/image.made-in-china.com/f9461c2171c76775f6d4f271de0f3687321e02bf.webp",badge:"New",desc:"Alternateur 24V 35A pour engins de chantier"},
+  {id:114,name:"Amortisseur Complet",price:159,cat:"suspension",img:"https://kimi-web-img.moonshot.cn/img/m.media-amazon.com/49c34b4381f7d1c2fe6a06c3cb1993f15f17067b.jpg",badge:"3D",desc:"Amortisseur avant complet avec ressort et coupelle"},
+  {id:115,name:"Ressort Suspension",price:79,cat:"suspension",img:"https://kimi-web-img.moonshot.cn/img/www.transmico.com/53d125f55ad49cbe0cfa7cf72fbd67a2ec4da56b.jpg",badge:"Hot",desc:"Ressort de suspension renforce pour sport"},
+  {id:116,name:"Embrayage Complet",price:349,cat:"transmission",img:"https://kimi-web-img.moonshot.cn/img/wordpress-content.vroomly.com/af03ee6c4e605dca458d7b9f8cd875a64be63698.jpg",badge:"3D",desc:"Kit embrayage complet avec disque et mecanisme"},
+  {id:117,name:"Cardan Transmission",price:199,cat:"transmission",img:"https://kimi-web-img.moonshot.cn/img/dam-static.mister-auto.com/bb67a886c76b167c9e3114a7afd92c9be8f6df77.png",badge:"3D",desc:"Cardan de transmission avec soufflet de protection"},
+  {id:118,name:"Radiateur Alu",price:279,cat:"refroidissement",img:"https://kimi-web-img.moonshot.cn/img/retrocarconcept.fr/be026f94187e611547514b956eb6eb614aac03b6.jpg",badge:"New",desc:"Radiateur tout aluminium grand volume haute performance"},
+  {id:119,name:"Catalyseur",price:599,cat:"refroidissement",img:"https://kimi-web-img.moonshot.cn/img/img-4.linternaute.com/ea135d84999becce92344b83144b8f5e7072cc32.jpg",badge:"3D",desc:"Catalyseur d'echappement homologue haute performance"},
+  {id:120,name:"Etrier Frein AP",price:499,cat:"freinage",img:"https://kimi-web-img.moonshot.cn/img/www.giefferacing.com/0e628cc8b7ac20824dc51e59953cded54eba39ba.jpg",badge:"Hot",desc:"Etrier de frein 4 pistons AP Racing competition"}
 ];
 
 let products = [];
 let cart = [];
 let currentFilter = 'all';
-let currentMechFilter = 'all';
-
-
 
 // ==================== LOCALSTORAGE ====================
-function loadProducts() {
+function loadData() {
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
-    try {
-      products = JSON.parse(stored);
-    } catch(e) {
-      products = [...mechProducts, ...defaultProducts];
-      saveProducts();
-    }
-  } else {
-    products = [...mechProducts, ...defaultProducts];
-    saveProducts();
-  }
+    try { products = JSON.parse(stored); } catch(e) { products = [...mechProducts]; saveData(); }
+  } else { products = [...mechProducts]; saveData(); }
 }
+function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)); }
 
-function saveProducts() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-}
-
-// ==================== ADMIN PANEL ====================
-function openAdminLogin() {
-  const modal = document.getElementById('admin-login-modal');
-  modal.classList.add('active');
-  document.getElementById('admin-password-input').value = '';
-  document.getElementById('admin-password-input').focus();
-}
-function closeAdminLogin() {
-  document.getElementById('admin-login-modal').classList.remove('active');
-}
-function checkAdminPassword() {
-  const input = document.getElementById('admin-password-input');
-  const error = document.getElementById('admin-login-error');
-  if (input.value === ADMIN_PASSWORD) {
-    localStorage.setItem(ADMIN_SESSION_KEY, 'true');
-    closeAdminLogin();
+// ==================== ADMIN ====================
+function openAdmin() { document.getElementById('admin-modal').classList.add('active'); document.getElementById('admin-modal').style.opacity = '1'; document.getElementById('admin-modal').style.pointerEvents = 'all'; document.getElementById('admin-pass').value = ''; document.getElementById('admin-pass').focus(); }
+function closeAdminModal() { document.getElementById('admin-modal').classList.remove('active'); document.getElementById('admin-modal').style.opacity = '0'; document.getElementById('admin-modal').style.pointerEvents = 'none'; }
+function checkAdmin() {
+  const input = document.getElementById('admin-pass');
+  const error = document.getElementById('admin-error');
+  if (input.value === ADMIN_PASS) {
+    localStorage.setItem('bel_admin', 'true');
+    closeAdminModal();
     openAdminPanel();
-  } else {
-    error.classList.remove('hidden');
-    input.classList.add('error');
-    setTimeout(() => { input.classList.remove('error'); error.classList.add('hidden'); }, 2000);
-  }
+  } else { error.classList.remove('hidden'); setTimeout(() => error.classList.add('hidden'), 2000); }
 }
-function openAdminPanel() {
-  document.getElementById('admin-panel').classList.add('active');
-  document.getElementById('admin-overlay').classList.add('active');
-  renderAdminProducts();
-  updateAdminStats();
-}
-function closeAdminPanel() {
-  document.getElementById('admin-panel').classList.remove('active');
-  document.getElementById('admin-overlay').classList.remove('active');
-}
-function isAdmin() {
-  return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
-}
-function logoutAdmin() {
-  localStorage.removeItem(ADMIN_SESSION_KEY);
-  closeAdminPanel();
-}
+function openAdminPanel() { document.getElementById('admin-panel').classList.add('active'); document.getElementById('admin-panel').style.transform = 'translateX(0)'; document.getElementById('admin-overlay').classList.add('active'); document.getElementById('admin-overlay').style.opacity = '1'; document.getElementById('admin-overlay').style.pointerEvents = 'all'; renderAdmin(); updateStats(); }
+function closeAdmin() { document.getElementById('admin-panel').classList.remove('active'); document.getElementById('admin-panel').style.transform = 'translateX(100%)'; document.getElementById('admin-overlay').classList.remove('active'); document.getElementById('admin-overlay').style.opacity = '0'; document.getElementById('admin-overlay').style.pointerEvents = 'none'; }
 
 // ==================== ADMIN CRUD ====================
 function addProduct() {
-  const name = document.getElementById('admin-product-name').value.trim();
-  const price = parseFloat(document.getElementById('admin-product-price').value);
-  const category = document.getElementById('admin-product-category').value;
-  const image = document.getElementById('admin-product-image').value.trim();
-  const badge = document.getElementById('admin-product-badge').value;
-  const color = document.getElementById('admin-product-color').value;
-  if (!name || !price) { alert('Veuillez remplir le nom et le prix.'); return; }
-  const newProduct = { id: Date.now(), name, price, category, image, badge, color, has3D: true };
-  products.push(newProduct);
-  saveProducts();
-  renderProducts();
-  renderMechProducts();
-  renderAdminProducts();
-  updateAdminStats();
-  clearAdminForm();
-  showToast('Produit ajoute avec succes !');
+  const name = document.getElementById('new-name').value.trim();
+  const price = parseFloat(document.getElementById('new-price').value);
+  const cat = document.getElementById('new-cat').value;
+  const img = document.getElementById('new-img').value.trim();
+  const desc = document.getElementById('new-desc').value.trim();
+  if (!name || !price) { alert('Remplissez le nom et le prix'); return; }
+  products.push({id:Date.now(),name,price,cat,img:img||'',badge:"New",desc:desc||"Piece mecanique de precision"});
+  saveData(); renderMech(currentFilter); renderAdmin(); updateStats(); clearForm(); showToast('Produit ajoute !');
 }
-function editProduct(id) {
-  const product = products.find(p => p.id === id);
-  if (!product) return;
-  const newName = prompt('Nouveau nom:', product.name);
-  if (newName === null) return;
-  const newPrice = prompt('Nouveau prix:', product.price);
-  if (newPrice === null) return;
-  const newCategory = prompt('Nouvelle categorie (mecanique/vetement/accessoire/electronique):', product.category);
-  if (newCategory === null) return;
-  product.name = newName || product.name;
-  product.price = parseFloat(newPrice) || product.price;
-  product.category = newCategory || product.category;
-  saveProducts();
-  renderProducts();
-  renderMechProducts();
-  renderAdminProducts();
-  updateAdminStats();
-  showToast('Produit modifie avec succes !');
+function editProd(id) {
+  const p = products.find(x=>x.id===id); if(!p) return;
+  const n = prompt('Nom:',p.name); if(n===null) return;
+  const pr = prompt('Prix:',p.price); if(pr===null) return;
+  const c = prompt('Categorie:',p.cat); if(c===null) return;
+  p.name=n||p.name; p.price=parseFloat(pr)||p.price; p.cat=c||p.cat;
+  saveData(); renderMech(currentFilter); renderAdmin(); updateStats(); showToast('Produit modifie !');
 }
-function deleteProduct(id) {
-  if (!confirm('Supprimer ce produit ?')) return;
-  products = products.filter(p => p.id !== id);
-  saveProducts();
-  renderProducts();
-  renderMechProducts();
-  renderAdminProducts();
-  updateAdminStats();
-  showToast('Produit supprime.');
-}
-function clearAdminForm() {
-  document.getElementById('admin-product-name').value = '';
-  document.getElementById('admin-product-price').value = '';
-  document.getElementById('admin-product-image').value = '';
-}
-function renderAdminProducts() {
-  const tbody = document.getElementById('admin-products-list');
-  if (!tbody) return;
-  tbody.innerHTML = products.map(p => `
-    <tr>
-      <td><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-lg bg-bel-charcoal flex items-center justify-center text-xs font-bold">${p.id.toString().slice(-3)}</div><span class="font-medium">${p.name}</span></div></td>
-      <td class="text-bel-accent font-bold">${p.price} €</td>
-      <td><span class="admin-badge bg-bel-charcoal">${p.category}</span></td>
-      <td><div class="flex gap-2">
-        <button class="p-2 hover:bg-bel-charcoal rounded-lg transition-colors" onclick="editProduct(${p.id})" title="Modifier"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
-        <button class="p-2 hover:bg-bel-red/20 rounded-lg transition-colors text-bel-red" onclick="deleteProduct(${p.id})" title="Supprimer"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+function delProd(id) { if(!confirm('Supprimer ce produit ?')) return; products=products.filter(x=>x.id!==id); saveData(); renderMech(currentFilter); renderAdmin(); updateStats(); showToast('Produit supprime'); }
+function clearForm() { document.getElementById('new-name').value=''; document.getElementById('new-price').value=''; document.getElementById('new-img').value=''; document.getElementById('new-desc').value=''; }
+function renderAdmin() {
+  const tbody = document.getElementById('admin-list');
+  if(!tbody) return;
+  tbody.innerHTML = products.map(p=>`
+    <tr class="border-b border-white/5">
+      <td class="py-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-xs font-bold">${p.id.toString().slice(-3)}</div><span class="font-medium">${p.name}</span></div></td>
+      <td class="py-3 text-bel-accent font-bold">${p.price}€</td>
+      <td class="py-3"><span class="px-2 py-1 bg-white/5 rounded-full text-xs">${p.cat}</span></td>
+      <td class="py-3 text-right"><div class="flex gap-2 justify-end">
+        <button class="p-1.5 hover:bg-white/5 rounded-lg" onclick="editProd(${p.id})" title="Modifier"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg></button>
+        <button class="p-1.5 hover:bg-red-500/20 rounded-lg text-red-400" onclick="delProd(${p.id})" title="Supprimer"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
       </div></td>
     </tr>
   `).join('');
 }
-function updateAdminStats() {
-  const countEl = document.getElementById('admin-count-products');
-  const catEl = document.getElementById('admin-count-categories');
-  const valEl = document.getElementById('admin-total-value');
-  if (countEl) countEl.textContent = products.length;
-  if (catEl) catEl.textContent = new Set(products.map(p => p.category)).size;
-  if (valEl) valEl.textContent = products.reduce((s, p) => s + p.price, 0) + '€';
+function updateStats() {
+  const c = document.getElementById('admin-count'); const cats = document.getElementById('admin-cats'); const v = document.getElementById('admin-val');
+  if(c) c.textContent = products.length;
+  if(cats) cats.textContent = new Set(products.map(p=>p.cat)).size;
+  if(v) v.textContent = products.reduce((s,p)=>s+p.price,0)+'€';
 }
-function exportProducts() {
-  const dataStr = JSON.stringify(products, null, 2);
-  const blob = new Blob([dataStr], {type: 'application/json'});
+function exportData() {
+  const blob = new Blob([JSON.stringify(products,null,2)],{type:'application/json'});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'bel_ayiti_products.json'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('Export reussi !');
+  const a = document.createElement('a'); a.href=url; a.download='bel_ayiti_products.json'; a.click();
+  URL.revokeObjectURL(url); showToast('Export reussi !');
 }
-function importProducts(input) {
-  const file = input.files[0];
-  if (!file) return;
+function importData(input) {
+  const file = input.files[0]; if(!file) return;
   const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const imported = JSON.parse(e.target.result);
-      if (Array.isArray(imported)) {
-        products = imported;
-        saveProducts();
-        renderProducts();
-        renderMechProducts();
-        renderAdminProducts();
-        updateAdminStats();
-        showToast('Import reussi !');
-      }
-    } catch(err) { alert('Fichier invalide.'); }
-  };
-  reader.readAsText(file);
-  input.value = '';
+  reader.onload = (e) => { try { const data = JSON.parse(e.target.result); if(Array.isArray(data)){products=data;saveData();renderMech(currentFilter);renderAdmin();updateStats();showToast('Import reussi !');} } catch(err){alert('Fichier invalide');} };
+  reader.readAsText(file); input.value='';
 }
 
-// ==================== 3D PRODUCT RENDERER (AUTO-ROTATION) ====================
-function renderMechProducts(filter = 'all') {
-  const grid = document.getElementById('mech-product-grid');
-  if (!grid) return;
-
-  const mechItems = products.filter(p => p.category === 'moteur' || p.category === 'suspension' || p.category === 'freinage' || p.category === 'transmission' || p.category === 'refroidissement' || p.category === 'electronique-mech' || p.subcategory);
-  const filtered = filter === 'all' ? mechItems : mechItems.filter(p => (p.subcategory || p.category) === filter);
-
-  grid.innerHTML = filtered.map((product) => `
-    <div class="product-card bg-bel-charcoal rounded-2xl overflow-hidden group cursor-pointer" data-category="${product.subcategory || product.category}">
-      <div class="photo-3d-wrapper">
+// ==================== RENDER PRODUCTS ====================
+function renderMech(filter='all') {
+  const grid = document.getElementById('mech-grid');
+  if(!grid) return;
+  const filtered = filter==='all' ? products : products.filter(p=>p.cat===filter);
+  grid.innerHTML = filtered.map(p=>`
+    <div class="product-card glass rounded-2xl overflow-hidden group cursor-pointer" data-cat="${p.cat}">
+      <div class="photo-3d-wrap">
         <div class="photo-3d-inner">
-          <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1a1a;\'><span style=\'font-size:48px;color:#ff6b35\'>⚙</span></div>'">
-          <div class="photo-3d-shine"></div>
-          <div class="photo-3d-shadow"></div>
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div style=width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1a1a><span style=font-size:48px>⚙</span></div>'">
+          <div class="shine-effect"></div>
         </div>
-        <div class="mech-badge">${product.badge}</div>
-        <div class="mech-badge-3d">
+        <div class="badge-mech absolute top-3 left-3">${p.badge}</div>
+        <div class="badge-3d absolute top-3 right-3">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
           3D
         </div>
       </div>
-      <div class="p-6">
-        <p class="text-xs text-bel-mech uppercase tracking-wider mb-1 font-bold">${product.subcategory || product.category}</p>
-        <h3 class="font-display font-bold text-lg mb-2">${product.name}</h3>
-        <p class="text-xs text-bel-light mb-3">${product.description || 'Piece mecanique de precision'}</p>
+      <div class="p-5">
+        <p class="text-xs text-bel-accent uppercase tracking-wider mb-1 font-bold">${p.cat}</p>
+        <h3 class="font-display font-bold text-lg mb-1">${p.name}</h3>
+        <p class="text-xs text-white/40 mb-3">${p.desc}</p>
         <div class="flex items-center justify-between">
-          <p class="text-bel-accent font-bold text-xl">${product.price} €</p>
-          <button class="w-10 h-10 rounded-full bg-bel-accent text-bel-black flex items-center justify-center hover:scale-110 transition-transform" onclick="addToCart('${product.name}', ${product.price})">
+          <p class="text-bel-accent font-bold text-xl">${p.price} €</p>
+          <button class="w-10 h-10 rounded-full bg-gradient-to-r from-bel-accent to-bel-gold text-white flex items-center justify-center hover:scale-110 transition-transform glow-orange" onclick="addToCart('${p.name}',${p.price})">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
           </button>
         </div>
@@ -1056,384 +677,112 @@ function renderMechProducts(filter = 'all') {
     </div>
   `).join('');
 
-  gsap.fromTo('#mech-product-grid .product-card', 
-    {opacity: 0, y: 40, scale: 0.95},
-    {opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ease: "power2.out"}
-  );
+  gsap.fromTo('#mech-grid .product-card', {opacity:0,y:40,scale:0.95}, {opacity:1,y:0,scale:1,duration:0.6,stagger:0.08,ease:"power2.out"});
 }
 
-function filterMechByCategory(category) {
-  currentMechFilter = category;
-  document.querySelectorAll('#mecanique-hero .cat-pill[data-filter]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.filter === category);
-  });
-  renderMechProducts(category);
-}
-
-// ==================== RENDER ALL PRODUCTS ====================
-function renderProducts(filter = 'all') {
-  const grid = document.getElementById('product-grid');
-  if (!grid) return;
-
-  const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
-
-  grid.innerHTML = filtered.map((product) => `
-    <div class="product-card bg-bel-charcoal rounded-2xl overflow-hidden group cursor-pointer" data-category="${product.category}">
-      <div class="photo-3d-wrapper">
-        <div class="photo-3d-inner">
-          <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#1a1a1a;\'><span style=\'font-size:48px;color:#ff6b35\'>⚙</span></div>'">
-          <div class="photo-3d-shine"></div>
-          <div class="photo-3d-shadow"></div>
-        </div>
-        <div class="mech-badge">${product.badge}</div>
-        <div class="mech-badge-3d">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-          3D
-        </div>
-      </div>
-      <div class="p-6">
-        <p class="text-xs text-bel-light uppercase tracking-wider mb-1">${product.category}</p>
-        <h3 class="font-display font-bold text-lg mb-2">${product.name}</h3>
-        <div class="flex items-center justify-between">
-          <p class="text-bel-accent font-bold text-xl">${product.price} €</p>
-          <button class="w-10 h-10 rounded-full bg-bel-accent text-bel-black flex items-center justify-center hover:scale-110 transition-transform" onclick="addToCart('${product.name}', ${product.price})">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  gsap.fromTo('#product-grid .product-card', 
-    {opacity: 0, y: 40, scale: 0.95},
-    {opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ease: "power2.out"}
-  );
-}
-
-function filterByCategory(category) {
-  currentFilter = category;
-  document.querySelectorAll('#vetements .cat-pill[data-filter]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.filter === category);
-  });
-  renderProducts(category);
-}
-
-// ==================== HERO 3D ====================
-function initHero3D() {
-  const canvas = document.getElementById('hero-canvas');
-  if (!canvas) return;
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  const geometries = [
-    new THREE.IcosahedronGeometry(1, 0),
-    new THREE.TorusKnotGeometry(0.8, 0.3, 100, 16),
-    new THREE.OctahedronGeometry(1, 0),
-    new THREE.TetrahedronGeometry(1, 0),
-  ];
-  const colors = [0xff6b35, 0x00d4aa, 0xd4af37, 0xff6b35];
-  const meshes = [];
-
-  geometries.forEach((geo, i) => {
-    const material = new THREE.MeshPhongMaterial({color: colors[i], wireframe: true, transparent: true, opacity: 0.3});
-    const mesh = new THREE.Mesh(geo, material);
-    mesh.position.set((Math.random()-0.5)*10, (Math.random()-0.5)*6, (Math.random()-0.5)*5-3);
-    mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, 0);
-    scene.add(mesh);
-    meshes.push({mesh, speed: 0.005 + Math.random()*0.01});
-  });
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); scene.add(ambientLight);
-  const pointLight = new THREE.PointLight(0xff6b35, 1, 100); pointLight.position.set(5, 5, 5); scene.add(pointLight);
-  const pointLight2 = new THREE.PointLight(0x00d4aa, 1, 100); pointLight2.position.set(-5, -5, 5); scene.add(pointLight2);
-  camera.position.z = 5;
-
-  let mouseX = 0, mouseY = 0;
-  document.addEventListener('mousemove', (e) => {
-    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
-    mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-  });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    meshes.forEach(({mesh, speed}) => { mesh.rotation.x += speed; mesh.rotation.y += speed * 0.7; });
-    camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
-    camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
-    camera.lookAt(scene.position);
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
-}
-
-// ==================== SHOWCASE 3D ====================
-function initShowcase3D() {
-  const container = document.getElementById('showcase-viewer');
-  const canvas = document.getElementById('showcase-canvas');
-  if (!container || !canvas) return;
-
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  const group = new THREE.Group();
-  const mainGear = new THREE.Group();
-
-  const outerRing = new THREE.TorusGeometry(2, 0.3, 16, 32);
-  const outerMat = new THREE.MeshPhongMaterial({color: 0xff6b35, metalness: 0.8, roughness: 0.2});
-  mainGear.add(new THREE.Mesh(outerRing, outerMat));
-
-  const innerRing = new THREE.TorusGeometry(1.2, 0.2, 16, 32);
-  const innerMat = new THREE.MeshPhongMaterial({color: 0x00d4aa, metalness: 0.8, roughness: 0.2});
-  mainGear.add(new THREE.Mesh(innerRing, innerMat));
-
-  const centerSphere = new THREE.SphereGeometry(0.8, 32, 32);
-  const centerMat = new THREE.MeshPhongMaterial({color: 0xd4af37, metalness: 0.9, roughness: 0.1});
-  mainGear.add(new THREE.Mesh(centerSphere, centerMat));
-
-  for (let i = 0; i < 12; i++) {
-    const toothGeo = new THREE.BoxGeometry(0.4, 0.6, 0.2);
-    const toothMat = new THREE.MeshPhongMaterial({color: 0xff6b35, metalness: 0.7, roughness: 0.3});
-    const tooth = new THREE.Mesh(toothGeo, toothMat);
-    const angle = (i / 12) * Math.PI * 2;
-    tooth.position.set(Math.cos(angle) * 2.2, Math.sin(angle) * 2.2, 0);
-    tooth.rotation.z = angle;
-    mainGear.add(tooth);
-  }
-
-  group.add(mainGear); scene.add(group);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); scene.add(ambientLight);
-  const lights = [new THREE.PointLight(0xff6b35, 1, 100), new THREE.PointLight(0x00d4aa, 1, 100), new THREE.PointLight(0xd4af37, 1, 100)];
-  lights[0].position.set(5, 5, 5); lights[1].position.set(-5, -5, 5); lights[2].position.set(0, 5, -5);
-  lights.forEach(l => scene.add(l));
-  camera.position.z = 6;
-
-  let zoom = 1, xrayMode = false;
-  document.getElementById('zoom-in').addEventListener('click', () => { zoom = Math.min(zoom + 0.2, 2); camera.position.z = 6 / zoom; });
-  document.getElementById('zoom-out').addEventListener('click', () => { zoom = Math.max(zoom - 0.2, 0.5); camera.position.z = 6 / zoom; });
-  document.getElementById('reset-view').addEventListener('click', () => { zoom = 1; camera.position.z = 6; group.rotation.set(0, 0, 0); });
-  document.getElementById('xray-toggle').addEventListener('click', () => {
-    xrayMode = !xrayMode;
-    mainGear.children.forEach(child => { if (child.material) { child.material.transparent = xrayMode; child.material.opacity = xrayMode ? 0.3 : 1; } });
-  });
-  document.getElementById('rotation-slider').addEventListener('input', (e) => { group.rotation.y = (e.target.value / 360) * Math.PI * 2; });
-
-  let isDragging = false, previousMouseX = 0;
-  canvas.addEventListener('mousedown', (e) => { isDragging = true; previousMouseX = e.clientX; });
-  canvas.addEventListener('mousemove', (e) => { if (isDragging) { const deltaX = e.clientX - previousMouseX; group.rotation.y += deltaX * 0.01; previousMouseX = e.clientX; } });
-  canvas.addEventListener('mouseup', () => isDragging = false);
-  canvas.addEventListener('mouseleave', () => isDragging = false);
-  canvas.addEventListener('wheel', (e) => { e.preventDefault(); zoom += e.deltaY * -0.001; zoom = Math.max(0.5, Math.min(2, zoom)); camera.position.z = 6 / zoom; });
-
-  function animate() {
-    requestAnimationFrame(animate);
-    mainGear.rotation.z += 0.005;
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  });
+function filterMech(cat) {
+  currentFilter = cat;
+  document.querySelectorAll('#mecanique .cat-pill').forEach(btn=>{btn.classList.toggle('active',btn.dataset.filter===cat);});
+  renderMech(cat);
 }
 
 // ==================== CART ====================
-function addToCart(name, price) {
-  const existing = cart.find(item => item.name === name);
-  if (existing) { existing.quantity++; } else { cart.push({name, price, quantity: 1}); }
-  updateCartUI();
-  showToast(`${name} ajoute au panier`);
+function addToCart(name,price) {
+  const existing = cart.find(i=>i.name===name);
+  if(existing){existing.qty++;}else{cart.push({name,price,qty:1});}
+  updateCart(); showToast(`${name} ajoute au panier`);
 }
-function removeFromCart(name) {
-  cart = cart.filter(item => item.name !== name);
-  updateCartUI();
-}
-function updateCartUI() {
+function removeFromCart(name) { cart=cart.filter(i=>i.name!==name); updateCart(); }
+function updateCart() {
   const count = document.getElementById('cart-count');
   const items = document.getElementById('cart-items');
   const total = document.getElementById('cart-total');
-  if (!count || !items || !total) return;
-
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
+  if(!count||!items||!total) return;
+  const totalItems = cart.reduce((s,i)=>s+i.qty,0);
+  const totalPrice = cart.reduce((s,i)=>s+i.price*i.qty,0);
   count.textContent = totalItems;
-  count.classList.add('bounce-in');
-  setTimeout(() => count.classList.remove('bounce-in'), 400);
-
-  if (cart.length === 0) {
-    items.innerHTML = '<p class="text-bel-light text-center py-12">Votre panier est vide</p>';
-  } else {
-    items.innerHTML = cart.map(item => `
-      <div class="flex items-center gap-4 bg-bel-charcoal rounded-xl p-4">
-        <div class="flex-1"><p class="font-bold">${item.name}</p><p class="text-sm text-bel-light">${item.quantity} x ${item.price} €</p></div>
-        <p class="font-bold">${item.price * item.quantity} €</p>
-        <button class="p-2 hover:bg-bel-gray rounded-full transition-colors" onclick="removeFromCart('${item.name}')">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-    `).join('');
-  }
-  total.textContent = totalPrice + ' €';
+  if(cart.length===0){items.innerHTML='<p class="text-white/50 text-center py-12">Votre panier est vide</p>';}
+  else{items.innerHTML=cart.map(i=>`
+    <div class="flex items-center gap-4 glass rounded-xl p-4">
+      <div class="flex-1"><p class="font-bold">${i.name}</p><p class="text-sm text-white/50">${i.qty} x ${i.price}€</p></div>
+      <p class="font-bold">${i.price*i.qty}€</p>
+      <button class="p-2 hover:bg-white/5 rounded-full" onclick="removeFromCart('${i.name}')"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
+    </div>
+  `).join('');}
+  total.textContent = totalPrice+' €';
 }
-function showToast(message) {
+function showToast(msg) {
   const toast = document.getElementById('toast');
-  const toastMessage = document.getElementById('toast-message');
-  if (!toast || !toastMessage) return;
-  toastMessage.textContent = message;
-  toast.style.transform = 'translateY(0)';
-  toast.style.opacity = '1';
-  setTimeout(() => { toast.style.transform = 'translateY(20px)'; toast.style.opacity = '0'; }, 3000);
+  const toastMsg = document.getElementById('toast-msg');
+  if(!toast||!toastMsg) return;
+  toastMsg.textContent = msg;
+  toast.style.transform = 'translateY(0)'; toast.style.opacity = '1';
+  setTimeout(()=>{toast.style.transform='translateY(24px)';toast.style.opacity='0';},3000);
 }
 function initCart() {
   const cartBtn = document.getElementById('cart-btn');
   const cartSidebar = document.getElementById('cart-sidebar');
   const cartOverlay = document.getElementById('cart-overlay');
   const closeCart = document.getElementById('close-cart');
-  if (!cartBtn || !cartSidebar || !cartOverlay || !closeCart) return;
-
-  cartBtn.addEventListener('click', () => {
-    cartSidebar.style.transform = 'translateX(0)';
-    cartOverlay.style.opacity = '1';
-    cartOverlay.style.pointerEvents = 'auto';
-  });
-  function closeCartSidebar() {
-    cartSidebar.style.transform = 'translateX(100%)';
-    cartOverlay.style.opacity = '0';
-    cartOverlay.style.pointerEvents = 'none';
-  }
-  closeCart.addEventListener('click', closeCartSidebar);
-  cartOverlay.addEventListener('click', closeCartSidebar);
-}
-
-// ==================== FEATURED LIST ====================
-function renderFeaturedList() {
-  const list = document.getElementById('featured-list');
-  if (!list) return;
-  const mechItems = products.filter(p => p.category === 'moteur' || p.subcategory);
-  list.innerHTML = mechItems.slice(0, 4).map(product => `
-    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-bel-black/50 transition-colors cursor-pointer" onclick="scrollToProduct(${product.id})">
-      <div class="w-16 h-16 rounded-lg bg-bel-charcoal flex items-center justify-center overflow-hidden">
-        <img src="${product.image}" class="w-full h-full object-cover" alt="${product.name}">
-      </div>
-      <div class="flex-1"><p class="font-bold text-sm">${product.name}</p><p class="text-xs text-bel-light">${product.subcategory || product.category}</p></div>
-      <p class="text-bel-accent font-bold text-sm">${product.price} €</p>
-    </div>
-  `).join('');
-}
-function scrollToProduct(id) {
-  const el = document.getElementById(`mech-3d-${id}`) || document.getElementById(`product-3d-${id}`);
-  if (el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
-}
-
-// ==================== NEWSLETTER ====================
-function handleSubscribe(e) {
-  e.preventDefault();
-  showToast('Inscription reussie ! Bienvenue dans le mouvement BEL AYITI.');
-  e.target.reset();
+  if(!cartBtn||!cartSidebar||!cartOverlay||!closeCart) return;
+  cartBtn.addEventListener('click',()=>{cartSidebar.style.transform='translateX(0)';cartOverlay.style.opacity='1';cartOverlay.style.pointerEvents='auto';});
+  function closeCartFn(){cartSidebar.style.transform='translateX(100%)';cartOverlay.style.opacity='0';cartOverlay.style.pointerEvents='none';}
+  closeCart.addEventListener('click',closeCartFn); cartOverlay.addEventListener('click',closeCartFn);
 }
 
 // ==================== GSAP ANIMATIONS ====================
 function initAnimations() {
   gsap.registerPlugin(ScrollTrigger);
-  gsap.from('.hero-anim', { y: 60, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out", delay: 0.5 });
-  gsap.utils.toArray('.reveal-section').forEach(section => {
-    gsap.to(section, {
-      scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reverse" },
-      opacity: 1, y: 0, duration: 1, ease: "power2.out"
-    });
-  });
-  gsap.to('#hero-canvas', {
-    scrollTrigger: { trigger: '#hero', start: "top top", end: "bottom top", scrub: true },
-    y: 200
+  gsap.from('.hero-section .reveal', {y:60,opacity:0,duration:1,stagger:0.2,ease:"power3.out",delay:0.5});
+  gsap.utils.toArray('.reveal').forEach(el=>{
+    gsap.to(el, {scrollTrigger:{trigger:el,start:"top 85%",toggleActions:"play none none reverse"},opacity:1,y:0,duration:1,ease:"power2.out"});
   });
 }
 
 // ==================== MAGNETIC BUTTONS ====================
-function initMagneticButtons() {
-  document.querySelectorAll('.magnetic-btn').forEach(btn => {
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+function initMagnetic() {
+  document.querySelectorAll('.magnetic-btn').forEach(btn=>{
+    btn.addEventListener('mousemove',(e)=>{
+      const rect=btn.getBoundingClientRect();
+      const x=e.clientX-rect.left-rect.width/2;
+      const y=e.clientY-rect.top-rect.height/2;
+      btn.style.transform=`translate(${x*0.3}px,${y*0.3}px)`;
     });
-    btn.addEventListener('mouseleave', () => { btn.style.transform = 'translate(0, 0)'; });
+    btn.addEventListener('mouseleave',()=>{btn.style.transform='translate(0,0)';});
   });
 }
 
-// ==================== CUSTOM CURSOR ====================
-function initCursor() {
-  const cursor = document.getElementById('cursor');
-  if (!cursor) return;
-  if (window.matchMedia('(pointer: fine)').matches) {
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX - 10 + 'px';
-      cursor.style.top = e.clientY - 10 + 'px';
-    });
-    document.querySelectorAll('a, button, .product-card').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-  } else {
-    cursor.style.display = 'none';
-  }
-}
-
-// ==================== NAVIGATION ====================
+// ==================== NAV ====================
 function initNav() {
   const navbar = document.getElementById('navbar');
-  if (!navbar) return;
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('nav-blur', window.scrollY > 100);
-  });
+  if(!navbar) return;
+  window.addEventListener('scroll',()=>{navbar.classList.toggle('nav-glass',window.scrollY>50);});
   const menuToggle = document.getElementById('menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu');
-  if (!menuToggle || !mobileMenu) return;
-  let menuOpen = false;
-  menuToggle.addEventListener('click', () => {
-    menuOpen = !menuOpen;
-    mobileMenu.style.transform = menuOpen ? 'translateX(0)' : 'translateX(100%)';
-  });
-  document.querySelectorAll('.mobile-link').forEach(link => {
-    link.addEventListener('click', () => { menuOpen = false; mobileMenu.style.transform = 'translateX(100%)'; });
-  });
+  if(!menuToggle||!mobileMenu) return;
+  let open=false;
+  menuToggle.addEventListener('click',()=>{open=!open;mobileMenu.style.transform=open?'translateX(0)':'translateX(100%)';});
+  document.querySelectorAll('.mobile-link').forEach(l=>l.addEventListener('click',()=>{open=false;mobileMenu.style.transform='translateX(100%)';}));
 }
 
-// ==================== INIT ALL ====================
-function initAll() {
-  loadProducts();
-  initCursor();
+// ==================== SUBSCRIBE ====================
+function handleSubscribe(e) { e.preventDefault(); showToast('Inscription reussie ! Bienvenue chez BEL AYITI.'); e.target.reset(); }
+
+// ==================== INIT ====================
+function init() {
+  loadData();
   initNav();
-  initHero3D();
-  initShowcase3D();
-  renderProducts();
-  renderMechProducts();
-  renderFeaturedList();
+  renderMech();
   initCart();
   initAnimations();
-  initMagneticButtons();
+  initMagnetic();
+  if(localStorage.getItem('bel_admin')==='true'){/* admin logged */}
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const adminInput = document.getElementById('admin-password-input');
-  if (adminInput) {
-    adminInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') checkAdminPassword(); });
-  }
-  initAll();
+window.addEventListener('DOMContentLoaded',()=>{
+  const adminInput = document.getElementById('admin-pass');
+  if(adminInput){adminInput.addEventListener('keypress',(e)=>{if(e.key==='Enter')checkAdmin();});}
+  init();
 });
 </script>
 </body>
