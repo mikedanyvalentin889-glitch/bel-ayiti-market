@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BEL AYITI — L'Excellence Sans Compromis</title>
+<title>BEL AYITI — Admin & Boutique</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -21,6 +21,7 @@ tailwind.config = {
         bel: {
           black:'#0a0a0a', dark:'#111111', charcoal:'#1a1a1a', gray:'#2a2a2a',
           light:'#888888', white:'#ffffff', accent:'#ff6b35', gold:'#d4af37', teal:'#00d4aa',
+          red:'#ff3333', green:'#00d4aa'
         }
       }
     }
@@ -34,526 +35,1236 @@ body{background:#0a0a0a;color:#fff;font-family:'Inter',sans-serif;overflow-x:hid
 ::-webkit-scrollbar-track{background:#0a0a0a}
 ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:#ff6b35}
-.noise-overlay{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;opacity:0.03;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")}
-#hero-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1}
-.magnetic-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;transition:transform 0.3s cubic-bezier(0.23,1,0.32,1)}
-.marquee-track{display:flex;animation:marquee 30s linear infinite}
-.marquee-track:hover{animation-play-state:paused}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.gradient-text{background:linear-gradient(135deg,#ff6b35 0%,#d4af37 50%,#00d4aa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.viewer-3d{position:relative;width:100%;height:500px;background:radial-gradient(circle at center,#1a1a1a 0%,#0a0a0a 100%);border-radius:16px;overflow:hidden}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
-.floating{animation:float 6s ease-in-out infinite}
-.nav-blur{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(10,10,10,0.8)}
-.cat-pill{transition:all 0.3s ease;cursor:pointer}
-.cat-pill:hover,.cat-pill.active{background:#ff6b35;color:#0a0a0a;transform:scale(1.05)}
-@keyframes pulse-ring{0%{transform:scale(0.8);opacity:1}100%{transform:scale(2);opacity:0}}
-.pulse-ring::before{content:'';position:absolute;inset:-4px;border:2px solid #ff6b35;border-radius:50%;animation:pulse-ring 2s ease-out infinite}
-.custom-cursor{width:20px;height:20px;border:2px solid #ff6b35;border-radius:50%;position:fixed;pointer-events:none;z-index:10000;transition:transform 0.15s ease-out,width 0.2s,height 0.2s;mix-blend-mode:difference}
-.custom-cursor.hover{width:50px;height:50px;border-color:#00d4aa;background:rgba(0,212,170,0.1)}
-.product-card{transform-style:preserve-3d;transition:transform 0.6s cubic-bezier(0.23,1,0.32,1)}
-.product-card:hover{transform:translateY(-10px) rotateX(5deg)}
-@keyframes bounce-in{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
-.bounce-in{animation:bounce-in 0.4s cubic-bezier(0.175,0.885,0.32,1.275)}
-.reveal-section{opacity:0;transform:translateY(60px)}
+
+/* Admin Login Modal */
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(10,10,10,0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.admin-modal.active {
+  opacity: 1;
+  pointer-events: all;
+}
+.admin-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  max-width: 600px;
+  height: 100vh;
+  background: #111;
+  border-left: 1px solid #2a2a2a;
+  z-index: 99998;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.23,1,0.32,1);
+  overflow-y: auto;
+}
+.admin-panel.active {
+  transform: translateX(0);
+}
+.admin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 99997;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.admin-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Product 3D Canvas */
+.product-3d-canvas {
+  width: 100%;
+  height: 200px;
+  border-radius: 12px 12px 0 0;
+}
+
+/* Noise overlay */
+.noise-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+#hero-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+}
+.magnetic-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.marquee-track {
+  display: flex;
+  animation: marquee 30s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.gradient-text {
+  background: linear-gradient(135deg, #ff6b35 0%, #d4af37 50%, #00d4aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.viewer-3d {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+  border-radius: 16px;
+  overflow: hidden;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+.floating { animation: float 6s ease-in-out infinite; }
+.nav-blur {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(10, 10, 10, 0.8);
+}
+.cat-pill {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.cat-pill:hover, .cat-pill.active {
+  background: #ff6b35;
+  color: #0a0a0a;
+  transform: scale(1.05);
+}
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 2px solid #ff6b35;
+  border-radius: 50%;
+  animation: pulse-ring 2s ease-out infinite;
+}
+.custom-cursor {
+  width: 20px; height: 20px;
+  border: 2px solid #ff6b35;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.15s ease-out, width 0.2s, height 0.2s;
+  mix-blend-mode: difference;
+}
+.custom-cursor.hover {
+  width: 50px; height: 50px;
+  border-color: #00d4aa;
+  background: rgba(0, 212, 170, 0.1);
+}
+.product-card {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.product-card:hover {
+  transform: translateY(-10px) rotateX(5deg);
+}
+@keyframes bounce-in {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+.bounce-in { animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.reveal-section {
+  opacity: 0;
+  transform: translateY(60px);
+}
+.admin-input {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: #fff;
+  width: 100%;
+  transition: all 0.3s ease;
+  outline: none;
+}
+.admin-input:focus {
+  border-color: #ff6b35;
+  box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+}
+.admin-input::placeholder {
+  color: #888;
+}
+.admin-btn {
+  background: linear-gradient(135deg, #ff6b35, #d4af37);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  color: #0a0a0a;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.admin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255,107,53,0.3);
+}
+.admin-btn-danger {
+  background: #ff3333;
+  color: #fff;
+}
+.admin-btn-secondary {
+  background: #2a2a2a;
+  color: #fff;
+}
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.admin-table th {
+  text-align: left;
+  padding: 12px;
+  color: #888;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #2a2a2a;
+}
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.admin-table tr:hover td {
+  background: #1a1a1a;
+}
+.admin-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
 </style>
 <base target="_blank">
 </head>
 <body>
+
 <div class="noise-overlay"></div>
 <div class="custom-cursor" id="cursor"></div>
 
+<!-- ADMIN LOGIN MODAL -->
+<div class="admin-modal" id="admin-login-modal">
+  <div class="bg-bel-charcoal rounded-2xl p-8 w-full max-w-md mx-4 border border-bel-gray">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 bg-bel-accent rounded-xl flex items-center justify-center mx-auto mb-4">
+        <svg class="w-8 h-8 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      </div>
+      <h2 class="font-display font-bold text-2xl">Panneau Admin</h2>
+      <p class="text-bel-light text-sm mt-2">Authentification requise</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm text-bel-light mb-2">Mot de passe</label>
+        <input type="password" id="admin-password-input" class="admin-input" placeholder="••••••••">
+      </div>
+      <p id="admin-login-error" class="text-bel-red text-sm hidden">Mot de passe incorrect</p>
+      <button class="admin-btn w-full" onclick="checkAdminPassword()">Connexion</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL SIDEBAR -->
+<div class="admin-overlay" id="admin-overlay" onclick="closeAdminPanel()"></div>
+<div class="admin-panel" id="admin-panel">
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center">
+          <span class="font-display font-bold text-bel-black text-lg">B</span>
+        </div>
+        <div>
+          <h2 class="font-display font-bold text-lg">Admin BEL AYITI</h2>
+          <p class="text-xs text-bel-light">Gestion des produits</p>
+        </div>
+      </div>
+      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors" onclick="closeAdminPanel()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="bg-bel-dark rounded-xl p-4 text-center">
+        <p class="text-2xl font-display font-bold text-bel-accent" id="admin-count-products">0</p>
+        <p class="text-xs text-bel-light">Produits</p>
+      </div>
+      <div class="bg-bel-dark rounded-xl p-4 text-center">
+        <p class="text-2xl font-display font-bold text-bel-teal" id="admin-count-categories">0</p>
+        <p class="text-xs text-bel-light">Categories</p>
+      </div>
+      <div class="bg-bel-dark rounded-xl p-4 text-center">
+        <p class="text-2xl font-display font-bold text-bel-gold" id="admin-total-value">0€</p>
+        <p class="text-xs text-bel-light">Valeur</p>
+      </div>
+    </div>
+
+    <!-- Add Product Form -->
+    <div class="bg-bel-dark rounded-xl p-6 mb-8">
+      <h3 class="font-display font-bold text-lg mb-4">Ajouter un Produit</h3>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm text-bel-light mb-2">Nom du produit</label>
+          <input type="text" id="admin-product-name" class="admin-input" placeholder="Ex: Moteur V-Twin">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-bel-light mb-2">Prix (€)</label>
+            <input type="number" id="admin-product-price" class="admin-input" placeholder="2499">
+          </div>
+          <div>
+            <label class="block text-sm text-bel-light mb-2">Categorie</label>
+            <select id="admin-product-category" class="admin-input">
+              <option value="mecanique">Mecanique</option>
+              <option value="vetement">Vetement</option>
+              <option value="accessoire">Accessoire</option>
+              <option value="electronique">Electronique</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm text-bel-light mb-2">URL Image (ou laisser vide pour 3D)</label>
+          <input type="text" id="admin-product-image" class="admin-input" placeholder="https://...">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm text-bel-light mb-2">Badge</label>
+            <select id="admin-product-badge" class="admin-input">
+              <option value="3D">3D</option>
+              <option value="New">New</option>
+              <option value="Hot">Hot</option>
+              <option value="Sale">Sale</option>
+              <option value="">Aucun</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm text-bel-light mb-2">Couleur badge</label>
+            <select id="admin-product-color" class="admin-input">
+              <option value="bel-accent">Orange</option>
+              <option value="bel-teal">Teal</option>
+              <option value="bel-gold">Gold</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button class="admin-btn flex-1" onclick="addProduct()">Ajouter</button>
+          <button class="admin-btn admin-btn-secondary" onclick="clearAdminForm()">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Products List -->
+    <div class="bg-bel-dark rounded-xl p-6">
+      <h3 class="font-display font-bold text-lg mb-4">Liste des Produits</h3>
+      <div class="overflow-x-auto">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Prix</th>
+              <th>Cat</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-products-list"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Export/Import -->
+    <div class="bg-bel-dark rounded-xl p-6 mt-8">
+      <h3 class="font-display font-bold text-lg mb-4">Sauvegarde</h3>
+      <div class="flex gap-3">
+        <button class="admin-btn admin-btn-secondary flex-1" onclick="exportProducts()">Exporter JSON</button>
+        <button class="admin-btn admin-btn-secondary flex-1" onclick="document.getElementById('import-file').click()">Importer JSON</button>
+        <input type="file" id="import-file" class="hidden" accept=".json" onchange="importProducts(this)">
+      </div>
+      <p class="text-xs text-bel-light mt-3">Les donnees sont stockees dans votre navigateur (localStorage).</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN NAVIGATION -->
 <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500">
-<div class="w-full px-6 lg:px-12 py-4 flex items-center justify-between">
-<a href="#" class="flex items-center gap-2 group">
-<div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform"><span class="font-display font-bold text-bel-black text-lg">B</span></div>
-<span class="font-display font-bold text-xl tracking-tight">BEL AYITI</span>
-</a>
-<div class="hidden md:flex items-center gap-8">
-<a href="#collections" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Collections<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-<a href="#mecanique" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Mecanique<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-<a href="#vetements" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Vetements<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-<a href="#nouveautes" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Nouveautes<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
-</div>
-<div class="flex items-center gap-4">
-<button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors" id="search-btn"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></button>
-<button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors relative" id="cart-btn"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg><span class="absolute -top-1 -right-1 w-5 h-5 bg-bel-accent text-bel-black text-xs font-bold rounded-full flex items-center justify-center" id="cart-count">0</span></button>
-<button class="md:hidden p-2" id="menu-toggle"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-</div>
-</div>
+  <div class="w-full px-6 lg:px-12 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-2 group">
+      <div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center transform group-hover:rotate-12 transition-transform">
+        <span class="font-display font-bold text-bel-black text-lg">B</span>
+      </div>
+      <span class="font-display font-bold text-xl tracking-tight">BEL AYITI</span>
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="#collections" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Collections<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+      <a href="#mecanique" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Mecanique<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+      <a href="#vetements" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Vetements<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+      <a href="#nouveautes" class="text-sm font-medium text-bel-light hover:text-white transition-colors relative group">Nouveautes<span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-bel-accent transition-all group-hover:w-full"></span></a>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors" id="search-btn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      </button>
+      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors relative" id="cart-btn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        <span class="absolute -top-1 -right-1 w-5 h-5 bg-bel-accent text-bel-black text-xs font-bold rounded-full flex items-center justify-center" id="cart-count">0</span>
+      </button>
+      <button class="p-2 hover:bg-bel-charcoal rounded-full transition-colors text-bel-light hover:text-bel-accent" onclick="openAdminLogin()" title="Admin">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </button>
+      <button class="md:hidden p-2" id="menu-toggle">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
 </nav>
 
 <div id="mobile-menu" class="fixed inset-0 z-40 bg-bel-black transform translate-x-full transition-transform duration-500">
-<div class="flex flex-col items-center justify-center h-full gap-8">
-<a href="#collections" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Collections</a>
-<a href="#mecanique" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Mecanique</a>
-<a href="#vetements" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Vetements</a>
-<a href="#nouveautes" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Nouveautes</a>
-</div>
+  <div class="flex flex-col items-center justify-center h-full gap-8">
+    <a href="#collections" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Collections</a>
+    <a href="#mecanique" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Mecanique</a>
+    <a href="#vetements" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Vetements</a>
+    <a href="#nouveautes" class="text-3xl font-display font-bold hover:text-bel-accent transition-colors mobile-link">Nouveautes</a>
+  </div>
 </div>
 
+<!-- HERO SECTION -->
 <section id="hero" class="relative w-full h-screen overflow-hidden">
-<canvas id="hero-canvas"></canvas>
-<div class="absolute inset-0 z-10 flex items-center">
-<div class="w-full px-6 lg:px-12">
-<div class="max-w-4xl">
-<p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4 hero-anim">Nouvelle Collection 2026</p>
-<h1 class="font-display font-bold text-6xl md:text-8xl lg:text-9xl leading-none mb-6 hero-anim"><span class="block">BEL</span><span class="block gradient-text">AYITI</span></h1>
-<p class="text-bel-light text-lg md:text-xl max-w-xl mb-8 hero-anim">L'excellence haitienne reinventee. Des pieces mecaniques de precision aux vetements d'exception, decouvrez un univers ou la technique rencontre l'elegance.</p>
-<div class="flex gap-4 hero-anim">
-<a href="#collections" class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors">Decouvrir<svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
-<a href="#video" class="magnetic-btn px-8 py-4 border border-bel-gray text-white font-bold rounded-full hover:bg-bel-charcoal transition-colors flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>Voir la video</a>
-</div>
-</div>
-</div>
-</div>
-<div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex flex-col items-center gap-2">
-<span class="text-xs text-bel-light tracking-widest uppercase">Scroll</span>
-<div class="w-px h-12 bg-gradient-to-b from-bel-accent to-transparent"></div>
-</div>
-<div class="absolute bottom-0 right-0 z-10 hidden lg:flex">
-<div class="bg-bel-charcoal/90 backdrop-blur px-8 py-6 rounded-tl-3xl">
-<div class="flex gap-12">
-<div><p class="text-3xl font-display font-bold text-bel-accent">500+</p><p class="text-xs text-bel-light uppercase tracking-wider">Produits 3D</p></div>
-<div><p class="text-3xl font-display font-bold text-bel-teal">50K+</p><p class="text-xs text-bel-light uppercase tracking-wider">Clients</p></div>
-<div><p class="text-3xl font-display font-bold text-bel-gold">4.9</p><p class="text-xs text-bel-light uppercase tracking-wider">Note Moyenne</p></div>
-</div>
-</div>
-</div>
+  <canvas id="hero-canvas"></canvas>
+  <div class="absolute inset-0 z-10 flex items-center">
+    <div class="w-full px-6 lg:px-12">
+      <div class="max-w-4xl">
+        <p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4 hero-anim">Nouvelle Collection 2026</p>
+        <h1 class="font-display font-bold text-6xl md:text-8xl lg:text-9xl leading-none mb-6 hero-anim">
+          <span class="block">BEL</span>
+          <span class="block gradient-text">AYITI</span>
+        </h1>
+        <p class="text-bel-light text-lg md:text-xl max-w-xl mb-8 hero-anim">L'excellence haitienne reinventee. Des pieces mecaniques de precision aux vetements d'exception.</p>
+        <div class="flex gap-4 hero-anim">
+          <a href="#collections" class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors">Decouvrir<svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></a>
+          <a href="#video" class="magnetic-btn px-8 py-4 border border-bel-gray text-white font-bold rounded-full hover:bg-bel-charcoal transition-colors flex items-center gap-2"><span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"><svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>Voir la video</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+    <span class="text-xs text-bel-light tracking-widest uppercase">Scroll</span>
+    <div class="w-px h-12 bg-gradient-to-b from-bel-accent to-transparent"></div>
+  </div>
 </section>
 
+<!-- MARQUEE -->
 <section class="py-8 border-y border-bel-gray overflow-hidden bg-bel-dark">
-<div class="marquee-track whitespace-nowrap">
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">BEL AYITI</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">EXCELLENCE</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">PRECISION</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gold">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">INNOVATION</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">BEL AYITI</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">EXCELLENCE</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gold">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">PRECISION</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">INNOVATION</span>
-<span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
-</div>
+  <div class="marquee-track whitespace-nowrap">
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">BEL AYITI</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">EXCELLENCE</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">PRECISION</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gold">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">INNOVATION</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">BEL AYITI</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">EXCELLENCE</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gold">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">PRECISION</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-accent">•</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-gray/30">INNOVATION</span>
+    <span class="inline-block px-8 text-4xl font-display font-bold text-bel-teal">•</span>
+  </div>
 </section>
+
+<!-- CATEGORIES -->
 <section id="collections" class="py-24 px-6 lg:px-12 reveal-section">
-<div class="max-w-7xl mx-auto">
-<div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
-<div>
-<p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Nos Univers</p>
-<h2 class="font-display font-bold text-4xl md:text-6xl">Collections<br><span class="gradient-text">Polyvalentes</span></h2>
-</div>
-<p class="text-bel-light max-w-md mt-4 md:mt-0">De l'ingenierie mecanique a la mode contemporaine, explorez nos univers concus pour les esprits exigeants.</p>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-<div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer">
-<div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-<div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-<div class="w-full h-full flex items-center justify-center">
-<div class="w-32 h-32 relative">
-<div class="absolute inset-0 border-4 border-bel-accent/30 rounded-full animate-spin" style="animation-duration:8s"></div>
-<div class="absolute inset-2 border-4 border-bel-teal/30 rounded-full animate-spin" style="animation-duration:6s;animation-direction:reverse"></div>
-<div class="absolute inset-4 border-4 border-bel-gold/30 rounded-full animate-spin" style="animation-duration:4s"></div>
-<div class="absolute inset-0 flex items-center justify-center">
-<svg class="w-12 h-12 text-bel-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-</div>
-</div>
-</div>
-</div>
-<div class="absolute bottom-0 left-0 p-6 z-20">
-<h3 class="font-display font-bold text-2xl mb-2">Mecanique</h3>
-<p class="text-bel-light text-sm mb-4">Pieces de precision, outillage professionnel</p>
-<span class="inline-flex items-center text-bel-accent font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-</div>
-</div>
-<div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer">
-<div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-<div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-<div class="w-full h-full flex items-center justify-center">
-<svg class="w-24 h-24 text-bel-teal floating" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-</div>
-</div>
-<div class="absolute bottom-0 left-0 p-6 z-20">
-<h3 class="font-display font-bold text-2xl mb-2">Vetements</h3>
-<p class="text-bel-light text-sm mb-4">Streetwear premium, editions limitees</p>
-<span class="inline-flex items-center text-bel-teal font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-</div>
-</div>
-<div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer">
-<div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-<div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-<div class="w-full h-full flex items-center justify-center">
-<svg class="w-24 h-24 text-bel-gold floating" style="animation-delay:2s" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-</div>
-</div>
-<div class="absolute bottom-0 left-0 p-6 z-20">
-<h3 class="font-display font-bold text-2xl mb-2">Accessoires</h3>
-<p class="text-bel-light text-sm mb-4">Montres, bijoux, objets d'exception</p>
-<span class="inline-flex items-center text-bel-gold font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-</div>
-</div>
-<div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer">
-<div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
-<div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
-<div class="w-full h-full flex items-center justify-center">
-<svg class="w-24 h-24 text-bel-accent floating" style="animation-delay:4s" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-</div>
-</div>
-<div class="absolute bottom-0 left-0 p-6 z-20">
-<h3 class="font-display font-bold text-2xl mb-2">Electronique</h3>
-<p class="text-bel-light text-sm mb-4">Tech avancee, gadgets innovants</p>
-<span class="inline-flex items-center text-bel-accent font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
-</div>
-</div>
-</div>
-</div>
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+      <div>
+        <p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Nos Univers</p>
+        <h2 class="font-display font-bold text-4xl md:text-6xl">Collections<br><span class="gradient-text">Polyvalentes</span></h2>
+      </div>
+      <p class="text-bel-light max-w-md mt-4 md:mt-0">De l'ingenierie mecanique a la mode contemporaine.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('mecanique')">
+        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
+          <div class="w-full h-full flex items-center justify-center">
+            <div class="w-32 h-32 relative">
+              <div class="absolute inset-0 border-4 border-bel-accent/30 rounded-full animate-spin" style="animation-duration:8s"></div>
+              <div class="absolute inset-2 border-4 border-bel-teal/30 rounded-full animate-spin" style="animation-duration:6s;animation-direction:reverse"></div>
+              <div class="absolute inset-4 border-4 border-bel-gold/30 rounded-full animate-spin" style="animation-duration:4s"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <svg class="w-12 h-12 text-bel-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20">
+          <h3 class="font-display font-bold text-2xl mb-2">Mecanique</h3>
+          <p class="text-bel-light text-sm mb-4">Pieces de precision</p>
+          <span class="inline-flex items-center text-bel-accent font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('vetement')">
+        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
+          <div class="w-full h-full flex items-center justify-center">
+            <svg class="w-24 h-24 text-bel-teal floating" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20">
+          <h3 class="font-display font-bold text-2xl mb-2">Vetements</h3>
+          <p class="text-bel-light text-sm mb-4">Streetwear premium</p>
+          <span class="inline-flex items-center text-bel-teal font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('accessoire')">
+        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
+          <div class="w-full h-full flex items-center justify-center">
+            <svg class="w-24 h-24 text-bel-gold floating" style="animation-delay:2s" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20">
+          <h3 class="font-display font-bold text-2xl mb-2">Accessoires</h3>
+          <p class="text-bel-light text-sm mb-4">Montres, bijoux</p>
+          <span class="inline-flex items-center text-bel-gold font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+      <div class="group relative h-96 rounded-2xl overflow-hidden cursor-pointer" onclick="filterByCategory('electronique')">
+        <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-bel-black/50 to-transparent z-10"></div>
+        <div class="absolute inset-0 bg-bel-charcoal group-hover:scale-110 transition-transform duration-700">
+          <div class="w-full h-full flex items-center justify-center">
+            <svg class="w-24 h-24 text-bel-accent floating" style="animation-delay:4s" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 p-6 z-20">
+          <h3 class="font-display font-bold text-2xl mb-2">Electronique</h3>
+          <p class="text-bel-light text-sm mb-4">Tech avancee</p>
+          <span class="inline-flex items-center text-bel-accent font-medium text-sm group-hover:translate-x-2 transition-transform">Explorer <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- PRODUCT GRID WITH 3D AUTO-ROTATION -->
+<section id="vetements" class="py-24 px-6 lg:px-12 bg-bel-dark reveal-section">
+  <div class="max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
+      <div>
+        <p class="text-bel-teal font-medium tracking-widest uppercase text-sm mb-4">Boutique</p>
+        <h2 class="font-display font-bold text-4xl md:text-6xl">Tous nos<br><span class="gradient-text">Produits</span></h2>
+      </div>
+      <div class="flex gap-2 mt-6 md:mt-0 overflow-x-auto pb-2">
+        <button class="cat-pill active px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="all" onclick="filterByCategory('all')">Tous</button>
+        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="mecanique" onclick="filterByCategory('mecanique')">Mecanique</button>
+        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="vetement" onclick="filterByCategory('vetement')">Vetements</button>
+        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="accessoire" onclick="filterByCategory('accessoire')">Accessoires</button>
+        <button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="electronique" onclick="filterByCategory('electronique')">Electronique</button>
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid"></div>
+    <div class="mt-16 text-center">
+      <button class="magnetic-btn px-8 py-4 border border-bel-gray text-white font-bold rounded-full hover:bg-bel-charcoal transition-colors" id="load-more">Charger Plus<svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
+    </div>
+  </div>
 </section>
 
-<section id="mecanique" class="py-24 px-6 lg:px-12 bg-bel-dark reveal-section">
-<div class="max-w-7xl mx-auto">
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-<div>
-<p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Produit Phare</p>
-<h2 class="font-display font-bold text-4xl md:text-5xl mb-6">Moteur V-Twin<br><span class="gradient-text">Edition Limitee</span></h2>
-<p class="text-bel-light text-lg mb-8">Decouvrez notre moteur V-Twin en visualisation 3D interactive. Explorez chaque composant, de l'interieur du bloc moteur aux pistons en action.</p>
-<div class="flex flex-wrap gap-4 mb-8">
-<div class="cat-pill px-4 py-2 rounded-full border border-bel-gray text-sm active">Vue Exterieure</div>
-<div class="cat-pill px-4 py-2 rounded-full border border-bel-gray text-sm">Coupe X-Ray</div>
-<div class="cat-pill px-4 py-2 rounded-full border border-bel-gray text-sm">Explosion</div>
-<div class="cat-pill px-4 py-2 rounded-full border border-bel-gray text-sm">Animation</div>
-</div>
-<div class="flex items-center gap-8 mb-8">
-<div><p class="text-3xl font-display font-bold">2,499 €</p><p class="text-bel-light text-sm">Prix TTC</p></div>
-<div class="h-12 w-px bg-bel-gray"></div>
-<div class="flex gap-2">
-<span class="w-8 h-8 rounded-full bg-bel-accent cursor-pointer ring-2 ring-offset-2 ring-offset-bel-dark ring-bel-accent"></span>
-<span class="w-8 h-8 rounded-full bg-bel-teal cursor-pointer"></span>
-<span class="w-8 h-8 rounded-full bg-bel-gold cursor-pointer"></span>
-<span class="w-8 h-8 rounded-full bg-bel-gray cursor-pointer"></span>
-</div>
-</div>
-<div class="flex gap-4">
-<button class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors flex-1" onclick="addToCart('Moteur V-Twin',2499)">Ajouter au Panier</button>
-<button class="magnetic-btn px-6 py-4 border border-bel-gray rounded-full hover:bg-bel-charcoal transition-colors" id="wishlist-btn">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-</button>
-</div>
-</div>
-<div class="viewer-3d" id="product-viewer">
-<canvas id="product-canvas"></canvas>
-<div class="absolute bottom-4 left-4 flex gap-2">
-<button class="px-3 py-1.5 bg-bel-black/80 backdrop-blur rounded-lg text-xs font-medium hover:bg-bel-accent hover:text-bel-black transition-colors" id="rotate-btn">Auto-Rotation</button>
-<button class="px-3 py-1.5 bg-bel-black/80 backdrop-blur rounded-lg text-xs font-medium hover:bg-bel-accent hover:text-bel-black transition-colors" id="wireframe-btn">Fil de Fer</button>
-<button class="px-3 py-1.5 bg-bel-black/80 backdrop-blur rounded-lg text-xs font-medium hover:bg-bel-accent hover:text-bel-black transition-colors" id="explode-btn">Exploser</button>
-</div>
-<div class="absolute top-4 right-4 px-3 py-1.5 bg-bel-accent/20 backdrop-blur rounded-lg text-xs font-medium text-bel-accent border border-bel-accent/30">
-<span class="inline-block w-2 h-2 bg-bel-accent rounded-full mr-2 animate-pulse"></span>3D Live
-</div>
-</div>
-</div>
-</div>
+<!-- FEATURED 3D SHOWCASE -->
+<section id="mecanique" class="py-24 px-6 lg:px-12 reveal-section">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <p class="text-bel-gold font-medium tracking-widest uppercase text-sm mb-4">Experience Immersive</p>
+      <h2 class="font-display font-bold text-4xl md:text-6xl mb-6">Explorez en <span class="gradient-text">3D</span></h2>
+      <p class="text-bel-light max-w-2xl mx-auto">Chaque produit BEL AYITI est visualisable en 3D interactive avec auto-rotation.</p>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2">
+        <div class="viewer-3d h-[600px]" id="showcase-viewer">
+          <canvas id="showcase-canvas"></canvas>
+          <div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
+            <div class="bg-bel-black/80 backdrop-blur rounded-2xl p-4">
+              <p class="text-sm font-medium mb-2">Controles</p>
+              <div class="flex gap-2">
+                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="zoom-in"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg></button>
+                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="zoom-out"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg></button>
+                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="reset-view"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
+                <button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="xray-toggle"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
+              </div>
+            </div>
+            <div class="bg-bel-black/80 backdrop-blur rounded-2xl p-4">
+              <p class="text-xs text-bel-light mb-1">Rotation</p>
+              <input type="range" min="0" max="360" value="0" class="w-32 accent-bel-accent" id="rotation-slider">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <div class="bg-bel-charcoal rounded-2xl p-6 flex-1">
+          <h3 class="font-display font-bold text-xl mb-4">Produits en Vedette</h3>
+          <div class="space-y-4" id="featured-list"></div>
+        </div>
+        <div class="bg-gradient-to-br from-bel-accent/20 to-bel-teal/20 rounded-2xl p-6 border border-bel-accent/20">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-bel-accent flex items-center justify-center">
+              <svg class="w-5 h-5 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <span class="font-bold">Vue 3D Avancee</span>
+          </div>
+          <p class="text-sm text-bel-light">Tous les produits disposent d'une vue 3D auto-rotative. Cliquez et faites glisser pour controler manuellement.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="vetements" class="py-24 px-6 lg:px-12 reveal-section">
-<div class="max-w-7xl mx-auto">
-<div class="flex flex-col md:flex-row md:items-end justify-between mb-16">
-<div>
-<p class="text-bel-teal font-medium tracking-widest uppercase text-sm mb-4">Boutique</p>
-<h2 class="font-display font-bold text-4xl md:text-6xl">Tous nos<br><span class="gradient-text">Produits</span></h2>
-</div>
-<div class="flex gap-2 mt-6 md:mt-0 overflow-x-auto pb-2">
-<button class="cat-pill active px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="all">Tous</button>
-<button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="mecanique">Mecanique</button>
-<button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="vetement">Vetements</button>
-<button class="cat-pill px-6 py-2 rounded-full border border-bel-gray text-sm font-medium whitespace-nowrap" data-filter="accessoire">Accessoires</button>
-</div>
-</div>
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="product-grid"></div>
-<div class="mt-16 text-center">
-<button class="magnetic-btn px-8 py-4 border border-bel-gray text-white font-bold rounded-full hover:bg-bel-charcoal transition-colors" id="load-more">Charger Plus<svg class="w-5 h-5 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button>
-</div>
-</div>
-</section>
-<section class="py-24 px-6 lg:px-12 bg-bel-dark reveal-section">
-<div class="max-w-7xl mx-auto">
-<div class="text-center mb-16">
-<p class="text-bel-gold font-medium tracking-widest uppercase text-sm mb-4">Experience Immersive</p>
-<h2 class="font-display font-bold text-4xl md:text-6xl mb-6">Explorez en <span class="gradient-text">3D</span></h2>
-<p class="text-bel-light max-w-2xl mx-auto">Chaque produit BEL AYITI peut etre visualise en 3D interactive. Zoomez, tournez, explorez l'interieur.</p>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<div class="lg:col-span-2">
-<div class="viewer-3d h-[600px]" id="showcase-viewer">
-<canvas id="showcase-canvas"></canvas>
-<div class="absolute bottom-6 left-6 right-6 flex justify-between items-end">
-<div class="bg-bel-black/80 backdrop-blur rounded-2xl p-4">
-<p class="text-sm font-medium mb-2">Controles</p>
-<div class="flex gap-2">
-<button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="zoom-in"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg></button>
-<button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="zoom-out"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg></button>
-<button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="reset-view"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></button>
-<button class="w-10 h-10 rounded-lg bg-bel-charcoal hover:bg-bel-accent hover:text-bel-black transition-colors flex items-center justify-center" id="xray-toggle"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg></button>
-</div>
-</div>
-<div class="bg-bel-black/80 backdrop-blur rounded-2xl p-4">
-<p class="text-xs text-bel-light mb-1">Rotation</p>
-<input type="range" min="0" max="360" value="0" class="w-32 accent-bel-accent" id="rotation-slider">
-</div>
-</div>
-</div>
-</div>
-<div class="flex flex-col gap-4">
-<div class="bg-bel-charcoal rounded-2xl p-6 flex-1">
-<h3 class="font-display font-bold text-xl mb-4">Produits en Vedette</h3>
-<div class="space-y-4" id="featured-list"></div>
-</div>
-<div class="bg-gradient-to-br from-bel-accent/20 to-bel-teal/20 rounded-2xl p-6 border border-bel-accent/20">
-<div class="flex items-center gap-3 mb-3">
-<div class="w-10 h-10 rounded-full bg-bel-accent flex items-center justify-center">
-<svg class="w-5 h-5 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-</div>
-<span class="font-bold">Vue 3D Avancee</span>
-</div>
-<p class="text-sm text-bel-light">Utilisez votre souris pour orbiter, scroll pour zoomer, et activez le mode X-Ray pour voir l'interieur.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-
+<!-- VIDEO SECTION -->
 <section id="video" class="py-24 relative overflow-hidden reveal-section">
-<div class="absolute inset-0 bg-bel-black">
-<div class="absolute inset-0 bg-gradient-to-r from-bel-black via-transparent to-bel-black z-10"></div>
-<div class="absolute inset-0 bg-gradient-to-t from-bel-black via-transparent to-bel-black z-10"></div>
-</div>
-<div class="relative z-20 px-6 lg:px-12">
-<div class="max-w-7xl mx-auto text-center">
-<p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Notre Histoire</p>
-<h2 class="font-display font-bold text-4xl md:text-7xl mb-8">BEL AYITI<br><span class="gradient-text">Depuis 2020</span></h2>
-<div class="relative max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden bg-bel-charcoal group cursor-pointer">
-<div class="absolute inset-0 flex items-center justify-center">
-<div class="w-20 h-20 rounded-full bg-bel-accent flex items-center justify-center group-hover:scale-110 transition-transform pulse-ring relative">
-<svg class="w-8 h-8 text-bel-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-</div>
-</div>
-<div class="absolute inset-0 bg-gradient-to-t from-bel-black/80 to-transparent"></div>
-<div class="absolute bottom-6 left-6">
-<p class="font-display font-bold text-xl">Documentaire BEL AYITI</p>
-<p class="text-sm text-bel-light">3:45 • L'excellence haitienne</p>
-</div>
-</div>
-</div>
-</div>
+  <div class="absolute inset-0 bg-bel-black">
+    <div class="absolute inset-0 bg-gradient-to-r from-bel-black via-transparent to-bel-black z-10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-bel-black via-transparent to-bel-black z-10"></div>
+  </div>
+  <div class="relative z-20 px-6 lg:px-12">
+    <div class="max-w-7xl mx-auto text-center">
+      <p class="text-bel-accent font-medium tracking-widest uppercase text-sm mb-4">Notre Histoire</p>
+      <h2 class="font-display font-bold text-4xl md:text-7xl mb-8">BEL AYITI<br><span class="gradient-text">Depuis 2020</span></h2>
+      <div class="relative max-w-4xl mx-auto aspect-video rounded-3xl overflow-hidden bg-bel-charcoal group cursor-pointer">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <div class="w-20 h-20 rounded-full bg-bel-accent flex items-center justify-center group-hover:scale-110 transition-transform pulse-ring relative">
+            <svg class="w-8 h-8 text-bel-black ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-t from-bel-black/80 to-transparent"></div>
+        <div class="absolute bottom-6 left-6">
+          <p class="font-display font-bold text-xl">Documentaire BEL AYITI</p>
+          <p class="text-sm text-bel-light">3:45 • L'excellence haitienne</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- TESTIMONIALS -->
 <section class="py-24 px-6 lg:px-12 bg-bel-dark reveal-section">
-<div class="max-w-7xl mx-auto">
-<div class="text-center mb-16">
-<p class="text-bel-teal font-medium tracking-widest uppercase text-sm mb-4">Temoignages</p>
-<h2 class="font-display font-bold text-4xl md:text-6xl">Ce que disent<br><span class="gradient-text">nos clients</span></h2>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-<div class="bg-bel-charcoal rounded-2xl p-8 relative">
-<div class="absolute -top-4 left-8 w-8 h-8 bg-bel-accent rounded-full flex items-center justify-center">
-<svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-</div>
-<p class="text-bel-light mb-6 mt-4">"La qualite des pieces mecaniques est exceptionnelle. La visualisation 3D m'a permis de voir exactement ce que j'achetais."</p>
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">JD</div>
-<div><p class="font-bold">Jean Dupont</p><p class="text-sm text-bel-light">Mecanicien Professionnel</p></div>
-</div>
-</div>
-<div class="bg-bel-charcoal rounded-2xl p-8 relative">
-<div class="absolute -top-4 left-8 w-8 h-8 bg-bel-teal rounded-full flex items-center justify-center">
-<svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-</div>
-<p class="text-bel-light mb-6 mt-4">"Les vetements sont incroyables. Le design est unique et la qualite des materiaux est au-dessus de tout ce que j'ai vu."</p>
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">SM</div>
-<div><p class="font-bold">Sarah Martin</p><p class="text-sm text-bel-light">Directrice Artistique</p></div>
-</div>
-</div>
-<div class="bg-bel-charcoal rounded-2xl p-8 relative">
-<div class="absolute -top-4 left-8 w-8 h-8 bg-bel-gold rounded-full flex items-center justify-center">
-<svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
-</div>
-<p class="text-bel-light mb-6 mt-4">"Service client impeccable et livraison rapide. BEL AYITI est devenu ma reference pour tout achat technique et stylistique."</p>
-<div class="flex items-center gap-3">
-<div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">MK</div>
-<div><p class="font-bold">Marc K.</p><p class="text-sm text-bel-light">Entrepreneur</p></div>
-</div>
-</div>
-</div>
-</div>
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-16">
+      <p class="text-bel-teal font-medium tracking-widest uppercase text-sm mb-4">Temoignages</p>
+      <h2 class="font-display font-bold text-4xl md:text-6xl">Ce que disent<br><span class="gradient-text">nos clients</span></h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="bg-bel-charcoal rounded-2xl p-8 relative">
+        <div class="absolute -top-4 left-8 w-8 h-8 bg-bel-accent rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        </div>
+        <p class="text-bel-light mb-6 mt-4">"La qualite des pieces mecaniques est exceptionnelle. La visualisation 3D m'a permis de voir exactement ce que j'achetais."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">JD</div>
+          <div><p class="font-bold">Jean Dupont</p><p class="text-sm text-bel-light">Mecanicien Professionnel</p></div>
+        </div>
+      </div>
+      <div class="bg-bel-charcoal rounded-2xl p-8 relative">
+        <div class="absolute -top-4 left-8 w-8 h-8 bg-bel-teal rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        </div>
+        <p class="text-bel-light mb-6 mt-4">"Les vetements sont incroyables. Le design est unique et la qualite des materiaux est au-dessus de tout ce que j'ai vu."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">SM</div>
+          <div><p class="font-bold">Sarah Martin</p><p class="text-sm text-bel-light">Directrice Artistique</p></div>
+        </div>
+      </div>
+      <div class="bg-bel-charcoal rounded-2xl p-8 relative">
+        <div class="absolute -top-4 left-8 w-8 h-8 bg-bel-gold rounded-full flex items-center justify-center">
+          <svg class="w-4 h-4 text-bel-black" fill="currentColor" viewBox="0 0 24 24"><path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/></svg>
+        </div>
+        <p class="text-bel-light mb-6 mt-4">"Service client impeccable et livraison rapide. BEL AYITI est devenu ma reference pour tout achat technique et stylistique."</p>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-full bg-bel-gray flex items-center justify-center font-bold">MK</div>
+          <div><p class="font-bold">Marc K.</p><p class="text-sm text-bel-light">Entrepreneur</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
+<!-- NEWSLETTER -->
 <section class="py-24 px-6 lg:px-12 reveal-section">
-<div class="max-w-4xl mx-auto text-center">
-<div class="bg-gradient-to-br from-bel-charcoal to-bel-dark rounded-3xl p-12 border border-bel-gray/30 relative overflow-hidden">
-<div class="absolute top-0 right-0 w-64 h-64 bg-bel-accent/10 rounded-full blur-3xl"></div>
-<div class="absolute bottom-0 left-0 w-64 h-64 bg-bel-teal/10 rounded-full blur-3xl"></div>
-<div class="relative z-10">
-<h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Rejoignez le <span class="gradient-text">Mouvement</span></h2>
-<p class="text-bel-light mb-8 max-w-lg mx-auto">Inscrivez-vous pour recevoir en exclusivite nos nouveautes, offres speciales et acces prioritaire aux editions limitees.</p>
-<form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" onsubmit="handleSubscribe(event)">
-<input type="email" placeholder="votre@email.com" class="flex-1 px-6 py-4 bg-bel-black border border-bel-gray rounded-full focus:outline-none focus:border-bel-accent text-white placeholder-bel-light" required>
-<button type="submit" class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors whitespace-nowrap">S'inscrire</button>
-</form>
-<p class="text-xs text-bel-light mt-4">En vous inscrivant, vous acceptez notre politique de confidentialite.</p>
-</div>
-</div>
-</div>
+  <div class="max-w-4xl mx-auto text-center">
+    <div class="bg-gradient-to-br from-bel-charcoal to-bel-dark rounded-3xl p-12 border border-bel-gray/30 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-64 h-64 bg-bel-accent/10 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-0 w-64 h-64 bg-bel-teal/10 rounded-full blur-3xl"></div>
+      <div class="relative z-10">
+        <h2 class="font-display font-bold text-3xl md:text-5xl mb-4">Rejoignez le <span class="gradient-text">Mouvement</span></h2>
+        <p class="text-bel-light mb-8 max-w-lg mx-auto">Inscrivez-vous pour recevoir en exclusivite nos nouveautes, offres speciales et acces prioritaire aux editions limitees.</p>
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto" onsubmit="handleSubscribe(event)">
+          <input type="email" placeholder="votre@email.com" class="flex-1 px-6 py-4 bg-bel-black border border-bel-gray rounded-full focus:outline-none focus:border-bel-accent text-white placeholder-bel-light" required>
+          <button type="submit" class="magnetic-btn px-8 py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors whitespace-nowrap">S'inscrire</button>
+        </form>
+        <p class="text-xs text-bel-light mt-4">En vous inscrivant, vous acceptez notre politique de confidentialite.</p>
+      </div>
+    </div>
+  </div>
 </section>
+
+<!-- FOOTER -->
 <footer class="bg-bel-black border-t border-bel-gray py-16 px-6 lg:px-12">
-<div class="max-w-7xl mx-auto">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-<div>
-<div class="flex items-center gap-2 mb-6">
-<div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center"><span class="font-display font-bold text-bel-black text-lg">B</span></div>
-<span class="font-display font-bold text-xl">BEL AYITI</span>
-</div>
-<p class="text-bel-light text-sm mb-6">L'excellence haitienne, reinventee. Des pieces mecaniques de precision aux vetements d'exception.</p>
-<div class="flex gap-4">
-<a href="#" class="w-10 h-10 rounded-full bg-bel-charcoal flex items-center justify-center hover:bg-bel-accent hover:text-bel-black transition-colors">
-<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-</a>
-<a href="#" class="w-10 h-10 rounded-full bg-bel-charcoal flex items-center justify-center hover:bg-bel-accent hover:text-bel-black transition-colors">
-<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-</a>
-</div>
-</div>
-<div>
-<h4 class="font-bold mb-6">Boutique</h4>
-<ul class="space-y-3 text-sm text-bel-light">
-<li><a href="#" class="hover:text-white transition-colors">Nouveautes</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Mecanique</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Vetements</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Accessoires</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Editions Limitees</a></li>
-</ul>
-</div>
-<div>
-<h4 class="font-bold mb-6">Aide</h4>
-<ul class="space-y-3 text-sm text-bel-light">
-<li><a href="#" class="hover:text-white transition-colors">Livraison</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Retours</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Guide des Tailles</a></li>
-<li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-</ul>
-</div>
-<div>
-<h4 class="font-bold mb-6">Entreprise</h4>
-<ul class="space-y-3 text-sm text-bel-light">
-<li><a href="#" class="hover:text-white transition-colors">A Propos</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Carrieres</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Presse</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Durabilite</a></li>
-<li><a href="#" class="hover:text-white transition-colors">Affilies</a></li>
-</ul>
-</div>
-</div>
-<div class="border-t border-bel-gray pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-<p class="text-sm text-bel-light">© 2026 BEL AYITI. Tous droits reserves.</p>
-<div class="flex gap-6 text-sm text-bel-light">
-<a href="#" class="hover:text-white transition-colors">Confidentialite</a>
-<a href="#" class="hover:text-white transition-colors">Conditions</a>
-<a href="#" class="hover:text-white transition-colors">Cookies</a>
-</div>
-</div>
-</div>
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+      <div>
+        <div class="flex items-center gap-2 mb-6">
+          <div class="w-10 h-10 bg-bel-accent rounded-lg flex items-center justify-center"><span class="font-display font-bold text-bel-black text-lg">B</span></div>
+          <span class="font-display font-bold text-xl">BEL AYITI</span>
+        </div>
+        <p class="text-bel-light text-sm mb-6">L'excellence haitienne, reinventee. Des pieces mecaniques de precision aux vetements d'exception.</p>
+        <div class="flex gap-4">
+          <a href="#" class="w-10 h-10 rounded-full bg-bel-charcoal flex items-center justify-center hover:bg-bel-accent hover:text-bel-black transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+          </a>
+          <a href="#" class="w-10 h-10 rounded-full bg-bel-charcoal flex items-center justify-center hover:bg-bel-accent hover:text-bel-black transition-colors">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="font-bold mb-6">Boutique</h4>
+        <ul class="space-y-3 text-sm text-bel-light">
+          <li><a href="#" class="hover:text-white transition-colors">Nouveautes</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Mecanique</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Vetements</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Accessoires</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Editions Limitees</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold mb-6">Aide</h4>
+        <ul class="space-y-3 text-sm text-bel-light">
+          <li><a href="#" class="hover:text-white transition-colors">Livraison</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Retours</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Guide des Tailles</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">FAQ</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold mb-6">Entreprise</h4>
+        <ul class="space-y-3 text-sm text-bel-light">
+          <li><a href="#" class="hover:text-white transition-colors">A Propos</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Carrieres</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Presse</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Durabilite</a></li>
+          <li><a href="#" class="hover:text-white transition-colors">Affilies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-bel-gray pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-sm text-bel-light">© 2026 BEL AYITI. Tous droits reserves.</p>
+      <div class="flex gap-6 text-sm text-bel-light">
+        <a href="#" class="hover:text-white transition-colors">Confidentialite</a>
+        <a href="#" class="hover:text-white transition-colors">Conditions</a>
+        <a href="#" class="hover:text-white transition-colors">Cookies</a>
+      </div>
+    </div>
+  </div>
 </footer>
 
+<!-- CART SIDEBAR -->
 <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-bel-black border-l border-bel-gray z-50 transform translate-x-full transition-transform duration-500">
-<div class="p-6 h-full flex flex-col">
-<div class="flex items-center justify-between mb-8">
-<h3 class="font-display font-bold text-2xl">Votre Panier</h3>
-<button id="close-cart" class="p-2 hover:bg-bel-charcoal rounded-full transition-colors">
-<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-</button>
-</div>
-<div id="cart-items" class="flex-1 overflow-y-auto space-y-4">
-<p class="text-bel-light text-center py-12">Votre panier est vide</p>
-</div>
-<div class="border-t border-bel-gray pt-6 mt-6">
-<div class="flex justify-between mb-4">
-<span class="text-bel-light">Sous-total</span>
-<span class="font-bold" id="cart-total">0 €</span>
-</div>
-<button class="w-full py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors">Commander</button>
-</div>
-</div>
+  <div class="p-6 h-full flex flex-col">
+    <div class="flex items-center justify-between mb-8">
+      <h3 class="font-display font-bold text-2xl">Votre Panier</h3>
+      <button id="close-cart" class="p-2 hover:bg-bel-charcoal rounded-full transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto space-y-4">
+      <p class="text-bel-light text-center py-12">Votre panier est vide</p>
+    </div>
+    <div class="border-t border-bel-gray pt-6 mt-6">
+      <div class="flex justify-between mb-4">
+        <span class="text-bel-light">Sous-total</span>
+        <span class="font-bold" id="cart-total">0 €</span>
+      </div>
+      <button class="w-full py-4 bg-bel-accent text-bel-black font-bold rounded-full hover:bg-white transition-colors">Commander</button>
+    </div>
+  </div>
 </div>
 <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
+<!-- TOAST -->
 <div id="toast" class="fixed bottom-8 right-8 bg-bel-charcoal border border-bel-gray rounded-2xl p-4 flex items-center gap-4 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
-<div class="w-10 h-10 rounded-full bg-bel-accent flex items-center justify-center">
-<svg class="w-5 h-5 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-</div>
-<div>
-<p class="font-bold text-sm">Ajoute au panier</p>
-<p class="text-xs text-bel-light" id="toast-message">Produit ajoute avec succes</p>
-</div>
+  <div class="w-10 h-10 rounded-full bg-bel-accent flex items-center justify-center">
+    <svg class="w-5 h-5 text-bel-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <div>
+    <p class="font-bold text-sm">Ajoute au panier</p>
+    <p class="text-xs text-bel-light" id="toast-message">Produit ajoute avec succes</p>
+  </div>
 </div>
 <script>
-const products = [
-  {id:1,name:"Moteur V-Twin",price:2499,category:"mecanique",image:"https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent"},
-  {id:2,name:"Veste Technique",price:189,category:"vetement",image:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",badge:"New",color:"bel-teal"},
-  {id:3,name:"Pompe Hydraulique",price:459,category:"mecanique",image:"https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent"},
-  {id:4,name:"Sneakers Premium",price:229,category:"vetement",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",badge:"Hot",color:"bel-gold"},
-  {id:5,name:"Montre Chronographe",price:599,category:"accessoire",image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent"},
-  {id:6,name:"Compresseur Pro",price:899,category:"mecanique",image:"https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=400&h=400&fit=crop",badge:"Sale",color:"bel-teal"},
-  {id:7,name:"T-Shirt Edition",price:59,category:"vetement",image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",badge:"New",color:"bel-teal"},
-  {id:8,name:"Lunettes Connectees",price:349,category:"accessoire",image:"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent"},
+// ==================== CONFIG ====================
+const ADMIN_PASSWORD = "Dany2004";
+const STORAGE_KEY = "bel_ayiti_products";
+const ADMIN_SESSION_KEY = "bel_ayiti_admin";
+
+// ==================== DEFAULT PRODUCTS ====================
+const defaultProducts = [
+  {id:1,name:"Moteur V-Twin",price:2499,category:"mecanique",image:"",badge:"3D",color:"bel-accent",has3D:true},
+  {id:2,name:"Veste Technique",price:189,category:"vetement",image:"https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=400&fit=crop",badge:"New",color:"bel-teal",has3D:true},
+  {id:3,name:"Pompe Hydraulique",price:459,category:"mecanique",image:"",badge:"3D",color:"bel-accent",has3D:true},
+  {id:4,name:"Sneakers Premium",price:229,category:"vetement",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=400&fit=crop",badge:"Hot",color:"bel-gold",has3D:true},
+  {id:5,name:"Montre Chronographe",price:599,category:"accessoire",image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent",has3D:true},
+  {id:6,name:"Compresseur Pro",price:899,category:"mecanique",image:"",badge:"Sale",color:"bel-teal",has3D:true},
+  {id:7,name:"T-Shirt Edition",price:59,category:"vetement",image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop",badge:"New",color:"bel-teal",has3D:true},
+  {id:8,name:"Lunettes Connectees",price:349,category:"accessoire",image:"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop",badge:"3D",color:"bel-accent",has3D:true},
 ];
 
+let products = [];
 let cart = [];
 let currentFilter = 'all';
+let product3DScenes = [];
 
-// Custom Cursor
-const cursor = document.getElementById('cursor');
-if (window.matchMedia('(pointer: fine)').matches) {
-  document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX - 10 + 'px';
-    cursor.style.top = e.clientY - 10 + 'px';
-  });
-  document.querySelectorAll('a, button, .product-card').forEach(el => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-  });
-} else {
-  cursor.style.display = 'none';
+// ==================== LOCALSTORAGE ====================
+function loadProducts() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      products = JSON.parse(stored);
+    } catch(e) {
+      products = [...defaultProducts];
+      saveProducts();
+    }
+  } else {
+    products = [...defaultProducts];
+    saveProducts();
+  }
 }
 
-// Navigation
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar.classList.toggle('nav-blur', window.scrollY > 100);
-});
+function saveProducts() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+}
 
-const menuToggle = document.getElementById('menu-toggle');
-const mobileMenu = document.getElementById('mobile-menu');
-let menuOpen = false;
-menuToggle.addEventListener('click', () => {
-  menuOpen = !menuOpen;
-  mobileMenu.style.transform = menuOpen ? 'translateX(0)' : 'translateX(100%)';
-});
-document.querySelectorAll('.mobile-link').forEach(link => {
-  link.addEventListener('click', () => {
-    menuOpen = false;
-    mobileMenu.style.transform = 'translateX(100%)';
+// ==================== ADMIN PANEL ====================
+function openAdminLogin() {
+  const modal = document.getElementById('admin-login-modal');
+  modal.classList.add('active');
+  document.getElementById('admin-password-input').value = '';
+  document.getElementById('admin-password-input').focus();
+}
+
+function closeAdminLogin() {
+  document.getElementById('admin-login-modal').classList.remove('active');
+}
+
+function checkAdminPassword() {
+  const input = document.getElementById('admin-password-input');
+  const error = document.getElementById('admin-login-error');
+
+  if (input.value === ADMIN_PASSWORD) {
+    localStorage.setItem(ADMIN_SESSION_KEY, 'true');
+    closeAdminLogin();
+    openAdminPanel();
+  } else {
+    error.classList.remove('hidden');
+    input.classList.add('error');
+    setTimeout(() => {
+      input.classList.remove('error');
+      error.classList.add('hidden');
+    }, 2000);
+  }
+}
+
+function openAdminPanel() {
+  document.getElementById('admin-panel').classList.add('active');
+  document.getElementById('admin-overlay').classList.add('active');
+  renderAdminProducts();
+  updateAdminStats();
+}
+
+function closeAdminPanel() {
+  document.getElementById('admin-panel').classList.remove('active');
+  document.getElementById('admin-overlay').classList.remove('active');
+}
+
+function isAdmin() {
+  return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+}
+
+function logoutAdmin() {
+  localStorage.removeItem(ADMIN_SESSION_KEY);
+  closeAdminPanel();
+}
+
+// ==================== ADMIN CRUD ====================
+function addProduct() {
+  const name = document.getElementById('admin-product-name').value.trim();
+  const price = parseFloat(document.getElementById('admin-product-price').value);
+  const category = document.getElementById('admin-product-category').value;
+  const image = document.getElementById('admin-product-image').value.trim();
+  const badge = document.getElementById('admin-product-badge').value;
+  const color = document.getElementById('admin-product-color').value;
+
+  if (!name || !price) {
+    alert('Veuillez remplir le nom et le prix.');
+    return;
+  }
+
+  const newProduct = {
+    id: Date.now(),
+    name,
+    price,
+    category,
+    image,
+    badge,
+    color,
+    has3D: true
+  };
+
+  products.push(newProduct);
+  saveProducts();
+  renderProducts();
+  renderAdminProducts();
+  updateAdminStats();
+  clearAdminForm();
+  showToast('Produit ajoute avec succes !');
+}
+
+function editProduct(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  const newName = prompt('Nouveau nom:', product.name);
+  if (newName === null) return;
+
+  const newPrice = prompt('Nouveau prix:', product.price);
+  if (newPrice === null) return;
+
+  const newCategory = prompt('Nouvelle categorie (mecanique/vetement/accessoire/electronique):', product.category);
+  if (newCategory === null) return;
+
+  product.name = newName || product.name;
+  product.price = parseFloat(newPrice) || product.price;
+  product.category = newCategory || product.category;
+
+  saveProducts();
+  renderProducts();
+  renderAdminProducts();
+  updateAdminStats();
+  showToast('Produit modifie avec succes !');
+}
+
+function deleteProduct(id) {
+  if (!confirm('Supprimer ce produit ?')) return;
+  products = products.filter(p => p.id !== id);
+  saveProducts();
+  renderProducts();
+  renderAdminProducts();
+  updateAdminStats();
+  showToast('Produit supprime.');
+}
+
+function clearAdminForm() {
+  document.getElementById('admin-product-name').value = '';
+  document.getElementById('admin-product-price').value = '';
+  document.getElementById('admin-product-image').value = '';
+}
+
+function renderAdminProducts() {
+  const tbody = document.getElementById('admin-products-list');
+  if (!tbody) return;
+
+  tbody.innerHTML = products.map(p => `
+    <tr>
+      <td>
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-lg bg-bel-charcoal flex items-center justify-center text-xs font-bold">${p.id.toString().slice(-3)}</div>
+          <span class="font-medium">${p.name}</span>
+        </div>
+      </td>
+      <td class="text-bel-accent font-bold">${p.price} €</td>
+      <td><span class="admin-badge bg-bel-charcoal">${p.category}</span></td>
+      <td>
+        <div class="flex gap-2">
+          <button class="p-2 hover:bg-bel-charcoal rounded-lg transition-colors" onclick="editProduct(${p.id})" title="Modifier">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button class="p-2 hover:bg-bel-red/20 rounded-lg transition-colors text-bel-red" onclick="deleteProduct(${p.id})" title="Supprimer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function updateAdminStats() {
+  const countEl = document.getElementById('admin-count-products');
+  const catEl = document.getElementById('admin-count-categories');
+  const valEl = document.getElementById('admin-total-value');
+
+  if (countEl) countEl.textContent = products.length;
+  if (catEl) catEl.textContent = new Set(products.map(p => p.category)).size;
+  if (valEl) valEl.textContent = products.reduce((s, p) => s + p.price, 0) + '€';
+}
+
+function exportProducts() {
+  const dataStr = JSON.stringify(products, null, 2);
+  const blob = new Blob([dataStr], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'bel_ayiti_products.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Export reussi !');
+}
+
+function importProducts(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (Array.isArray(imported)) {
+        products = imported;
+        saveProducts();
+        renderProducts();
+        renderAdminProducts();
+        updateAdminStats();
+        showToast('Import reussi !');
+      }
+    } catch(err) {
+      alert('Fichier invalide.');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+// ==================== 3D PRODUCT RENDERER (AUTO-ROTATION) ====================
+function createProduct3D(canvas, product) {
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+  const renderer = new THREE.WebGLRenderer({canvas, alpha: true, antialias: true});
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const group = new THREE.Group();
+
+  // Create different geometries based on category
+  let geometry, material;
+  const colors = {
+    mecanique: 0xff6b35,
+    vetement: 0x00d4aa,
+    accessoire: 0xd4af37,
+    electronique: 0xff6b35
+  };
+  const baseColor = colors[product.category] || 0xff6b35;
+
+  if (product.category === 'mecanique') {
+    // Engine-like: cylinder + torus
+    const cyl = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.6, 0.6, 1.2, 16),
+      new THREE.MeshPhongMaterial({color: baseColor, metalness: 0.8, roughness: 0.2})
+    );
+    group.add(cyl);
+    const torus = new THREE.Mesh(
+      new THREE.TorusGeometry(0.8, 0.15, 8, 24),
+      new THREE.MeshPhongMaterial({color: 0x888888, metalness: 0.6, roughness: 0.3})
+    );
+    torus.rotation.x = Math.PI / 2;
+    group.add(torus);
+  } else if (product.category === 'vetement') {
+    // Clothing-like: rounded box
+    geometry = new THREE.BoxGeometry(1, 1.2, 0.3);
+    material = new THREE.MeshPhongMaterial({color: baseColor, metalness: 0.3, roughness: 0.7});
+    const mesh = new THREE.Mesh(geometry, material);
+    group.add(mesh);
+    // Add hanger ring
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.2, 0.05, 8, 16),
+      new THREE.MeshPhongMaterial({color: 0x888888})
+    );
+    ring.position.y = 0.7;
+    group.add(ring);
+  } else if (product.category === 'accessoire') {
+    // Watch-like: cylinder + ring
+    const body = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.7, 0.7, 0.3, 32),
+      new THREE.MeshPhongMaterial({color: baseColor, metalness: 0.9, roughness: 0.1})
+    );
+    body.rotation.x = Math.PI / 2;
+    group.add(body);
+    const strap = new THREE.Mesh(
+      new THREE.BoxGeometry(0.4, 1.5, 0.1),
+      new THREE.MeshPhongMaterial({color: 0x333333, metalness: 0.5, roughness: 0.5})
+    );
+    group.add(strap);
+  } else {
+    // Electronics: box + screen
+    const body = new THREE.Mesh(
+      new THREE.BoxGeometry(1, 0.7, 0.2),
+      new THREE.MeshPhongMaterial({color: baseColor, metalness: 0.4, roughness: 0.4})
+    );
+    group.add(body);
+    const screen = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.8, 0.5),
+      new THREE.MeshBasicMaterial({color: 0x111111})
+    );
+    screen.position.z = 0.11;
+    group.add(screen);
+  }
+
+  scene.add(group);
+
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  scene.add(ambientLight);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+  dirLight.position.set(2, 2, 2);
+  scene.add(dirLight);
+  const dirLight2 = new THREE.DirectionalLight(baseColor, 0.5);
+  dirLight2.position.set(-2, -2, 2);
+  scene.add(dirLight2);
+
+  camera.position.z = 2.5;
+
+  // Auto-rotation
+  let autoRotate = true;
+  let mouseOver = false;
+
+  canvas.addEventListener('mouseenter', () => { mouseOver = true; });
+  canvas.addEventListener('mouseleave', () => { mouseOver = false; });
+
+  let isDragging = false;
+  let previousX = 0;
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    previousX = e.clientX;
+    autoRotate = false;
   });
-});
+  canvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      const delta = e.clientX - previousX;
+      group.rotation.y += delta * 0.01;
+      previousX = e.clientX;
+    }
+  });
+  canvas.addEventListener('mouseup', () => { isDragging = false; autoRotate = true; });
+  canvas.addEventListener('mouseleave', () => { isDragging = false; });
 
-// Hero 3D
+  function animate() {
+    if (!document.body.contains(canvas)) return;
+    requestAnimationFrame(animate);
+    if (autoRotate && !mouseOver) {
+      group.rotation.y += 0.01;
+      group.rotation.x = Math.sin(Date.now() * 0.001) * 0.1;
+    }
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  return {scene, camera, renderer, group};
+}
+
+// ==================== RENDER PRODUCTS ====================
+function renderProducts(filter = 'all') {
+  const grid = document.getElementById('product-grid');
+  if (!grid) return;
+
+  // Clean up old 3D scenes
+  product3DScenes.forEach(s => {
+    if (s.renderer) s.renderer.dispose();
+  });
+  product3DScenes = [];
+
+  const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+  grid.innerHTML = filtered.map((product, index) => `
+    <div class="product-card bg-bel-charcoal rounded-2xl overflow-hidden group cursor-pointer" data-category="${product.category}">
+      <div class="relative">
+        <canvas id="product-3d-${product.id}" class="product-3d-canvas" style="background: radial-gradient(circle at center, #1a1a1a 0%, #111 100%);"></canvas>
+        <div class="absolute top-4 left-4">
+          <span class="px-3 py-1 bg-${product.color} text-bel-black text-xs font-bold rounded-full">${product.badge}</span>
+        </div>
+        <div class="absolute top-4 right-4">
+          <span class="px-2 py-1 bg-bel-black/60 backdrop-blur rounded text-xs text-bel-light">
+            <svg class="w-3 h-3 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            3D
+          </span>
+        </div>
+      </div>
+      <div class="p-6">
+        <p class="text-xs text-bel-light uppercase tracking-wider mb-1">${product.category}</p>
+        <h3 class="font-display font-bold text-lg mb-2">${product.name}</h3>
+        <div class="flex items-center justify-between">
+          <p class="text-bel-accent font-bold text-xl">${product.price} €</p>
+          <button class="w-10 h-10 rounded-full bg-bel-accent text-bel-black flex items-center justify-center hover:scale-110 transition-transform" onclick="addToCart('${product.name}', ${product.price})">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Initialize 3D for each product
+  setTimeout(() => {
+    filtered.forEach(product => {
+      const canvas = document.getElementById(`product-3d-${product.id}`);
+      if (canvas) {
+        const scene = createProduct3D(canvas, product);
+        product3DScenes.push(scene);
+      }
+    });
+  }, 100);
+
+  gsap.fromTo('.product-card', 
+    {opacity: 0, y: 40, scale: 0.95},
+    {opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.08, ease: "power2.out"}
+  );
+}
+
+function filterByCategory(category) {
+  currentFilter = category;
+  document.querySelectorAll('.cat-pill[data-filter]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === category);
+  });
+  renderProducts(category);
+}
+
+// ==================== HERO 3D ====================
 function initHero3D() {
   const canvas = document.getElementById('hero-canvas');
+  if (!canvas) return;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
@@ -602,8 +1313,6 @@ function initHero3D() {
     meshes.forEach(({mesh, speed}) => {
       mesh.rotation.x += speed;
       mesh.rotation.y += speed * 0.7;
-      mesh.position.x += Math.sin(Date.now() * 0.001 * speed) * 0.01;
-      mesh.position.y += Math.cos(Date.now() * 0.001 * speed) * 0.01;
     });
     camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
     camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
@@ -619,138 +1328,12 @@ function initHero3D() {
   });
 }
 
-// Product 3D Viewer
-function initProduct3D() {
-  const container = document.getElementById('product-viewer');
-  const canvas = document.getElementById('product-canvas');
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-  // Create engine-like geometry (cylinder + torus)
-  const group = new THREE.Group();
-
-  const cylinderGeo = new THREE.CylinderGeometry(1, 1, 2, 32);
-  const cylinderMat = new THREE.MeshPhongMaterial({color: 0xff6b35, metalness: 0.8, roughness: 0.2});
-  const cylinder = new THREE.Mesh(cylinderGeo, cylinderMat);
-  group.add(cylinder);
-
-  const torusGeo = new THREE.TorusGeometry(1.2, 0.2, 16, 100);
-  const torusMat = new THREE.MeshPhongMaterial({color: 0x00d4aa, metalness: 0.6, roughness: 0.3});
-  const torus = new THREE.Mesh(torusGeo, torusMat);
-  torus.rotation.x = Math.PI / 2;
-  group.add(torus);
-
-  const sphereGeo = new THREE.SphereGeometry(0.5, 32, 32);
-  const sphereMat = new THREE.MeshPhongMaterial({color: 0xd4af37, metalness: 0.9, roughness: 0.1});
-  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-  sphere.position.y = 1.5;
-  group.add(sphere);
-
-  // Add pistons
-  for (let i = 0; i < 4; i++) {
-    const pistonGeo = new THREE.CylinderGeometry(0.3, 0.3, 1, 16);
-    const pistonMat = new THREE.MeshPhongMaterial({color: 0x888888, metalness: 0.7, roughness: 0.4});
-    const piston = new THREE.Mesh(pistonGeo, pistonMat);
-    piston.position.set(Math.cos(i * Math.PI / 2) * 0.7, 0, Math.sin(i * Math.PI / 2) * 0.7);
-    group.add(piston);
-  }
-
-  scene.add(group);
-
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-  scene.add(ambientLight);
-  const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-  dirLight.position.set(5, 5, 5);
-  scene.add(dirLight);
-  const dirLight2 = new THREE.DirectionalLight(0xff6b35, 0.5);
-  dirLight2.position.set(-5, -5, 5);
-  scene.add(dirLight2);
-
-  camera.position.z = 4;
-
-  let autoRotate = false;
-  let wireframe = false;
-  let exploded = false;
-
-  document.getElementById('rotate-btn').addEventListener('click', () => {
-    autoRotate = !autoRotate;
-  });
-  document.getElementById('wireframe-btn').addEventListener('click', () => {
-    wireframe = !wireframe;
-    group.children.forEach(child => {
-      if (child.material) child.material.wireframe = wireframe;
-    });
-  });
-  document.getElementById('explode-btn').addEventListener('click', () => {
-    exploded = !exploded;
-    if (exploded) {
-      group.children.forEach((child, i) => {
-        gsap.to(child.position, {
-          x: child.position.x * 1.5,
-          y: child.position.y * 1.5 + (i * 0.3),
-          z: child.position.z * 1.5,
-          duration: 1,
-          ease: "power2.out"
-        });
-      });
-    } else {
-      group.children.forEach((child, i) => {
-        gsap.to(child.position, {
-          x: child.userData.originalX || child.position.x / 1.5,
-          y: child.userData.originalY || (child.position.y - i * 0.3) / 1.5,
-          z: child.userData.originalZ || child.position.z / 1.5,
-          duration: 1,
-          ease: "power2.out"
-        });
-      });
-    }
-  });
-
-  let mouseX = 0, mouseY = 0;
-  let isDragging = false;
-  let previousMouseX = 0, previousMouseY = 0;
-
-  canvas.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    previousMouseX = e.clientX;
-    previousMouseY = e.clientY;
-  });
-  canvas.addEventListener('mousemove', (e) => {
-    if (isDragging) {
-      const deltaX = e.clientX - previousMouseX;
-      const deltaY = e.clientY - previousMouseY;
-      group.rotation.y += deltaX * 0.01;
-      group.rotation.x += deltaY * 0.01;
-      previousMouseX = e.clientX;
-      previousMouseY = e.clientY;
-    }
-  });
-  canvas.addEventListener('mouseup', () => isDragging = false);
-  canvas.addEventListener('mouseleave', () => isDragging = false);
-
-  function animate() {
-    requestAnimationFrame(animate);
-    if (autoRotate) {
-      group.rotation.y += 0.01;
-    }
-    renderer.render(scene, camera);
-  }
-  animate();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-  });
-}
-
-// Showcase 3D
+// ==================== SHOWCASE 3D ====================
 function initShowcase3D() {
   const container = document.getElementById('showcase-viewer');
   const canvas = document.getElementById('showcase-canvas');
+  if (!container || !canvas) return;
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
@@ -758,9 +1341,8 @@ function initShowcase3D() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
   const group = new THREE.Group();
-
-  // Create a complex gear-like object
   const mainGear = new THREE.Group();
+
   const outerRing = new THREE.TorusGeometry(2, 0.3, 16, 32);
   const outerMat = new THREE.MeshPhongMaterial({color: 0xff6b35, metalness: 0.8, roughness: 0.2});
   mainGear.add(new THREE.Mesh(outerRing, outerMat));
@@ -773,7 +1355,6 @@ function initShowcase3D() {
   const centerMat = new THREE.MeshPhongMaterial({color: 0xd4af37, metalness: 0.9, roughness: 0.1});
   mainGear.add(new THREE.Mesh(centerSphere, centerMat));
 
-  // Add teeth
   for (let i = 0; i < 12; i++) {
     const toothGeo = new THREE.BoxGeometry(0.4, 0.6, 0.2);
     const toothMat = new THREE.MeshPhongMaterial({color: 0xff6b35, metalness: 0.7, roughness: 0.3});
@@ -830,10 +1411,8 @@ function initShowcase3D() {
     group.rotation.y = (e.target.value / 360) * Math.PI * 2;
   });
 
-  let mouseX = 0, mouseY = 0;
   let isDragging = false;
   let previousMouseX = 0;
-
   canvas.addEventListener('mousedown', (e) => {
     isDragging = true;
     previousMouseX = e.clientX;
@@ -847,7 +1426,6 @@ function initShowcase3D() {
   });
   canvas.addEventListener('mouseup', () => isDragging = false);
   canvas.addEventListener('mouseleave', () => isDragging = false);
-
   canvas.addEventListener('wheel', (e) => {
     e.preventDefault();
     zoom += e.deltaY * -0.001;
@@ -869,55 +1447,7 @@ function initShowcase3D() {
   });
 }
 
-// Render Products
-function renderProducts(filter = 'all') {
-  const grid = document.getElementById('product-grid');
-  const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
-
-  grid.innerHTML = filtered.map(product => `
-    <div class="product-card bg-bel-charcoal rounded-2xl overflow-hidden group cursor-pointer" data-category="${product.category}">
-      <div class="relative aspect-square overflow-hidden">
-        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-        <div class="absolute top-4 left-4">
-          <span class="px-3 py-1 bg-bel-${product.color} text-bel-black text-xs font-bold rounded-full">${product.badge}</span>
-        </div>
-        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
-          <button class="w-12 h-12 rounded-full bg-white text-bel-black flex items-center justify-center hover:scale-110 transition-transform" onclick="addToCart('${product.name}', ${product.price})">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-          </button>
-          <button class="w-12 h-12 rounded-full bg-white text-bel-black flex items-center justify-center hover:scale-110 transition-transform">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-          </button>
-        </div>
-      </div>
-      <div class="p-6">
-        <p class="text-xs text-bel-light uppercase tracking-wider mb-1">${product.category}</p>
-        <h3 class="font-display font-bold text-lg mb-2">${product.name}</h3>
-        <p class="text-bel-accent font-bold">${product.price} €</p>
-      </div>
-    </div>
-  `).join('');
-
-  // Animate cards
-  gsap.fromTo('.product-card', 
-    {opacity: 0, y: 40, scale: 0.95},
-    {opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.1, ease: "power2.out"}
-  );
-}
-
-// Filter Buttons
-function initFilters() {
-  document.querySelectorAll('.cat-pill[data-filter]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.cat-pill[data-filter]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      currentFilter = btn.dataset.filter;
-      renderProducts(currentFilter);
-    });
-  });
-}
-
-// Cart Functions
+// ==================== CART ====================
 function addToCart(name, price) {
   const existing = cart.find(item => item.name === name);
   if (existing) {
@@ -938,6 +1468,7 @@ function updateCartUI() {
   const count = document.getElementById('cart-count');
   const items = document.getElementById('cart-items');
   const total = document.getElementById('cart-total');
+  if (!count || !items || !total) return;
 
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -969,6 +1500,7 @@ function updateCartUI() {
 function showToast(message) {
   const toast = document.getElementById('toast');
   const toastMessage = document.getElementById('toast-message');
+  if (!toast || !toastMessage) return;
   toastMessage.textContent = message;
   toast.style.transform = 'translateY(0)';
   toast.style.opacity = '1';
@@ -978,33 +1510,38 @@ function showToast(message) {
   }, 3000);
 }
 
-// Cart Sidebar
-const cartBtn = document.getElementById('cart-btn');
-const cartSidebar = document.getElementById('cart-sidebar');
-const cartOverlay = document.getElementById('cart-overlay');
-const closeCart = document.getElementById('close-cart');
+function initCart() {
+  const cartBtn = document.getElementById('cart-btn');
+  const cartSidebar = document.getElementById('cart-sidebar');
+  const cartOverlay = document.getElementById('cart-overlay');
+  const closeCart = document.getElementById('close-cart');
+  if (!cartBtn || !cartSidebar || !cartOverlay || !closeCart) return;
 
-cartBtn.addEventListener('click', () => {
-  cartSidebar.style.transform = 'translateX(0)';
-  cartOverlay.style.opacity = '1';
-  cartOverlay.style.pointerEvents = 'auto';
-});
+  cartBtn.addEventListener('click', () => {
+    cartSidebar.style.transform = 'translateX(0)';
+    cartOverlay.style.opacity = '1';
+    cartOverlay.style.pointerEvents = 'auto';
+  });
 
-function closeCartSidebar() {
-  cartSidebar.style.transform = 'translateX(100%)';
-  cartOverlay.style.opacity = '0';
-  cartOverlay.style.pointerEvents = 'none';
+  function closeCartSidebar() {
+    cartSidebar.style.transform = 'translateX(100%)';
+    cartOverlay.style.opacity = '0';
+    cartOverlay.style.pointerEvents = 'none';
+  }
+
+  closeCart.addEventListener('click', closeCartSidebar);
+  cartOverlay.addEventListener('click', closeCartSidebar);
 }
 
-closeCart.addEventListener('click', closeCartSidebar);
-cartOverlay.addEventListener('click', closeCartSidebar);
-
-// Featured List
+// ==================== FEATURED LIST ====================
 function renderFeaturedList() {
   const list = document.getElementById('featured-list');
+  if (!list) return;
   list.innerHTML = products.slice(0, 4).map(product => `
-    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-bel-black/50 transition-colors cursor-pointer">
-      <img src="${product.image}" alt="${product.name}" class="w-16 h-16 rounded-lg object-cover">
+    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-bel-black/50 transition-colors cursor-pointer" onclick="scrollToProduct(${product.id})">
+      <div class="w-16 h-16 rounded-lg bg-bel-charcoal flex items-center justify-center">
+        <span class="text-2xl">${product.name.charAt(0)}</span>
+      </div>
       <div class="flex-1">
         <p class="font-bold text-sm">${product.name}</p>
         <p class="text-xs text-bel-light">${product.category}</p>
@@ -1014,55 +1551,40 @@ function renderFeaturedList() {
   `).join('');
 }
 
-// Newsletter
+function scrollToProduct(id) {
+  const el = document.getElementById(`product-3d-${id}`);
+  if (el) el.scrollIntoView({behavior: 'smooth', block: 'center'});
+}
+
+// ==================== NEWSLETTER ====================
 function handleSubscribe(e) {
   e.preventDefault();
   showToast('Inscription reussie ! Bienvenue dans le mouvement BEL AYITI.');
   e.target.reset();
 }
 
-// GSAP Animations
+// ==================== GSAP ANIMATIONS ====================
 function initAnimations() {
   gsap.registerPlugin(ScrollTrigger);
 
-  // Hero animations
   gsap.from('.hero-anim', {
-    y: 60,
-    opacity: 0,
-    duration: 1,
-    stagger: 0.2,
-    ease: "power3.out",
-    delay: 0.5
+    y: 60, opacity: 0, duration: 1, stagger: 0.2, ease: "power3.out", delay: 0.5
   });
 
-  // Section reveals
   gsap.utils.toArray('.reveal-section').forEach(section => {
     gsap.to(section, {
-      scrollTrigger: {
-        trigger: section,
-        start: "top 80%",
-        toggleActions: "play none none reverse"
-      },
-      opacity: 1,
-      y: 0,
-      duration: 1,
-      ease: "power2.out"
+      scrollTrigger: { trigger: section, start: "top 80%", toggleActions: "play none none reverse" },
+      opacity: 1, y: 0, duration: 1, ease: "power2.out"
     });
   });
 
-  // Parallax on hero
   gsap.to('#hero-canvas', {
-    scrollTrigger: {
-      trigger: '#hero',
-      start: "top top",
-      end: "bottom top",
-      scrub: true
-    },
+    scrollTrigger: { trigger: '#hero', start: "top top", end: "bottom top", scrub: true },
     y: 200
   });
 }
 
-// Magnetic Buttons
+// ==================== MAGNETIC BUTTONS ====================
 function initMagneticButtons() {
   document.querySelectorAll('.magnetic-btn').forEach(btn => {
     btn.addEventListener('mousemove', (e) => {
@@ -1077,16 +1599,77 @@ function initMagneticButtons() {
   });
 }
 
-// Initialize everything
-window.addEventListener('DOMContentLoaded', () => {
+// ==================== CUSTOM CURSOR ====================
+function initCursor() {
+  const cursor = document.getElementById('cursor');
+  if (!cursor) return;
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX - 10 + 'px';
+      cursor.style.top = e.clientY - 10 + 'px';
+    });
+    document.querySelectorAll('a, button, .product-card').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+  } else {
+    cursor.style.display = 'none';
+  }
+}
+
+// ==================== NAVIGATION ====================
+function initNav() {
+  const navbar = document.getElementById('navbar');
+  if (!navbar) return;
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('nav-blur', window.scrollY > 100);
+  });
+
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (!menuToggle || !mobileMenu) return;
+  let menuOpen = false;
+  menuToggle.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    mobileMenu.style.transform = menuOpen ? 'translateX(0)' : 'translateX(100%)';
+  });
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      menuOpen = false;
+      mobileMenu.style.transform = 'translateX(100%)';
+    });
+  });
+}
+
+// ==================== INIT ALL ====================
+function initAll() {
+  loadProducts();
+  initCursor();
+  initNav();
   initHero3D();
-  initProduct3D();
   initShowcase3D();
   renderProducts();
-  initFilters();
   renderFeaturedList();
+  initCart();
   initAnimations();
   initMagneticButtons();
+
+  // Check if admin was logged in
+  if (isAdmin()) {
+    // Don't auto-open, let them click the icon
+  }
+}
+
+// Enter key on admin password
+window.addEventListener('DOMContentLoaded', () => {
+  const adminInput = document.getElementById('admin-password-input');
+  if (adminInput) {
+    adminInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') checkAdminPassword();
+    });
+  }
+
+  initAll();
 });
 </script>
 </body>
