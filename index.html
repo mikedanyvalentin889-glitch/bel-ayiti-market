@@ -1277,4 +1277,1364 @@
         .modal-qty input {
             width: 50px;
             text-align: center;
-           
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .modal-add-cart {
+            flex: 1;
+            padding: 14px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-add-cart:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Checkout Modal */
+        .checkout-modal {
+            max-width: 600px;
+        }
+
+        .checkout-content {
+            padding: 40px;
+        }
+
+        .checkout-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .checkout-summary {
+            background: var(--bg-alt);
+            padding: 24px;
+            border-radius: var(--radius);
+            margin-bottom: 24px;
+        }
+
+        .checkout-summary h4 {
+            margin-bottom: 16px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid var(--border);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--text);
+            color: white;
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 4000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast i {
+            color: var(--accent);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 80%;
+            max-width: 350px;
+            height: 100vh;
+            background: var(--bg);
+            z-index: 2002;
+            transition: var(--transition);
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .mobile-menu.active {
+            left: 0;
+        }
+
+        .mobile-menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .mobile-menu-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+        }
+
+        .mobile-menu-links li {
+            margin-bottom: 8px;
+        }
+
+        .mobile-menu-links a {
+            display: block;
+            padding: 12px 0;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Search Results */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-top: 8px;
+            box-shadow: var(--shadow-lg);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-result-item:hover {
+            background: var(--bg-alt);
+        }
+
+        .search-result-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--radius-sm);
+            object-fit: cover;
+        }
+
+        .search-result-item .info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .search-result-item .info span {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .products-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .categories-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-text p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .hero-image {
+                display: none;
+            }
+            .footer-container {
+                grid-template-columns: 1fr 1fr;
+            }
+            .modal-content {
+                grid-template-columns: 1fr;
+            }
+            .modal-image img {
+                border-radius: var(--radius) var(--radius) 0 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-main {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            .search-bar {
+                order: 3;
+                flex-basis: 100%;
+                max-width: none;
+            }
+            .nav-menu {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .products-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .promo-grid {
+                grid-template-columns: 1fr;
+            }
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .cart-sidebar {
+                width: 100%;
+            }
+            .newsletter-form {
+                flex-direction: column;
+            }
+            .products-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+            .btn {
+                padding: 12px 24px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        /* Loading Skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-alt) 25%, var(--border) 50%, var(--bg-alt) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: var(--radius-sm);
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* No results */
+        .no-results {
+            text-align: center;
+            padding: 48px;
+            color: var(--text-light);
+            grid-column: 1 / -1;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            color: var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-top">
+            <div class="header-top-content">
+                <span><i class="fas fa-truck"></i> Livraison gratuite à Port-au-Prince pour les commandes > 5000 G</span>
+                <span><i class="fas fa-phone"></i> +509 37 89 1234 | <i class="fas fa-envelope"></i> contact@haitimarket.ht</span>
+            </div>
+        </div>
+        <div class="header-main">
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="#" class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                Haïti Market
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="Rechercher un produit..." id="searchInput" oninput="handleSearch(this.value)">
+                <button onclick="performSearch()"><i class="fas fa-search"></i></button>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <div class="header-actions">
+                <a href="#" class="header-action" onclick="showLogin()">
+                    <i class="fas fa-user"></i>
+                </a>
+                <a href="#" class="header-action" onclick="toggleWishlist()">
+                    <i class="fas fa-heart"></i>
+                    <span class="badge" id="wishlistBadge">0</span>
+                </a>
+                <a href="#" class="header-action" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="badge" id="cartBadge">0</span>
+                </a>
+            </div>
+        </div>
+        <nav class="nav-menu">
+            <a href="#home">Accueil</a>
+            <a href="#products">Produits</a>
+            <a href="#categories">Catégories</a>
+            <a href="#promotions">Promotions</a>
+            <a href="#about">À Propos</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h3>Menu</h3>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul class="mobile-menu-links">
+            <li><a href="#home" onclick="toggleMobileMenu()">Accueil</a></li>
+            <li><a href="#products" onclick="toggleMobileMenu()">Produits</a></li>
+            <li><a href="#categories" onclick="toggleMobileMenu()">Catégories</a></li>
+            <li><a href="#promotions" onclick="toggleMobileMenu()">Promotions</a></li>
+            <li><a href="#about" onclick="toggleMobileMenu()">À Propos</a></li>
+            <li><a href="#contact" onclick="toggleMobileMenu()">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Découvrez les <span>Meilleures</span> Offres</h1>
+                <p>Des produits de qualité importés et locaux, livrés directement chez vous en Haïti. Électronique, mode, maison et plus encore.</p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary">
+                        <i class="fas fa-shopping-bag"></i> Acheter Maintenant
+                    </a>
+                    <a href="#categories" class="btn btn-secondary">
+                        <i class="fas fa-th-large"></i> Explorer
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=500&h=500&fit=crop" alt="Shopping">
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="number">15K+</div>
+                        <div class="label">Clients</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">5K+</div>
+                        <div class="label">Produits</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number">24h</div>
+                        <div class="label">Livraison</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories -->
+    <section class="categories" id="categories">
+        <div class="section-header">
+            <h2>Catégories Populaires</h2>
+            <p>Trouvez ce que vous cherchez parmi nos catégories</p>
+        </div>
+        <div class="categories-grid" id="categoriesGrid">
+            <!-- Categories injected by JS -->
+        </div>
+    </section>
+
+    <!-- Products -->
+    <section class="products" id="products">
+        <div class="products-container">
+            <div class="products-header">
+                <div class="section-header" style="text-align: left; margin-bottom: 0;">
+                    <h2>Produits Vedettes</h2>
+                    <p>Les meilleures ventes de la semaine</p>
+                </div>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" onclick="filterProducts('all', this)">Tous</button>
+                    <button class="filter-tab" onclick="filterProducts('electronics', this)">Électronique</button>
+                    <button class="filter-tab" onclick="filterProducts('fashion', this)">Mode</button>
+                    <button class="filter-tab" onclick="filterProducts('home', this)">Maison</button>
+                </div>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Products injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Promotions -->
+    <section class="promotions" id="promotions">
+        <div class="section-header">
+            <h2>Offres Spéciales</h2>
+            <p>Ne manquez pas nos promotions exclusives</p>
+        </div>
+        <div class="promo-grid">
+            <div class="promo-card">
+                <div class="promo-content">
+                    <h3>Soldes d'Été</h3>
+                    <p>Jusqu'à 50% de réduction sur une sélection de produits électroniques</p>
+                    <div class="countdown" id="countdown1">
+                        <div class="countdown-item">
+                            <span class="number" id="days1">02</span>
+                            <span class="label">Jours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="number" id="hours1">14</span>
+                            <span class="label">Heures</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="number" id="minutes1">35</span>
+                            <span class="label">Min</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="number" id="seconds1">42</span>
+                            <span class="label">Sec</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary" onclick="filterProducts('electronics'); return false;">Voir les Offres</a>
+                </div>
+            </div>
+            <div class="promo-card">
+                <div class="promo-content">
+                    <h3>Nouvelle Collection</h3>
+                    <p>Découvrez les dernières tendances mode importées des USA</p>
+                    <div class="countdown" id="countdown2">
+                        <div class="countdown-item">
+                            <span class="number" id="days2">05</span>
+                            <span class="label">Jours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="number" id="hours2">08</span>
+                            <span class="label">Heures</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="number" id="minutes2">22</span>
+                            <span class="label">Min</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="number" id="seconds2">15</span>
+                            <span class="label">Sec</span>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary" onclick="filterProducts('fashion'); return false;">Découvrir</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials" id="about">
+        <div class="testimonials-container">
+            <div class="section-header">
+                <h2>Ce que Disent Nos Clients</h2>
+                <p>Des milliers de clients satisfaits à travers Haïti</p>
+            </div>
+            <div class="testimonials-grid" id="testimonialsGrid">
+                <!-- Testimonials injected by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter" id="contact">
+        <div class="newsletter-container">
+            <h2>Rejoignez Notre Newsletter</h2>
+            <p>Recevez les meilleures offres et nouveautés directement dans votre boîte mail</p>
+            <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                <input type="email" placeholder="Votre adresse email" required id="newsletterEmail">
+                <button type="submit">S'abonner</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3><i class="fas fa-shopping-bag"></i> Haïti Market</h3>
+                <p>Votre destination shopping préférée en Haïti. Des produits de qualité, des prix compétitifs et une livraison rapide dans tout le pays.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h4>Produits</h4>
+                <ul>
+                    <li><a href="#">Électronique</a></li>
+                    <li><a href="#">Mode</a></li>
+                    <li><a href="#">Maison & Jardin</a></li>
+                    <li><a href="#">Sports</a></li>
+                    <li><a href="#">Beauté</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Service Client</h4>
+                <ul>
+                    <li><a href="#">Mon Compte</a></li>
+                    <li><a href="#">Suivi de Commande</a></li>
+                    <li><a href="#">Retours & Remboursements</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Entreprise</h4>
+                <ul>
+                    <li><a href="#">À Propos</a></li>
+                    <li><a href="#">Carrières</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Partenaires</a></li>
+                    <li><a href="#">Presse</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Légal</h4>
+                <ul>
+                    <li><a href="#">Politique de Confidentialité</a></li>
+                    <li><a href="#">Conditions d'Utilisation</a></li>
+                    <li><a href="#">Politique de Retour</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p> 2024 Haïti Market. Tous droits réservés.</p>
+            <div class="payment-methods">
+                <span>Paiement sécurisé:</span>
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> Votre Panier</h3>
+            <button class="cart-close" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <!-- Cart items injected by JS -->
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-subtotal">
+                <span>Sous-total</span>
+                <span id="cartSubtotal">0 G</span>
+            </div>
+            <div class="cart-subtotal">
+                <span>Livraison</span>
+                <span id="cartShipping">0 G</span>
+            </div>
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cartTotal">0 G</span>
+            </div>
+            <button class="cart-checkout-btn" onclick="openCheckout()">
+                <i class="fas fa-lock"></i> Passer la Commande
+            </button>
+        </div>
+    </div>
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal" onclick="closeProductModal(event)">
+        <div class="product-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeProductModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-content" id="modalContent">
+                <!-- Modal content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkoutModal" onclick="closeCheckoutModal(event)">
+        <div class="product-modal checkout-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeCheckoutModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="checkout-content">
+                <h2><i class="fas fa-credit-card"></i> Finaliser la Commande</h2>
+                <div class="checkout-summary" id="checkoutSummary">
+                    <!-- Summary injected by JS -->
+                </div>
+                <form onsubmit="submitOrder(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Prénom</label>
+                            <input type="text" required placeholder="Jean">
+                        </div>
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" required placeholder="Pierre">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" required placeholder="jean@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" required placeholder="+509 37 89 1234">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <textarea rows="3" required placeholder="Rue, Quartier, Commune"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ville</label>
+                            <select required>
+                                <option value="">Choisir...</option>
+                                <option>Port-au-Prince</option>
+                                <option>Cap-Haïtien</option>
+                                <option>Les Cayes</option>
+                                <option>Gonaïves</option>
+                                <option>Jacmel</option>
+                                <option>Pétion-Ville</option>
+                                <option>Delmas</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Mode de Paiement</label>
+                            <select required>
+                                <option value="">Choisir...</option>
+                                <option>MonCash</option>
+                                <option>NatCash</option>
+                                <option>Paiement à la livraison</option>
+                                <option>Virement Bancaire</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="cart-checkout-btn" style="margin-top: 16px;">
+                        <i class="fas fa-check"></i> Confirmer la Commande
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Produit ajouté au panier!</span>
+    </div>
+
+    <script>
+        // Data
+        const categories = [
+            { id: 'electronics', name: 'Électronique', icon: 'fa-laptop', count: '1,240 produits' },
+            { id: 'fashion', name: 'Mode', icon: 'fa-tshirt', count: '2,150 produits' },
+            { id: 'home', name: 'Maison', icon: 'fa-couch', count: '890 produits' },
+            { id: 'beauty', name: 'Beauté', icon: 'fa-spa', count: '650 produits' },
+            { id: 'sports', name: 'Sports', icon: 'fa-running', count: '430 produits' },
+            { id: 'kids', name: 'Enfants', icon: 'fa-baby', count: '380 produits' }
+        ];
+
+        const products = [
+            {
+                id: 1,
+                name: 'iPhone 15 Pro Max 256GB',
+                category: 'electronics',
+                categoryName: 'Électronique',
+                price: 85000,
+                oldPrice: 95000,
+                rating: 4.8,
+                reviews: 124,
+                image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?w=400&h=400&fit=crop',
+                badge: 'hot',
+                description: 'Le dernier iPhone avec puce A17 Pro, écran Super Retina XDR 6.7", et système de caméra pro avancé. Livré avec garantie Apple officielle.'
+            },
+            {
+                id: 2,
+                name: 'Samsung Galaxy S24 Ultra',
+                category: 'electronics',
+                categoryName: 'Électronique',
+                price: 78000,
+                oldPrice: 85000,
+                rating: 4.7,
+                reviews: 89,
+                image: 'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&h=400&fit=crop',
+                badge: 'new',
+                description: 'Smartphone premium avec S Pen intégré, écran QHD+ 120Hz, et caméra 200MP. Batterie 5000mAh pour une autonomie record.'
+            },
+            {
+                id: 3,
+                name: 'MacBook Air M3 13"',
+                category: 'electronics',
+                categoryName: 'Électronique',
+                price: 65000,
+                oldPrice: 72000,
+                rating: 4.9,
+                reviews: 56,
+                image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca4?w=400&h=400&fit=crop',
+                badge: 'hot',
+                description: 'Ultra-fin et ultra-puissant avec la puce M3. Écran Liquid Retina, 18h d\'autonomie, et design silencieux sans ventilateur.'
+            },
+            {
+                id: 4,
+                name: 'Nike Air Force 1 \'07',
+                category: 'fashion',
+                categoryName: 'Mode',
+                price: 8500,
+                oldPrice: 12000,
+                rating: 4.6,
+                reviews: 234,
+                image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
+                badge: 'hot',
+                description: 'Le classique intemporel de Nike. Cuir premium, semelle Air confortable, et design iconique qui ne se démode jamais.'
+            },
+            {
+                id: 5,
+                name: 'Robe Élégante Soirée',
+                category: 'fashion',
+                categoryName: 'Mode',
+                price: 4500,
+                oldPrice: 6500,
+                rating: 4.5,
+                reviews: 67,
+                image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop',
+                badge: 'new',
+                description: 'Robe longue élégante en satin, parfaite pour les soirées et cérémonies. Coupe flatteuse et tissu de haute qualité.'
+            },
+            {
+                id: 6,
+                name: 'Montre Connectée Pro',
+                category: 'electronics',
+                categoryName: 'Électronique',
+                price: 12000,
+                oldPrice: 15000,
+                rating: 4.4,
+                reviews: 45,
+                image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop',
+                badge: '',
+                description: 'Montre intelligente avec GPS, monitoring cardiaque, et résistance à l\'eau 5ATM. Autonomie de 7 jours.'
+            },
+            {
+                id: 7,
+                name: 'Ensemble Salon Moderne',
+                category: 'home',
+                categoryName: 'Maison',
+                price: 35000,
+                oldPrice: 45000,
+                rating: 4.7,
+                reviews: 23,
+                image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=400&fit=crop',
+                badge: 'hot',
+                description: 'Canapé 3 places + 2 fauteuils en tissu premium. Design scandinave moderne, confort exceptionnel, et structure solide.'
+            },
+            {
+                id: 8,
+                name: 'Coffret Beauté Premium',
+                category: 'beauty',
+                categoryName: 'Beauté',
+                price: 3500,
+                oldPrice: 5000,
+                rating: 4.8,
+                reviews: 156,
+                image: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop',
+                badge: 'new',
+                description: 'Coffret complet avec 12 produits de soin: crèmes, sérums, masques, et accessoires. Marques internationales de qualité.'
+            }
+        ];
+
+        const testimonials = [
+            {
+                name: 'Marie-Claire Joseph',
+                location: 'Pétion-Ville',
+                image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
+                rating: 5,
+                text: 'Service excellent! J\'ai reçu ma commande en moins de 24h à Pétion-Ville. Les produits sont exactement comme sur les photos. Je recommande vivement!'
+            },
+            {
+                name: 'Jean-Baptiste Pierre',
+                location: 'Cap-Haïtien',
+                image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop',
+                rating: 5,
+                text: 'Première expérience d\'achat en ligne et je suis agréablement surpris. Le paiement MonCash est super pratique et la livraison était rapide.'
+            },
+            {
+                name: 'Sophie Laurent',
+                location: 'Les Cayes',
+                image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop',
+                rating: 4,
+                text: 'J\'adore la variété des produits. J\'ai trouvé des articles que je ne trouve nulle part ailleurs en Haïti. Le service client est très réactif.'
+            }
+        ];
+
+        // State
+        let cart = [];
+        let wishlist = [];
+        let currentFilter = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCategories();
+            renderProducts();
+            renderTestimonials();
+            startCountdown();
+            updateCartUI();
+
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Close search results when clicking outside
+            document.addEventListener('click', function(e) {
+                const searchBar = document.querySelector('.search-bar');
+                if (!searchBar.contains(e.target)) {
+                    document.getElementById('searchResults').classList.remove('active');
+                }
+            });
+        });
+
+        // Render Categories
+        function renderCategories() {
+            const grid = document.getElementById('categoriesGrid');
+            grid.innerHTML = categories.map(cat => `
+                <a href="#products" class="category-card" onclick="filterProducts('${cat.id}'); return false;">
+                    <i class="fas ${cat.icon}"></i>
+                    <h3>${cat.name}</h3>
+                    <span>${cat.count}</span>
+                </a>
+            `).join('');
+        }
+
+        // Render Products
+        function renderProducts(filter = 'all') {
+            const grid = document.getElementById('productsGrid');
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        <h3>Aucun produit trouvé</h3>
+                        <p>Essayez une autre catégorie</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(product => `
+                <div class="product-card" onclick="openProductModal(${product.id})">
+                    ${product.badge ? `<span class="product-badge ${product.badge}">${product.badge === 'hot' ? '-30%' : 'Nouveau'}</span>` : ''}
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy">
+                        <div class="product-actions" onclick="event.stopPropagation()">
+                            <button class="product-action-btn" onclick="toggleWishlistItem(${product.id})" title="Favoris">
+                                <i class="fas fa-heart ${wishlist.includes(product.id) ? 'text-red-500' : ''}"></i>
+                            </button>
+                            <button class="product-action-btn" onclick="addToCart(${product.id})" title="Ajouter au panier">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                            <button class="product-action-btn" onclick="openProductModal(${product.id})" title="Voir détails">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <div class="product-category">${product.categoryName}</div>
+                        <h3 class="product-title">${product.name}</h3>
+                        <div class="product-rating">
+                            <span class="stars">${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5 - Math.floor(product.rating))}</span>
+                            <span class="rating-count">(${product.reviews})</span>
+                        </div>
+                        <div class="product-price">
+                            <span class="current-price">${formatPrice(product.price)}</span>
+                            ${product.oldPrice ? `<span class="old-price">${formatPrice(product.oldPrice)}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render Testimonials
+        function renderTestimonials() {
+            const grid = document.getElementById('testimonialsGrid');
+            grid.innerHTML = testimonials.map(t => `
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">${'★'.repeat(t.rating)}${'☆'.repeat(5 - t.rating)}</div>
+                    <p class="testimonial-text">"${t.text}"</p>
+                    <div class="testimonial-author">
+                        <img src="${t.image}" alt="${t.name}">
+                        <div class="author-info">
+                            <h4>${t.name}</h4>
+                            <span>${t.location}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Filter Products
+        function filterProducts(category, btn) {
+            currentFilter = category;
+            renderProducts(category);
+
+            // Update active tab
+            if (btn) {
+                document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+                btn.classList.add('active');
+            }
+
+            // Scroll to products
+            document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Cart Functions
+        function toggleCart() {
+            document.getElementById('cartOverlay').classList.toggle('active');
+            document.getElementById('cartSidebar').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('cartSidebar').classList.contains('active') ? 'hidden' : '';
+        }
+
+        function addToCart(productId, quantity = 1) {
+            const product = products.find(p => p.id === productId);
+            const existingItem = cart.find(item => item.id === productId);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({ ...product, quantity });
+            }
+
+            updateCartUI();
+            showToast(`${product.name} ajouté au panier!`);
+
+            // Open cart if adding from modal
+            if (document.getElementById('productModal').classList.contains('active')) {
+                closeProductModal();
+                setTimeout(() => toggleCart(), 300);
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartUI();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    updateCartUI();
+                }
+            }
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cartItems');
+            const cartFooter = document.getElementById('cartFooter');
+            const cartBadge = document.getElementById('cartBadge');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartBadge.textContent = totalItems;
+            cartBadge.style.display = totalItems > 0 ? 'block' : 'none';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = `
+                    <div class="cart-empty">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h3>Votre panier est vide</h3>
+                        <p>Ajoutez des produits pour commencer vos achats</p>
+                    </div>
+                `;
+                cartFooter.style.display = 'none';
+                return;
+            }
+
+            cartFooter.style.display = 'block';
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">${formatPrice(item.price)}</div>
+                        <div class="cart-item-quantity">
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                        </div>
+                        <div class="cart-item-remove" onclick="removeFromCart(${item.id})">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 5000 ? 0 : 500;
+            const total = subtotal + shipping;
+
+            document.getElementById('cartSubtotal').textContent = formatPrice(subtotal);
+            document.getElementById('cartShipping').textContent = shipping === 0 ? 'Gratuit' : formatPrice(shipping);
+            document.getElementById('cartTotal').textContent = formatPrice(total);
+        }
+
+        // Wishlist
+        function toggleWishlist() {
+            showToast('Liste de souhaits: ' + wishlist.length + ' produits');
+        }
+
+        function toggleWishlistItem(productId) {
+            const index = wishlist.indexOf(productId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                showToast('Retiré des favoris');
+            } else {
+                wishlist.push(productId);
+                showToast('Ajouté aux favoris!');
+            }
+            document.getElementById('wishlistBadge').textContent = wishlist.length;
+            document.getElementById('wishlistBadge').style.display = wishlist.length > 0 ? 'block' : 'none';
+            renderProducts(currentFilter);
+        }
+
+        // Product Modal
+        function openProductModal(productId) {
+            const product = products.find(p => p.id === productId);
+            const modal = document.getElementById('productModal');
+            const content = document.getElementById('modalContent');
+
+            content.innerHTML = `
+                <div class="modal-image">
+                    <img src="${product.image}" alt="${product.name}">
+                </div>
+                <div class="modal-info">
+                    <div class="modal-category">${product.categoryName}</div>
+                    <h2 class="modal-title">${product.name}</h2>
+                    <div class="modal-rating">
+                        <span class="stars">${'★'.repeat(Math.floor(product.rating))}${'☆'.repeat(5 - Math.floor(product.rating))}</span>
+                        <span>${product.rating} (${product.reviews} avis)</span>
+                    </div>
+                    <div class="modal-price">${formatPrice(product.price)}</div>
+                    <p class="modal-description">${product.description}</p>
+                    <div class="modal-actions">
+                        <div class="modal-qty">
+                            <button onclick="this.nextElementSibling.value = Math.max(1, parseInt(this.nextElementSibling.value) - 1)">-</button>
+                            <input type="number" value="1" min="1" id="modalQty">
+                            <button onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1">+</button>
+                        </div>
+                        <button class="modal-add-cart" onclick="addToCart(${product.id}, parseInt(document.getElementById('modalQty').value))">
+                            <i class="fas fa-shopping-cart"></i> Ajouter au Panier
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProductModal(event) {
+            if (!event || event.target.id === 'productModal') {
+                document.getElementById('productModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Checkout
+        function openCheckout() {
+            toggleCart();
+            const modal = document.getElementById('checkoutModal');
+            const summary = document.getElementById('checkoutSummary');
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 5000 ? 0 : 500;
+            const total = subtotal + shipping;
+
+            summary.innerHTML = `
+                <h4>Résumé de la Commande</h4>
+                ${cart.map(item => `
+                    <div class="summary-item">
+                        <span>${item.name} x${item.quantity}</span>
+                        <span>${formatPrice(item.price * item.quantity)}</span>
+                    </div>
+                `).join('')}
+                <div class="summary-item">
+                    <span>Livraison</span>
+                    <span>${shipping === 0 ? 'Gratuite' : formatPrice(shipping)}</span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>${formatPrice(total)}</span>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCheckoutModal(event) {
+            if (!event || event.target.id === 'checkoutModal') {
+                document.getElementById('checkoutModal').classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+
+        function submitOrder(event) {
+            event.preventDefault();
+            closeCheckoutModal();
+            cart = [];
+            updateCartUI();
+            showToast('Commande confirmée! Merci pour votre achat.');
+        }
+
+        // Search
+        function handleSearch(query) {
+            const results = document.getElementById('searchResults');
+
+            if (query.length < 2) {
+                results.classList.remove('active');
+                return;
+            }
+
+            const filtered = products.filter(p =>
+                p.name.toLowerCase().includes(query.toLowerCase()) ||
+                p.categoryName.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                results.innerHTML = '<div class="search-result-item"><div class="info"><h4>Aucun résultat</h4></div></div>';
+            } else {
+                results.innerHTML = filtered.map(p => `
+                    <div class="search-result-item" onclick="openProductModal(${p.id}); document.getElementById('searchResults').classList.remove('active');">
+                        <img src="${p.image}" alt="${p.name}">
+                        <div class="info">
+                            <h4>${p.name}</h4>
+                            <span>${formatPrice(p.price)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            results.classList.add('active');
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (query.length >= 2) {
+                document.getElementById('searchResults').classList.remove('active');
+                showToast(`Recherche: ${query}`);
+            }
+        }
+
+        // Newsletter
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const email = document.getElementById('newsletterEmail').value;
+            document.getElementById('newsletterEmail').value = '';
+            showToast('Merci de vous être abonné! ' + email);
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+            document.body.style.overflow = document.getElementById('mobileMenu').classList.contains('active') ? 'hidden' : '';
+        }
+
+        // Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Countdown
+        function startCountdown() {
+            const targets = [
+                new Date(Date.now() + 2 * 24 * 60 * 60 * 1000 + 14 * 60 * 60 * 1000),
+                new Date(Date.now() + 5 * 24 * 60 * 60 * 1000 + 8 * 60 * 60 * 1000)
+            ];
+
+            setInterval(() => {
+                targets.forEach((target, i) => {
+                    const diff = target - Date.now();
+                    if (diff > 0) {
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                        document.getElementById(`days${i+1}`).textContent = String(days).padStart(2, '0');
+                        document.getElementById(`hours${i+1}`).textContent = String(hours).padStart(2, '0');
+                        document.getElementById(`minutes${i+1}`).textContent = String(minutes).padStart(2, '0');
+                        document.getElementById(`seconds${i+1}`).textContent = String(seconds).padStart(2, '0');
+                    }
+                });
+            }, 1000);
+        }
+
+        // Login placeholder
+        function showLogin() {
+            showToast('Page de connexion (à implémenter)');
+        }
+
+        // Format Price
+        function formatPrice(price) {
+            return price.toLocaleString('fr-FR') + ' G';
+        }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
