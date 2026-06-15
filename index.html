@@ -455,6 +455,105 @@
         .export-section h4 { margin-bottom: 12px; font-size: 1rem; }
         .export-section textarea { width: 100%; min-height: 120px; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; }
         .export-section p { color: var(--text-muted); font-size: 0.85rem; margin-top: 8px; }
+
+        /* ========== LOGIN PAGE ========== */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-page::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1920&q=80') center/cover;
+            opacity: 0.08;
+        }
+        .login-box {
+            position: relative;
+            z-index: 2;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        .login-box .logo {
+            justify-content: center;
+            margin-bottom: 32px;
+            font-size: 1.8rem;
+        }
+        .login-box h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+        }
+        .login-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+        }
+        .login-box .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .login-box .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .login-box .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+        .login-box .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .login-box .error-msg {
+            color: #ff4757;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            display: none;
+        }
+        .login-box .error-msg.show {
+            display: block;
+        }
+        .login-box .btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        .admin-locked {
+            text-align: center;
+            padding: 120px 40px;
+        }
+        .admin-locked i {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 24px;
+        }
+        .admin-locked h2 {
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+        .admin-locked p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
     </style>
 <base target="_blank">
 </head>
@@ -473,7 +572,7 @@
             <li><a onclick="goToPage('about')" id="nav-about">À Propos</a></li>
             <li><a onclick="goToPage('contact')" id="nav-contact">Contact</a></li>
             <li><a onclick="goToPage('faq')" id="nav-faq">FAQ</a></li>
-            <li><a onclick="goToPage('admin')" id="nav-admin" style="color:var(--accent);"><i class="fas fa-plus-circle"></i> Ajouter</a></li>
+            <li><a onclick="goToPage('admin')" id="nav-admin" style="color:var(--accent);"><i class="fas fa-lock"></i> Admin</a></li>
         </ul>
         <div class="header-actions">
             <div class="search-container">
@@ -509,7 +608,7 @@
             <li><a onclick="goToPage('about'); toggleMobileMenu();">À Propos</a></li>
             <li><a onclick="goToPage('contact'); toggleMobileMenu();">Contact</a></li>
             <li><a onclick="goToPage('faq'); toggleMobileMenu();">FAQ</a></li>
-            <li><a onclick="goToPage('admin'); toggleMobileMenu();" style="color:var(--accent);"><i class="fas fa-plus-circle"></i> Ajouter Produit</a></li>
+            <li><a onclick="goToPage('admin'); toggleMobileMenu();" style="color:var(--accent);"><i class="fas fa-lock"></i> Espace Admin</a></li>
             <li><a onclick="goToPage('terms'); toggleMobileMenu();">Conditions de Vente</a></li>
         </ul>
     </div>
@@ -1007,116 +1106,37 @@
     </div>
 
 
-    <!-- ==================== ADMIN PAGE ==================== -->
-    <div class="page" id="page-admin">
-        <div class="breadcrumb">
-            <a onclick="goToPage('home')">Accueil</a> / <span>Panneau Admin</span>
-        </div>
-        <section class="admin-section">
-            <div class="admin-header">
-                <h1><i class="fas fa-cog"></i> Panneau d'Administration</h1>
-                <button class="btn btn-primary" onclick="goToPage('shop')">
-                    <i class="fas fa-store"></i> Voir la Boutique
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div class="page" id="page-login">
+        <div class="login-page">
+            <div class="login-box">
+                <a href="#" class="logo" onclick="goToPage('home'); return false;"><i class="fas fa-bolt"></i> HT<span>Market</span></a>
+                <h2>Espace Administrateur</h2>
+                <p>Entrez votre mot de passe pour accéder au panneau de gestion</p>
+                <form onsubmit="checkLogin(event)">
+                    <div class="form-group">
+                        <label>Mot de passe</label>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" autofocus>
+                    </div>
+                    <div class="error-msg" id="loginError">
+                        <i class="fas fa-exclamation-circle"></i> Mot de passe incorrect
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-lock"></i> Accéder au Panneau
+                    </button>
+                </form>
+                <button class="btn btn-outline" style="margin-top:16px;" onclick="goToPage('home')">
+                    <i class="fas fa-arrow-left"></i> Retour à l'accueil
                 </button>
             </div>
-            <div class="admin-grid">
-                <div class="admin-card">
-                    <h3><i class="fas fa-plus-circle"></i> Ajouter un Produit</h3>
-                    <form class="admin-form" onsubmit="addProduct(event)">
-                        <div class="form-group">
-                            <label>Nom du produit *</label>
-                            <input type="text" id="prodName" required placeholder="Ex: Sandale Prada Homme">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Prix (Gourdes) *</label>
-                                <input type="number" id="prodPrice" required placeholder="1500" min="1">
-                            </div>
-                            <div class="form-group">
-                                <label>Ancien prix (optionnel)</label>
-                                <input type="number" id="prodOldPrice" placeholder="2000" min="1">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Catégorie *</label>
-                                <select id="prodCategory" required>
-                                    <option value="">Choisir...</option>
-                                    <option value="clothing">Vêtements</option>
-                                    <option value="mechanic">Pièces Mécaniques</option>
-                                    <option value="shoes">Chaussures / Sandales</option>
-                                    <option value="accessories">Accessoires</option>
-                                    <option value="other">Autre</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Stock</label>
-                                <select id="prodStock">
-                                    <option value="in">En stock</option>
-                                    <option value="low">Stock faible</option>
-                                    <option value="out">Épuisé</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Quantité en stock</label>
-                            <input type="number" id="prodStockCount" placeholder="10" min="0" value="10">
-                        </div>
-                        <div class="form-group">
-                            <label>Badge (optionnel)</label>
-                            <select id="prodBadge">
-                                <option value="">Aucun</option>
-                                <option value="hot">Populaire</option>
-                                <option value="new">Nouveau</option>
-                                <option value="sale">Promo</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Image du produit (URL ou laisser vide pour upload)</label>
-                            <input type="text" id="prodImage" placeholder="https://... ou laisser vide" onchange="previewImage(this.value)">
-                            <div class="image-preview" id="imagePreview">
-                                <span><i class="fas fa-image"></i> Aperçu de l'image</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Tailles disponibles (pour vêtements/chaussures)</label>
-                            <div class="size-tags" id="sizeTags">
-                                <span class="size-tag" onclick="toggleSizeTag(this)">39</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">40</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">41</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">42</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">43</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">44</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">S</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">M</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">L</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">XL</span>
-                                <span class="size-tag" onclick="toggleSizeTag(this)">XXL</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea id="prodDesc" rows="3" placeholder="Décrivez votre produit..."></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
-                            <i class="fas fa-plus"></i> Ajouter le Produit
-                        </button>
-                    </form>
-                </div>
-                <div class="admin-card">
-                    <h3><i class="fas fa-list"></i> Mes Produits</h3>
-                    <div id="adminProductList"></div>
-                    <div class="export-section">
-                        <h4><i class="fas fa-code"></i> Exporter mes produits (backup)</h4>
-                        <textarea id="exportArea" readonly onclick="this.select()"></textarea>
-                        <p>Copiez ce code et gardez-le dans un fichier texte pour sauvegarder vos produits.</p>
-                        <button class="btn btn-outline" style="margin-top:12px;" onclick="importProducts()">
-                            <i class="fas fa-upload"></i> Importer des produits
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
+        </div>
+    </div>
+
+    <!-- ==================== ADMIN PAGE (PROTÉGÉE) ==================== -->
+    <div class="page" id="page-admin">
+        <div id="adminContent">
+            <!-- Le contenu sera injecté par JS si connecté -->
+        </div>
     </div>
     <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
@@ -1891,6 +1911,42 @@
             return p.toLocaleString('fr-FR') + ' G';
         }
 
+        // ===== LOGIN / SECURITY =====
+        const ADMIN_PASSWORD = 'Dany2004';
+        let isLoggedIn = sessionStorage.getItem('htmarket_admin') === 'true';
+
+        function checkLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('loginPassword').value;
+            const errorMsg = document.getElementById('loginError');
+
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('htmarket_admin', 'true');
+                isLoggedIn = true;
+                showToast('Bienvenue, Admin!');
+                goToPage('admin');
+            } else {
+                errorMsg.classList.add('show');
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginPassword').focus();
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('htmarket_admin');
+            isLoggedIn = false;
+            showToast('Déconnecté');
+            goToPage('home');
+        }
+
+        function requireLogin() {
+            if (!isLoggedIn) {
+                goToPage('login');
+                return false;
+            }
+            return true;
+        }
+
         // ===== ADMIN FUNCTIONS =====
         function toggleSizeTag(el) {
             el.classList.toggle('active');
@@ -1902,9 +1958,30 @@
                 preview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<span><i class=\'fas fa-exclamation-triangle\'></i> Image invalide</span>'">`;
                 preview.classList.add('has-image');
             } else {
-                preview.innerHTML = '<span><i class="fas fa-image"></i> Aperçu de l'image</span>';
+                preview.innerHTML = '<span><i class="fas fa-image"></i> Cliquez ci-dessus pour ajouter une photo</span>';
                 preview.classList.remove('has-image');
             }
+        }
+
+        function handleImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Image trop grande. Max 2MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                document.getElementById('prodImage').value = base64;
+                const preview = document.getElementById('imagePreview');
+                preview.innerHTML = `<img src="${base64}" alt="Preview">`;
+                preview.classList.add('has-image');
+                showToast('Photo chargée!');
+            };
+            reader.readAsDataURL(file);
         }
 
         function addProduct(e) {
@@ -1917,8 +1994,13 @@
             const stock = document.getElementById('prodStock').value;
             const stockCount = parseInt(document.getElementById('prodStockCount').value) || 0;
             const badge = document.getElementById('prodBadge').value;
-            const image = document.getElementById('prodImage').value.trim() || 'https://via.placeholder.com/400x400/1a1a1a/888888?text=Pas+d\'image';
+            const image = document.getElementById('prodImage').value.trim();
             const desc = document.getElementById('prodDesc').value.trim() || name;
+
+            if (!image) {
+                showToast('Veuillez choisir une photo');
+                return;
+            }
 
             const sizes = Array.from(document.querySelectorAll('.size-tag.active')).map(t => t.textContent);
 
@@ -2024,7 +2106,10 @@
             document.getElementById('prodImage').value = p.image;
             document.getElementById('prodDesc').value = p.desc;
 
-            previewImage(p.image);
+            // Afficher l'image existante
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = `<img src="${p.image}" alt="Preview">`;
+            preview.classList.add('has-image');
 
             document.querySelectorAll('.size-tag').forEach(t => {
                 t.classList.toggle('active', p.sizes && p.sizes.includes(t.textContent));
@@ -2064,9 +2149,14 @@
             }
         }
 
-        // Override goToPage to render admin list when visiting admin
+        // Override goToPage to check login and render admin
         const originalGoToPage = goToPage;
         goToPage = function(pageName) {
+            // Check login for admin page
+            if (pageName === 'admin' && !isLoggedIn) {
+                pageName = 'login';
+            }
+
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
             const page = document.getElementById('page-' + pageName);
@@ -2076,13 +2166,144 @@
             window.scrollTo(0, 0);
 
             if (pageName === 'admin') {
+                renderAdminPanel();
                 renderAdminList();
                 updateExportArea();
+            }
+            if (pageName === 'login') {
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').classList.remove('show');
+                setTimeout(() => document.getElementById('loginPassword').focus(), 100);
             }
             if (pageName === 'shop') {
                 setTimeout(() => renderProducts(), 50);
             }
         };
+
+        function renderAdminPanel() {
+            const container = document.getElementById('adminContent');
+            if (!container) return;
+
+            container.innerHTML = `
+                <div class="breadcrumb">
+                    <a onclick="goToPage('home')">Accueil</a> / <span>Panneau Admin</span>
+                </div>
+                <section class="admin-section">
+                    <div class="admin-header">
+                        <h1><i class="fas fa-cog"></i> Panneau d'Administration</h1>
+                        <div style="display:flex; gap:12px;">
+                            <button class="btn btn-primary" onclick="goToPage('shop')">
+                                <i class="fas fa-store"></i> Voir la Boutique
+                            </button>
+                            <button class="btn btn-outline" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Déconnexion
+                            </button>
+                        </div>
+                    </div>
+                    <div class="admin-grid">
+                        <div class="admin-card">
+                            <h3><i class="fas fa-plus-circle"></i> Ajouter un Produit</h3>
+                            <form class="admin-form" onsubmit="addProduct(event)">
+                                <div class="form-group">
+                                    <label>Nom du produit *</label>
+                                    <input type="text" id="prodName" required placeholder="Ex: Sandale Prada Homme">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Prix (Gourdes) *</label>
+                                        <input type="number" id="prodPrice" required placeholder="1500" min="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ancien prix (optionnel)</label>
+                                        <input type="number" id="prodOldPrice" placeholder="2000" min="1">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Catégorie *</label>
+                                        <select id="prodCategory" required>
+                                            <option value="">Choisir...</option>
+                                            <option value="clothing">Vêtements</option>
+                                            <option value="mechanic">Pièces Mécaniques</option>
+                                            <option value="shoes">Chaussures / Sandales</option>
+                                            <option value="accessories">Accessoires</option>
+                                            <option value="other">Autre</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stock</label>
+                                        <select id="prodStock">
+                                            <option value="in">En stock</option>
+                                            <option value="low">Stock faible</option>
+                                            <option value="out">Épuisé</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quantité en stock</label>
+                                    <input type="number" id="prodStockCount" placeholder="10" min="0" value="10">
+                                </div>
+                                <div class="form-group">
+                                    <label>Badge (optionnel)</label>
+                                    <select id="prodBadge">
+                                        <option value="">Aucun</option>
+                                        <option value="hot">Populaire</option>
+                                        <option value="new">Nouveau</option>
+                                        <option value="sale">Promo</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Photo du produit *</label>
+                                    <input type="file" id="prodImageFile" accept="image/*" style="display:none;" onchange="handleImageUpload(this)">
+                                    <button type="button" class="btn btn-outline" style="width:100%; justify-content:center;" onclick="document.getElementById('prodImageFile').click()">
+                                        <i class="fas fa-camera"></i> Choisir une photo depuis mon appareil
+                                    </button>
+                                    <div class="image-preview" id="imagePreview">
+                                        <span><i class="fas fa-image"></i> Cliquez ci-dessus pour ajouter une photo</span>
+                                    </div>
+                                    <input type="hidden" id="prodImage" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tailles disponibles (pour vêtements/chaussures)</label>
+                                    <div class="size-tags" id="sizeTags">
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">39</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">40</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">41</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">42</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">43</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">44</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">S</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">M</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">L</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">XL</span>
+                                        <span class="size-tag" onclick="toggleSizeTag(this)">XXL</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Description</label>
+                                    <textarea id="prodDesc" rows="3" placeholder="Décrivez votre produit..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                                    <i class="fas fa-plus"></i> Ajouter le Produit
+                                </button>
+                            </form>
+                        </div>
+                        <div class="admin-card">
+                            <h3><i class="fas fa-list"></i> Mes Produits</h3>
+                            <div id="adminProductList"></div>
+                            <div class="export-section">
+                                <h4><i class="fas fa-code"></i> Exporter mes produits (backup)</h4>
+                                <textarea id="exportArea" readonly onclick="this.select()"></textarea>
+                                <p>Copiez ce code et gardez-le dans un fichier texte pour sauvegarder vos produits.</p>
+                                <button class="btn btn-outline" style="margin-top:12px;" onclick="importProducts()">
+                                    <i class="fas fa-upload"></i> Importer des produits
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
     </script>
 </body>
 </html>
