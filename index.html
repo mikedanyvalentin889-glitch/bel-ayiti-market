@@ -415,6 +415,46 @@
         }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
         .animate-in { animation: fadeInUp 0.7s ease forwards; }
+
+        /* ========== ADMIN PANEL ========== */
+        .admin-section { padding: 120px 40px 80px; max-width: 1200px; margin: 0 auto; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; flex-wrap: wrap; gap: 16px; }
+        .admin-header h1 { font-size: 2rem; }
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .admin-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; }
+        .admin-card h3 { font-size: 1.2rem; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+        .admin-card h3 i { color: var(--accent); }
+        .admin-form .form-group { margin-bottom: 20px; }
+        .admin-form .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text); }
+        .admin-form .form-group input,
+        .admin-form .form-group select,
+        .admin-form .form-group textarea { width: 100%; padding: 14px 18px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 1rem; font-family: 'Inter', sans-serif; transition: var(--transition); }
+        .admin-form .form-group input:focus,
+        .admin-form .form-group select:focus,
+        .admin-form .form-group textarea:focus { outline: none; border-color: var(--accent); }
+        .admin-form .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .image-preview { width: 100%; height: 200px; border: 2px dashed var(--border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-muted); margin-top: 8px; overflow: hidden; }
+        .image-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .image-preview.has-image { border-style: solid; border-color: var(--accent); }
+        .size-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .size-tag { padding: 6px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; cursor: pointer; transition: var(--transition); }
+        .size-tag.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { text-align: left; padding: 14px 16px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .admin-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
+        .admin-table tr:hover td { background: var(--bg-hover); }
+        .admin-table img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+        .admin-actions { display: flex; gap: 8px; }
+        .admin-actions button { padding: 8px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; transition: var(--transition); }
+        .admin-actions .edit-btn { background: var(--accent); color: var(--bg); }
+        .admin-actions .delete-btn { background: #ff4757; color: white; }
+        .admin-actions button:hover { transform: translateY(-2px); }
+        .admin-empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .admin-empty i { font-size: 3rem; margin-bottom: 16px; color: var(--border-light); }
+        .export-section { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+        .export-section h4 { margin-bottom: 12px; font-size: 1rem; }
+        .export-section textarea { width: 100%; min-height: 120px; padding: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: monospace; font-size: 0.85rem; resize: vertical; }
+        .export-section p { color: var(--text-muted); font-size: 0.85rem; margin-top: 8px; }
     </style>
 <base target="_blank">
 </head>
@@ -433,6 +473,7 @@
             <li><a onclick="goToPage('about')" id="nav-about">À Propos</a></li>
             <li><a onclick="goToPage('contact')" id="nav-contact">Contact</a></li>
             <li><a onclick="goToPage('faq')" id="nav-faq">FAQ</a></li>
+            <li><a onclick="goToPage('admin')" id="nav-admin" style="color:var(--accent);"><i class="fas fa-plus-circle"></i> Ajouter</a></li>
         </ul>
         <div class="header-actions">
             <div class="search-container">
@@ -468,6 +509,7 @@
             <li><a onclick="goToPage('about'); toggleMobileMenu();">À Propos</a></li>
             <li><a onclick="goToPage('contact'); toggleMobileMenu();">Contact</a></li>
             <li><a onclick="goToPage('faq'); toggleMobileMenu();">FAQ</a></li>
+            <li><a onclick="goToPage('admin'); toggleMobileMenu();" style="color:var(--accent);"><i class="fas fa-plus-circle"></i> Ajouter Produit</a></li>
             <li><a onclick="goToPage('terms'); toggleMobileMenu();">Conditions de Vente</a></li>
         </ul>
     </div>
@@ -964,6 +1006,118 @@
         </div>
     </div>
 
+
+    <!-- ==================== ADMIN PAGE ==================== -->
+    <div class="page" id="page-admin">
+        <div class="breadcrumb">
+            <a onclick="goToPage('home')">Accueil</a> / <span>Panneau Admin</span>
+        </div>
+        <section class="admin-section">
+            <div class="admin-header">
+                <h1><i class="fas fa-cog"></i> Panneau d'Administration</h1>
+                <button class="btn btn-primary" onclick="goToPage('shop')">
+                    <i class="fas fa-store"></i> Voir la Boutique
+                </button>
+            </div>
+            <div class="admin-grid">
+                <div class="admin-card">
+                    <h3><i class="fas fa-plus-circle"></i> Ajouter un Produit</h3>
+                    <form class="admin-form" onsubmit="addProduct(event)">
+                        <div class="form-group">
+                            <label>Nom du produit *</label>
+                            <input type="text" id="prodName" required placeholder="Ex: Sandale Prada Homme">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Prix (Gourdes) *</label>
+                                <input type="number" id="prodPrice" required placeholder="1500" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label>Ancien prix (optionnel)</label>
+                                <input type="number" id="prodOldPrice" placeholder="2000" min="1">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Catégorie *</label>
+                                <select id="prodCategory" required>
+                                    <option value="">Choisir...</option>
+                                    <option value="clothing">Vêtements</option>
+                                    <option value="mechanic">Pièces Mécaniques</option>
+                                    <option value="shoes">Chaussures / Sandales</option>
+                                    <option value="accessories">Accessoires</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Stock</label>
+                                <select id="prodStock">
+                                    <option value="in">En stock</option>
+                                    <option value="low">Stock faible</option>
+                                    <option value="out">Épuisé</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantité en stock</label>
+                            <input type="number" id="prodStockCount" placeholder="10" min="0" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label>Badge (optionnel)</label>
+                            <select id="prodBadge">
+                                <option value="">Aucun</option>
+                                <option value="hot">Populaire</option>
+                                <option value="new">Nouveau</option>
+                                <option value="sale">Promo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Image du produit (URL ou laisser vide pour upload)</label>
+                            <input type="text" id="prodImage" placeholder="https://... ou laisser vide" onchange="previewImage(this.value)">
+                            <div class="image-preview" id="imagePreview">
+                                <span><i class="fas fa-image"></i> Aperçu de l'image</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Tailles disponibles (pour vêtements/chaussures)</label>
+                            <div class="size-tags" id="sizeTags">
+                                <span class="size-tag" onclick="toggleSizeTag(this)">39</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">40</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">41</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">42</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">43</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">44</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">S</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">M</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">L</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">XL</span>
+                                <span class="size-tag" onclick="toggleSizeTag(this)">XXL</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="prodDesc" rows="3" placeholder="Décrivez votre produit..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                            <i class="fas fa-plus"></i> Ajouter le Produit
+                        </button>
+                    </form>
+                </div>
+                <div class="admin-card">
+                    <h3><i class="fas fa-list"></i> Mes Produits</h3>
+                    <div id="adminProductList"></div>
+                    <div class="export-section">
+                        <h4><i class="fas fa-code"></i> Exporter mes produits (backup)</h4>
+                        <textarea id="exportArea" readonly onclick="this.select()"></textarea>
+                        <p>Copiez ce code et gardez-le dans un fichier texte pour sauvegarder vos produits.</p>
+                        <button class="btn btn-outline" style="margin-top:12px;" onclick="importProducts()">
+                            <i class="fas fa-upload"></i> Importer des produits
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
     <!-- ==================== FOOTER ==================== -->
     <footer class="footer">
         <div class="footer-container">
@@ -1082,164 +1236,13 @@
     <script>
 
         // ===== DATA =====
-        const products = [
-            {
-                id: 1, name: 'T-Shirt Premium Coton', category: 'clothing', catName: 'Vêtements',
-                price: 1500, oldPrice: 2200, rating: 4.7, reviews: 89,
-                image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&h=800&fit=crop'
-                ],
-                badge: 'hot', stock: 'in', stockCount: 45,
-                sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                desc: 'T-shirt 100% coton premium, coupe moderne. Disponible en plusieurs tailles et couleurs. Importé des USA. Tissu doux et respirant, parfait pour le climat tropical haïtien.'
-            },
-            {
-                id: 2, name: 'Jean Slim Fit Homme', category: 'clothing', catName: 'Vêtements',
-                price: 3500, oldPrice: 4800, rating: 4.5, reviews: 124,
-                image: 'https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1582418702059-97ebafb35d09?w=800&h=800&fit=crop'
-                ],
-                badge: 'sale', stock: 'in', stockCount: 32,
-                sizes: ['30', '32', '34', '36', '38'],
-                desc: 'Jean slim fit stretch, denim de qualité supérieure. Confortable et tendance pour toutes les occasions. Coupe moderne qui met en valeur votre silhouette.'
-            },
-            {
-                id: 3, name: 'Robe Élégante Soirée', category: 'clothing', catName: 'Vêtements',
-                price: 4500, oldPrice: 6500, rating: 4.8, reviews: 67,
-                image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&h=800&fit=crop'
-                ],
-                badge: 'new', stock: 'low', stockCount: 5,
-                sizes: ['S', 'M', 'L', 'XL'],
-                desc: 'Robe longue en satin, parfaite pour les soirées et cérémonies. Coupe flatteuse, tissu de haute qualité. Disponible en noir, rouge et bleu marine.'
-            },
-            {
-                id: 4, name: 'Veste Bomber Style', category: 'clothing', catName: 'Vêtements',
-                price: 5500, oldPrice: 7500, rating: 4.6, reviews: 45,
-                image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&h=800&fit=crop'
-                ],
-                badge: '', stock: 'in', stockCount: 18,
-                sizes: ['M', 'L', 'XL', 'XXL'],
-                desc: 'Veste bomber tendance avec doublure confortable. Style urbain parfait pour la saison. Matière légère idéale pour les soirées fraîches.'
-            },
-            {
-                id: 5, name: 'Sneakers Nike Air', category: 'clothing', catName: 'Vêtements',
-                price: 8500, oldPrice: 12000, rating: 4.9, reviews: 234,
-                image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1600269452121-4f2416e55c28?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&h=800&fit=crop'
-                ],
-                badge: 'hot', stock: 'in', stockCount: 28,
-                sizes: ['40', '41', '42', '43', '44', '45'],
-                desc: 'Sneakers Nike Air authentiques. Confort maximal, design iconique. Tailles 40-45 disponibles. Semelle Air amortissante pour un confort toute la journée.'
-            },
-            {
-                id: 6, name: 'Chemise Lin Premium', category: 'clothing', catName: 'Vêtements',
-                price: 2800, oldPrice: 3500, rating: 4.4, reviews: 56,
-                image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=800&h=800&fit=crop'
-                ],
-                badge: 'new', stock: 'in', stockCount: 22,
-                sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-                desc: 'Chemise en lin 100% naturel, coupe ajustée. Idéale pour le climat tropical haïtien. Respirante et élégante, parfaite pour le travail ou les sorties.'
-            },
-            {
-                id: 7, name: 'Kit Freins Avant Complet', category: 'mechanic', catName: 'Mécanique',
-                price: 8500, oldPrice: 12000, rating: 4.8, reviews: 34,
-                image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&h=800&fit=crop'
-                ],
-                badge: 'hot', stock: 'in', stockCount: 15,
-                sizes: [],
-                desc: 'Kit freins avant complet : plaquettes, disques et étriers. Compatible Toyota, Honda, Hyundai. Qualité OEM garantie pour votre sécurité.'
-            },
-            {
-                id: 8, name: 'Filtre à Huile Premium', category: 'mechanic', catName: 'Mécanique',
-                price: 800, oldPrice: 1200, rating: 4.5, reviews: 156,
-                image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=800&fit=crop'
-                ],
-                badge: 'sale', stock: 'in', stockCount: 89,
-                sizes: [],
-                desc: 'Filtre à huile haute qualité pour moteurs essence et diesel. Durée de vie prolongée. Compatible avec la plupart des véhicules japonais et coréens.'
-            },
-            {
-                id: 9, name: "Bougies d'Allumage NGK", category: 'mechanic', catName: 'Mécanique',
-                price: 1200, oldPrice: 1800, rating: 4.7, reviews: 89,
-                image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=800&fit=crop'
-                ],
-                badge: 'new', stock: 'in', stockCount: 67,
-                sizes: [],
-                desc: "Jeu de 4 bougies NGK iridium. Performance optimale, consommation réduite. Universelles. Électrode en iridium pour une durée de vie 3x supérieure."
-            },
-            {
-                id: 10, name: 'Clé Dynamométrique Pro', category: 'mechanic', catName: 'Mécanique',
-                price: 6500, oldPrice: 9000, rating: 4.9, reviews: 23,
-                image: 'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&h=800&fit=crop'
-                ],
-                badge: 'hot', stock: 'low', stockCount: 3,
-                sizes: [],
-                desc: 'Clé dynamométrique professionnelle 1/2". Précision +/- 4%. Coffret inclus. Indispensable pour tout mécanicien sérieux.'
-            },
-            {
-                id: 11, name: 'Batterie Auto 12V 60Ah', category: 'mechanic', catName: 'Mécanique',
-                price: 12000, oldPrice: 15000, rating: 4.6, reviews: 45,
-                image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=800&h=800&fit=crop'
-                ],
-                badge: '', stock: 'in', stockCount: 12,
-                sizes: [],
-                desc: 'Batterie auto 12V 60Ah, maintenance-free. Démarrage fiable même par forte chaleur. Garantie 1 an incluse.'
-            },
-            {
-                id: 12, name: 'Coffret Douilles 94pcs', category: 'mechanic', catName: 'Mécanique',
-                price: 9500, oldPrice: 13500, rating: 4.8, reviews: 67,
-                image: 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&h=400&fit=crop',
-                images: [
-                    'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1504148455328-c376907d081c?w=800&h=800&fit=crop',
-                    'https://images.unsplash.com/photo-1581235720704-06d3acfcb36f?w=800&h=800&fit=crop'
-                ],
-                badge: 'sale', stock: 'in', stockCount: 20,
-                sizes: [],
-                desc: 'Coffret complet 94 pièces : douilles, cliquets, embouts. Chrome vanadium qualité pro. Coffret rigide avec organisation optimale.'
-            }
-        ];
+        // PRODUITS - VIDE PAR DEFAUT, VOUS AJOUTEZ LES VOTRES
+        let products = JSON.parse(localStorage.getItem('htmarket_products')) || [];
+
+        // Si aucun produit n'existe, on montre un message d'aide
+        function getProducts() {
+            return products.length > 0 ? products : [];
+        }
 
         const testimonials = [
             {
@@ -1313,7 +1316,20 @@
         // ===== RENDER FEATURED (Home) =====
         function renderFeatured() {
             const grid = document.getElementById('featuredGrid');
-            const featured = products.filter(p => p.badge === 'hot' || p.badge === 'new').slice(0, 4);
+            const prods = getProducts();
+            if (prods.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:var(--text-muted);">
+                        <i class="fas fa-box-open" style="font-size:3rem; margin-bottom:20px; color:var(--border-light);"></i>
+                        <h3>Aucun produit encore</h3>
+                        <p>Ajoutez vos produits depuis le panneau admin</p>
+                        <button class="btn btn-primary" style="margin-top:20px;" onclick="goToPage('admin')">
+                            <i class="fas fa-plus"></i> Ajouter un Produit
+                        </button>
+                    </div>`;
+                return;
+            }
+            const featured = prods.filter(p => p.badge === 'hot' || p.badge === 'new').slice(0, 4);
             grid.innerHTML = featured.map(p => renderProductCard(p)).join('');
         }
 
@@ -1321,8 +1337,24 @@
         function renderProducts(filter = 'all', page = 1) {
             currentFilter = filter;
             currentPage = page;
+            const prods = getProducts();
 
-            let filtered = filter === 'all' ? [...products] : products.filter(p => p.category === filter);
+            if (prods.length === 0) {
+                const grid = document.getElementById('productsGrid');
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--text-muted);">
+                        <i class="fas fa-box-open" style="font-size:4rem; margin-bottom:24px; color:var(--border-light);"></i>
+                        <h2 style="margin-bottom:16px;">Votre boutique est vide</h2>
+                        <p style="margin-bottom:32px; max-width:500px; margin-left:auto; margin-right:auto;">Ajoutez vos vêtements, pièces mécaniques et accessoires pour commencer à vendre.</p>
+                        <button class="btn btn-primary" onclick="goToPage('admin')">
+                            <i class="fas fa-plus"></i> Ajouter mon Premier Produit
+                        </button>
+                    </div>`;
+                document.getElementById('pagination').innerHTML = '';
+                return;
+            }
+
+            let filtered = filter === 'all' ? [...prods] : prods.filter(p => p.category === filter);
 
             // Sort
             if (currentSort === 'price-asc') filtered.sort((a, b) => a.price - b.price);
@@ -1858,6 +1890,199 @@
         function formatPrice(p) {
             return p.toLocaleString('fr-FR') + ' G';
         }
+
+        // ===== ADMIN FUNCTIONS =====
+        function toggleSizeTag(el) {
+            el.classList.toggle('active');
+        }
+
+        function previewImage(url) {
+            const preview = document.getElementById('imagePreview');
+            if (url && url.trim()) {
+                preview.innerHTML = `<img src="${url}" alt="Preview" onerror="this.parentElement.innerHTML='<span><i class=\'fas fa-exclamation-triangle\'></i> Image invalide</span>'">`;
+                preview.classList.add('has-image');
+            } else {
+                preview.innerHTML = '<span><i class="fas fa-image"></i> Aperçu de l'image</span>';
+                preview.classList.remove('has-image');
+            }
+        }
+
+        function addProduct(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('prodName').value.trim();
+            const price = parseInt(document.getElementById('prodPrice').value);
+            const oldPrice = document.getElementById('prodOldPrice').value ? parseInt(document.getElementById('prodOldPrice').value) : null;
+            const category = document.getElementById('prodCategory').value;
+            const stock = document.getElementById('prodStock').value;
+            const stockCount = parseInt(document.getElementById('prodStockCount').value) || 0;
+            const badge = document.getElementById('prodBadge').value;
+            const image = document.getElementById('prodImage').value.trim() || 'https://via.placeholder.com/400x400/1a1a1a/888888?text=Pas+d\'image';
+            const desc = document.getElementById('prodDesc').value.trim() || name;
+
+            const sizes = Array.from(document.querySelectorAll('.size-tag.active')).map(t => t.textContent);
+
+            const catNames = { clothing: 'Vêtements', mechanic: 'Mécanique', shoes: 'Chaussures', accessories: 'Accessoires', other: 'Autre' };
+
+            const newProduct = {
+                id: Date.now(),
+                name: name,
+                category: category,
+                catName: catNames[category] || 'Autre',
+                price: price,
+                oldPrice: oldPrice,
+                rating: 5.0,
+                reviews: 0,
+                image: image,
+                images: [image],
+                badge: badge,
+                stock: stock,
+                stockCount: stockCount,
+                sizes: sizes,
+                desc: desc
+            };
+
+            products.push(newProduct);
+            saveProducts();
+
+            // Reset form
+            e.target.reset();
+            document.getElementById('imagePreview').innerHTML = '<span><i class="fas fa-image"></i> Aperçu de l'image</span>';
+            document.getElementById('imagePreview').classList.remove('has-image');
+            document.querySelectorAll('.size-tag.active').forEach(t => t.classList.remove('active'));
+
+            renderAdminList();
+            updateExportArea();
+            showToast('Produit ajouté avec succès!');
+        }
+
+        function renderAdminList() {
+            const container = document.getElementById('adminProductList');
+            const prods = getProducts();
+
+            if (prods.length === 0) {
+                container.innerHTML = `
+                    <div class="admin-empty">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Aucun produit</h3>
+                        <p>Ajoutez votre premier produit avec le formulaire à gauche</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Nom</th>
+                            <th>Prix</th>
+                            <th>Stock</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${prods.map(p => `
+                            <tr>
+                                <td><img src="${p.image}" alt="${p.name}"></td>
+                                <td>${p.name}<br><small style="color:var(--text-muted);">${p.catName}</small></td>
+                                <td><strong style="color:var(--accent);">${formatPrice(p.price)}</strong>${p.oldPrice ? `<br><small style="text-decoration:line-through; color:var(--text-dim);">${formatPrice(p.oldPrice)}</small>` : ''}</td>
+                                <td>${p.stock === 'in' ? '<span style="color:var(--accent2);">✓ En stock</span>' : p.stock === 'low' ? '<span style="color:#f1c40f;">⚠ Faible</span>' : '<span style="color:#ff4757;">✗ Épuisé</span>'}</td>
+                                <td>
+                                    <div class="admin-actions">
+                                        <button class="edit-btn" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
+                                        <button class="delete-btn" onclick="deleteProduct(${p.id})"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function deleteProduct(id) {
+            if (!confirm('Supprimer ce produit ?')) return;
+            products = products.filter(p => p.id !== id);
+            saveProducts();
+            renderAdminList();
+            updateExportArea();
+            showToast('Produit supprimé');
+        }
+
+        function editProduct(id) {
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+
+            document.getElementById('prodName').value = p.name;
+            document.getElementById('prodPrice').value = p.price;
+            document.getElementById('prodOldPrice').value = p.oldPrice || '';
+            document.getElementById('prodCategory').value = p.category;
+            document.getElementById('prodStock').value = p.stock;
+            document.getElementById('prodStockCount').value = p.stockCount;
+            document.getElementById('prodBadge').value = p.badge || '';
+            document.getElementById('prodImage').value = p.image;
+            document.getElementById('prodDesc').value = p.desc;
+
+            previewImage(p.image);
+
+            document.querySelectorAll('.size-tag').forEach(t => {
+                t.classList.toggle('active', p.sizes && p.sizes.includes(t.textContent));
+            });
+
+            // Remove old product
+            products = products.filter(x => x.id !== id);
+            saveProducts();
+
+            showToast('Produit chargé pour modification. Modifiez et cliquez "Ajouter".');
+            window.scrollTo(0, 0);
+        }
+
+        function saveProducts() {
+            localStorage.setItem('htmarket_products', JSON.stringify(products));
+        }
+
+        function updateExportArea() {
+            const area = document.getElementById('exportArea');
+            if (area) area.value = JSON.stringify(products, null, 2);
+        }
+
+        function importProducts() {
+            const code = prompt('Collez votre code de backup ici :');
+            if (!code) return;
+            try {
+                const imported = JSON.parse(code);
+                if (Array.isArray(imported)) {
+                    products = imported;
+                    saveProducts();
+                    renderAdminList();
+                    updateExportArea();
+                    showToast(`${imported.length} produits importés!`);
+                }
+            } catch (e) {
+                showToast('Code invalide. Vérifiez votre backup.');
+            }
+        }
+
+        // Override goToPage to render admin list when visiting admin
+        const originalGoToPage = goToPage;
+        goToPage = function(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+            const page = document.getElementById('page-' + pageName);
+            if (page) page.classList.add('active');
+            const nav = document.getElementById('nav-' + pageName);
+            if (nav) nav.classList.add('active');
+            window.scrollTo(0, 0);
+
+            if (pageName === 'admin') {
+                renderAdminList();
+                updateExportArea();
+            }
+            if (pageName === 'shop') {
+                setTimeout(() => renderProducts(), 50);
+            }
+        };
     </script>
 </body>
 </html>
