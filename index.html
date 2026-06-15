@@ -2097,28 +2097,37 @@
         }
 
         function openCheckout() {
-            toggleCart();
             const subtotal = cart.reduce((s, x) => s + x.price * x.quantity, 0);
             const shipping = subtotal > 5000 ? 0 : 500;
-            document.getElementById('orderSummary').innerHTML = `
-                <h4>Résumé de la Commande</h4>
-                ${cart.map(x => `
-                    <div class="summary-line">
-                        <span>${x.name} x${x.quantity}</span>
-                        <span>${formatPrice(x.price * x.quantity)}</span>
-                    </div>
-                `).join('')}
-                <div class="summary-line">
-                    <span>Livraison</span>
-                    <span>${shipping === 0 ? 'Gratuite' : formatPrice(shipping)}</span>
-                </div>
-                <div class="summary-total">
-                    <span>Total</span>
-                    <span>${formatPrice(subtotal + shipping)}</span>
-                </div>
-            `;
-            document.getElementById('checkoutModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
+            const total = subtotal + shipping;
+
+            // Construire le message WhatsApp
+            let msg = "*🛒 NOUVELLE COMMANDE - HT Market*\n\n";
+            msg += "*Produits :*\n";
+            cart.forEach(x => {
+                msg += `• ${x.name} (x${x.quantity}) = ${formatPrice(x.price * x.quantity)}\n`;
+            });
+            msg += `\n*Sous-total :* ${formatPrice(subtotal)}\n`;
+            msg += `*Livraison :* ${shipping === 0 ? 'Gratuite' : formatPrice(shipping)}\n`;
+            msg += `*TOTAL :* ${formatPrice(total)}\n\n`;
+            msg += "*Client :*\n";
+            msg += "Nom : _À compléter_\n";
+            msg += "Adresse : _À compléter_\n";
+            msg += "Ville : _À compléter_\n\n";
+            msg += "Merci de confirmer ma commande ! 🙏";
+
+            const encodedMsg = encodeURIComponent(msg);
+            const whatsappUrl = `https://wa.me/50938954747?text=${encodedMsg}`;
+
+            toggleCart();
+            window.open(whatsappUrl, '_blank');
+
+            // Vider le panier après envoi
+            setTimeout(() => {
+                cart = [];
+                updateCartUI();
+                showToast('Commande envoyée sur WhatsApp!');
+            }, 1000);
         }
 
         function closeCheckoutModal(e) {
