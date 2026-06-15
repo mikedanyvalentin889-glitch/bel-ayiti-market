@@ -1317,6 +1317,11 @@
 
         // ===== PAGE NAVIGATION =====
         function goToPage(pageName) {
+            // Vérifier si on essaie d'accéder à l'admin sans être connecté
+            if (pageName === 'admin' && !isLoggedIn) {
+                pageName = 'login';
+            }
+
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
 
@@ -1328,6 +1333,16 @@
 
             window.scrollTo(0, 0);
 
+            if (pageName === 'admin') {
+                renderAdminPanel();
+                renderAdminList();
+                updateExportArea();
+            }
+            if (pageName === 'login') {
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('loginError').classList.remove('show');
+                setTimeout(() => document.getElementById('loginPassword').focus(), 100);
+            }
             if (pageName === 'shop') {
                 setTimeout(() => renderProducts(), 50);
             }
@@ -2149,36 +2164,7 @@
             }
         }
 
-        // Override goToPage to check login and render admin
-        const originalGoToPage = goToPage;
-        goToPage = function(pageName) {
-            // Check login for admin page
-            if (pageName === 'admin' && !isLoggedIn) {
-                pageName = 'login';
-            }
 
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-            const page = document.getElementById('page-' + pageName);
-            if (page) page.classList.add('active');
-            const nav = document.getElementById('nav-' + pageName);
-            if (nav) nav.classList.add('active');
-            window.scrollTo(0, 0);
-
-            if (pageName === 'admin') {
-                renderAdminPanel();
-                renderAdminList();
-                updateExportArea();
-            }
-            if (pageName === 'login') {
-                document.getElementById('loginPassword').value = '';
-                document.getElementById('loginError').classList.remove('show');
-                setTimeout(() => document.getElementById('loginPassword').focus(), 100);
-            }
-            if (pageName === 'shop') {
-                setTimeout(() => renderProducts(), 50);
-            }
-        };
 
         function renderAdminPanel() {
             const container = document.getElementById('adminContent');
