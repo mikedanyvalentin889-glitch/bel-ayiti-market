@@ -3,462 +3,902 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luxe HAITI - Accessoires Mécaniques & Mode</title>
+    <title>Luxe HAITI — Style & Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
                         'playfair': ['Playfair Display', 'serif'],
-                        'inter': ['Inter', 'sans-serif'],
+                        'space': ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        'haiti-gold': '#D4AF37',
-                        'haiti-red': '#CE1126',
-                        'haiti-blue': '#00209F',
-                        'haiti-dark': '#0a0a0a',
-                        'haiti-gray': '#1a1a1a',
+                        'haiti': {
+                            gold: '#D4AF37',
+                            goldLight: '#F0D878',
+                            red: '#CE1126',
+                            blue: '#00209F',
+                            dark: '#050505',
+                            darker: '#0a0a0f',
+                            gray: '#111118',
+                            surface: '#16161f',
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 4px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Hover Light Reveal Animation */
-        .light-reveal {
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #050505;
+            color: #fff;
+            overflow-x: hidden;
         }
-        
-        .light-reveal::before {
+
+        /* ===== 3D HERO SECTION ===== */
+        .hero-3d {
+            position: relative;
+            min-height: 100vh;
+            perspective: 2000px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #050505 0%, #0a0a1a 50%, #0f0f2a 100%);
+        }
+
+        .hero-3d::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(206, 17, 38, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(0, 32, 159, 0.06) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        /* Floating 3D Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.6), transparent);
+            top: 10%;
+            left: -5%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(206, 17, 38, 0.4), transparent);
+            top: 60%;
+            right: -5%;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(0, 32, 159, 0.5), transparent);
+            bottom: 10%;
+            left: 40%;
+            animation-delay: -14s;
+        }
+
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, -30px) scale(1.1); }
+            50% { transform: translate(-30px, 50px) scale(0.9); }
+            75% { transform: translate(20px, -40px) scale(1.05); }
+        }
+
+        /* 3D Product Showcase */
+        .product-showcase {
+            position: relative;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
-            transition: left 0.6s ease;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .product-layer {
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .product-main {
+            width: 500px;
+            height: 500px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(100px);
             z-index: 10;
-            pointer-events: none;
-        }
-        
-        .light-reveal:hover::before {
-            left: 100%;
-        }
-        
-        .light-reveal .reveal-content {
-            transition: transform 0.5s ease, filter 0.5s ease;
-            filter: brightness(0.7);
-        }
-        
-        .light-reveal:hover .reveal-content {
-            transform: scale(1.05);
-            filter: brightness(1.1);
         }
 
-        /* Column Slide Animation */
-        .slide-column {
+        .product-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 30px 60px rgba(0,0,0,0.5));
+            animation: productFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes productFloat {
+            0%, 100% { transform: translateY(0) rotateY(0deg); }
+            50% { transform: translateY(-20px) rotateY(5deg); }
+        }
+
+        .product-ring {
+            width: 600px;
+            height: 600px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(-50px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 50%;
+            animation: ringRotate 30s linear infinite;
+        }
+
+        .product-ring::before {
+            content: '';
+            position: absolute;
+            inset: 20px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+        }
+
+        @keyframes ringRotate {
+            from { transform: translate(-50%, -50%) translateZ(-50px) rotate(0deg); }
+            to { transform: translate(-50%, -50%) translateZ(-50px) rotate(360deg); }
+        }
+
+        /* Floating particles */
+        .particle-3d {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(212, 175, 55, 0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+            animation: particleFloat 15s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(100px) scale(0); opacity: 0; }
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Text Effects */
+        .text-gradient-gold {
+            background: linear-gradient(135deg, #D4AF37 0%, #F0D878 50%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-shimmer {
+            background: linear-gradient(90deg, #D4AF37, #fff, #D4AF37, #fff, #D4AF37);
+            background-size: 300% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% center; }
+            100% { background-position: 300% center; }
+        }
+
+        /* Magnetic Button */
+        .magnetic-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #D4AF37, #B8941F);
+            color: #050505;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .magnetic-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #fff, #F0D878);
             opacity: 0;
-            transform: translateY(80px);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.4s ease;
         }
-        
-        .slide-column.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        .slide-column:nth-child(1) { transition-delay: 0.1s; }
-        .slide-column:nth-child(2) { transition-delay: 0.2s; }
-        .slide-column:nth-child(3) { transition-delay: 0.3s; }
-        .slide-column:nth-child(4) { transition-delay: 0.4s; }
 
-        /* Layer Transformation Animation */
-        .layer-card {
+        .magnetic-btn:hover::before {
+            opacity: 1;
+        }
+
+        .magnetic-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .magnetic-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Scroll Indicator */
+        .scroll-3d {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .scroll-mouse {
+            width: 26px;
+            height: 40px;
+            border: 2px solid rgba(212, 175, 55, 0.5);
+            border-radius: 13px;
+            position: relative;
+        }
+
+        .scroll-wheel {
+            width: 4px;
+            height: 8px;
+            background: #D4AF37;
+            border-radius: 2px;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: scrollWheel 2s ease-in-out infinite;
+        }
+
+        @keyframes scrollWheel {
+            0%, 100% { top: 8px; opacity: 1; }
+            50% { top: 20px; opacity: 0.3; }
+        }
+
+        /* Navigation */
+        .nav-glass {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s ease;
+        }
+
+        .nav-glass.scrolled {
+            background: rgba(5, 5, 5, 0.9);
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Product Cards 3D */
+        .card-3d {
             transform-style: preserve-3d;
             perspective: 1000px;
             transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        
-        .layer-card:hover {
-            transform: rotateY(10deg) rotateX(5deg) translateZ(20px);
+
+        .card-3d:hover {
+            transform: translateY(-10px) rotateX(5deg);
         }
-        
-        .layer-card .layer-bg {
+
+        .card-3d-inner {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .card-3d:hover .card-3d-inner {
+            transform: translateZ(30px);
+        }
+
+        .card-glow {
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), transparent);
+            inset: -2px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), transparent, rgba(206, 17, 38, 0.2));
+            border-radius: inherit;
             opacity: 0;
             transition: opacity 0.4s ease;
-            border-radius: inherit;
+            z-index: -1;
+            filter: blur(20px);
         }
-        
-        .layer-card:hover .layer-bg {
+
+        .card-3d:hover .card-glow {
             opacity: 1;
         }
-        
-        .layer-card .layer-content {
-            transform: translateZ(30px);
-            transition: transform 0.4s ease;
-        }
-        
-        .layer-card:hover .layer-content {
-            transform: translateZ(50px);
+
+        /* Light Sweep */
+        .light-sweep {
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Floating particles */
-        .particle {
+        .light-sweep::after {
+            content: '';
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(212, 175, 55, 0.5);
-            border-radius: 50%;
-            animation: float 15s infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
-        }
-
-        /* Text shimmer */
-        .text-shimmer {
-            background: linear-gradient(90deg, #D4AF37, #fff, #D4AF37);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shimmer 3s linear infinite;
-        }
-        
-        @keyframes shimmer {
-            to { background-position: 200% center; }
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 40%,
+                rgba(255, 255, 255, 0.03) 50%,
+                transparent 60%
+            );
+            transform: translateX(-100%) rotate(45deg);
+            transition: transform 0.8s ease;
         }
 
-        /* Navigation blur */
-        .nav-blur {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        .light-sweep:hover::after {
+            transform: translateX(100%) rotate(45deg);
         }
 
-        /* Cart sidebar */
-        .cart-sidebar {
+        /* Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .marquee-content {
+            display: inline-flex;
+            animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 3px; }
+
+        /* Cart Sidebar */
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            max-width: 100%;
+            height: 100vh;
+            background: #0a0a0f;
+            border-left: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 200;
             transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow-y: auto;
         }
-        
-        .cart-sidebar.open {
+
+        .cart-drawer.open {
             transform: translateX(0);
+        }
+
+        .cart-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 199;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .cart-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Reveal on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger children */
+        .stagger-children > * {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .stagger-children.visible > *:nth-child(1) { animation: staggerIn 0.6s 0.1s forwards; }
+        .stagger-children.visible > *:nth-child(2) { animation: staggerIn 0.6s 0.2s forwards; }
+        .stagger-children.visible > *:nth-child(3) { animation: staggerIn 0.6s 0.3s forwards; }
+        .stagger-children.visible > *:nth-child(4) { animation: staggerIn 0.6s 0.4s forwards; }
+
+        @keyframes staggerIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Number counter animation */
+        .counter {
+            font-variant-numeric: tabular-nums;
         }
 
         /* Mobile menu */
-        .mobile-menu {
+        .mobile-menu-3d {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 150;
             transform: translateX(-100%);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            padding-top: 100px;
         }
-        
-        .mobile-menu.open {
+
+        .mobile-menu-3d.open {
             transform: translateX(0);
         }
 
-        /* Product card hover */
-        .product-card {
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.15);
+        /* Badge pulse */
+        .badge-pulse {
+            animation: badgePulse 2s ease-in-out infinite;
         }
 
-        /* Hero parallax */
-        .hero-parallax {
-            transform: translateY(var(--scroll-y, 0));
-            transition: transform 0.1s linear;
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
         }
 
-        /* Loading animation */
-        .loader {
-            border: 3px solid rgba(212, 175, 55, 0.1);
-            border-top: 3px solid #D4AF37;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Grid background pattern */
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
         }
 
-        /* Stagger animation for grid items */
-        .stagger-item {
+        /* Tilt effect container */
+        .tilt-container {
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
+        }
+
+        .tilt-element {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Category hover expand */
+        .category-expand {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .category-expand img {
+            transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
+            filter: brightness(0.6);
+        }
+
+        .category-expand:hover img {
+            transform: scale(1.1);
+            filter: brightness(0.8);
+        }
+
+        .category-expand .category-content {
+            transform: translateY(20px);
+            opacity: 0.8;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .category-expand:hover .category-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Input focus glow */
+        .input-glow:focus {
+            outline: none;
+            border-color: rgba(212, 175, 55, 0.5);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, #111118 25%, #1a1a24 50%, #111118 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.5s ease-in-out infinite;
+        }
+
+        @keyframes skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Toast notification */
+        .toast-3d {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(212, 175, 55, 0.95);
+            color: #050505;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            transform: translateY(100px) translateZ(-50px);
             opacity: 0;
-            transform: translateY(30px);
-            animation: staggerIn 0.6s ease forwards;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            z-index: 300;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
-        
-        @keyframes staggerIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+
+        .toast-3d.show {
+            transform: translateY(0) translateZ(0);
+            opacity: 1;
+        }
+
+        /* Price tag */
+        .price-tag {
+            position: relative;
+            display: inline-block;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.05));
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            font-weight: 700;
+            color: #D4AF37;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-main { width: 300px; height: 300px; }
+            .product-ring { width: 350px; height: 350px; }
         }
     </style>
 </head>
-<body class="bg-haiti-dark text-white font-inter overflow-x-hidden">
+<body class="antialiased">
 
     <!-- Navigation -->
-    <nav class="fixed w-full z-50 nav-blur bg-haiti-dark/80 border-b border-haiti-gold/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <!-- Logo -->
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-haiti-gold to-yellow-600 rounded-full flex items-center justify-center">
-                        <span class="text-haiti-dark font-bold text-lg">L</span>
-                    </div>
-                    <div>
-                        <h1 class="font-playfair text-2xl font-bold text-white tracking-wider">Luxe <span class="text-haiti-gold">HAITI</span></h1>
-                        <p class="text-xs text-gray-400 tracking-widest">DELMAS 31</p>
-                    </div>
+    <nav class="nav-glass py-4 px-6" id="navbar">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-haiti-gold to-yellow-600 flex items-center justify-center">
+                    <span class="text-haiti-dark font-bold text-lg font-playfair">L</span>
                 </div>
+                <div>
+                    <h1 class="font-playfair text-xl font-bold tracking-wider">Luxe <span class="text-haiti-gold">HAITI</span></h1>
+                </div>
+            </div>
 
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#home" class="text-sm uppercase tracking-widest hover:text-haiti-gold transition-colors duration-300">Accueil</a>
-                    <a href="#mechanics" class="text-sm uppercase tracking-widest hover:text-haiti-gold transition-colors duration-300">Mécanique</a>
-                    <a href="#clothing" class="text-sm uppercase tracking-widest hover:text-haiti-gold transition-colors duration-300">Vêtements</a>
-                    <a href="#new" class="text-sm uppercase tracking-widest hover:text-haiti-gold transition-colors duration-300">Nouveautés</a>
-                    <a href="#contact" class="text-sm uppercase tracking-widest hover:text-haiti-gold transition-colors duration-300">Contact</a>
-                </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="text-sm uppercase tracking-widest text-gray-300 hover:text-haiti-gold transition-colors duration-300">Accueil</a>
+                <a href="#mechanics" class="text-sm uppercase tracking-widest text-gray-300 hover:text-haiti-gold transition-colors duration-300">Mécanique</a>
+                <a href="#clothing" class="text-sm uppercase tracking-widest text-gray-300 hover:text-haiti-gold transition-colors duration-300">Mode</a>
+                <a href="#contact" class="text-sm uppercase tracking-widest text-gray-300 hover:text-haiti-gold transition-colors duration-300">Contact</a>
+            </div>
 
-                <!-- Icons -->
-                <div class="flex items-center space-x-6">
-                    <button class="hover:text-haiti-gold transition-colors">
-                        <i class="fas fa-search text-lg"></i>
-                    </button>
-                    <button onclick="toggleCart()" class="hover:text-haiti-gold transition-colors relative">
-                        <i class="fas fa-shopping-bag text-lg"></i>
-                        <span id="cart-count" class="absolute -top-2 -right-2 bg-haiti-gold text-haiti-dark text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
-                    </button>
-                    <button onclick="toggleMobileMenu()" class="md:hidden hover:text-haiti-gold transition-colors">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
+            <div class="flex items-center gap-5">
+                <button class="text-gray-300 hover:text-haiti-gold transition-colors">
+                    <i class="fas fa-search text-lg"></i>
+                </button>
+                <button onclick="toggleCart()" class="text-gray-300 hover:text-haiti-gold transition-colors relative">
+                    <i class="fas fa-shopping-bag text-lg"></i>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 w-5 h-5 bg-haiti-gold text-haiti-dark text-xs font-bold rounded-full flex items-center justify-center badge-pulse">0</span>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden text-gray-300 hover:text-haiti-gold transition-colors">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
             </div>
         </div>
     </nav>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" class="mobile-menu fixed inset-0 z-40 bg-haiti-dark pt-24 px-6 md:hidden">
-        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-2xl">
+    <div class="mobile-menu-3d" id="mobile-menu">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-2xl text-gray-300 hover:text-haiti-gold">
             <i class="fas fa-times"></i>
         </button>
-        <div class="flex flex-col space-y-6">
-            <a href="#home" onclick="toggleMobileMenu()" class="text-2xl font-playfair hover:text-haiti-gold transition-colors">Accueil</a>
-            <a href="#mechanics" onclick="toggleMobileMenu()" class="text-2xl font-playfair hover:text-haiti-gold transition-colors">Mécanique</a>
-            <a href="#clothing" onclick="toggleMobileMenu()" class="text-2xl font-playfair hover:text-haiti-gold transition-colors">Vêtements</a>
-            <a href="#new" onclick="toggleMobileMenu()" class="text-2xl font-playfair hover:text-haiti-gold transition-colors">Nouveautés</a>
-            <a href="#contact" onclick="toggleMobileMenu()" class="text-2xl font-playfair hover:text-haiti-gold transition-colors">Contact</a>
-        </div>
-        <div class="mt-12 pt-8 border-t border-gray-800">
-            <p class="text-haiti-gold font-bold text-lg">509 3895-4747</p>
-            <p class="text-gray-400 text-sm mt-2">Delmas 31, Haïti</p>
+        <div class="flex flex-col items-center gap-8 pt-12">
+            <a href="#home" onclick="toggleMobileMenu()" class="text-3xl font-playfair hover:text-haiti-gold transition-colors">Accueil</a>
+            <a href="#mechanics" onclick="toggleMobileMenu()" class="text-3xl font-playfair hover:text-haiti-gold transition-colors">Mécanique</a>
+            <a href="#clothing" onclick="toggleMobileMenu()" class="text-3xl font-playfair hover:text-haiti-gold transition-colors">Mode</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="text-3xl font-playfair hover:text-haiti-gold transition-colors">Contact</a>
+            <div class="mt-8 text-center">
+                <p class="text-haiti-gold font-bold text-xl">509 3895-4747</p>
+                <p class="text-gray-400 mt-2">Delmas 31, Haïti</p>
+            </div>
         </div>
     </div>
 
-    <!-- Cart Sidebar -->
-    <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/60 z-50 hidden opacity-0 transition-opacity duration-300"></div>
-    <div id="cart-sidebar" class="cart-sidebar fixed right-0 top-0 h-full w-full sm:w-96 bg-haiti-gray z-50 border-l border-haiti-gold/20 overflow-y-auto">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-8">
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="p-8">
+            <div class="flex items-center justify-between mb-8">
                 <h2 class="font-playfair text-2xl font-bold">Votre Panier</h2>
-                <button onclick="toggleCart()" class="hover:text-haiti-gold transition-colors">
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-haiti-gold transition-colors">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
-            <div id="cart-items" class="space-y-4">
-                <!-- Cart items will be injected here -->
-            </div>
-            <div id="cart-empty" class="text-center py-12 text-gray-400">
-                <i class="fas fa-shopping-bag text-4xl mb-4 opacity-30"></i>
+            <div id="cart-items" class="space-y-4"></div>
+            <div id="cart-empty" class="text-center py-16 text-gray-500">
+                <i class="fas fa-shopping-bag text-5xl mb-4 opacity-20"></i>
                 <p>Votre panier est vide</p>
             </div>
-            <div id="cart-footer" class="hidden mt-8 pt-6 border-t border-gray-700">
-                <div class="flex justify-between mb-4 text-lg">
-                    <span>Total</span>
-                    <span id="cart-total" class="font-bold text-haiti-gold">0 HTG</span>
+            <div id="cart-footer" class="hidden mt-8 pt-6 border-t border-gray-800">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-gray-400">Total</span>
+                    <span id="cart-total" class="font-bold text-2xl text-haiti-gold">0 HTG</span>
                 </div>
-                <button class="w-full bg-haiti-gold text-haiti-dark py-4 font-bold uppercase tracking-wider hover:bg-white transition-colors duration-300">
-                    Commander par WhatsApp
-                </button>
+                <a href="https://wa.me/50938954747" target="_blank" class="magnetic-btn w-full">
+                    <span><i class="fab fa-whatsapp mr-2"></i>Commander</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Hero Section -->
-    <section id="home" class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        <!-- Animated Background -->
-        <div class="absolute inset-0 bg-gradient-to-br from-haiti-dark via-haiti-gray to-haiti-dark"></div>
-        
-        <!-- Floating Particles -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-            <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
-            <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
-            <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
-            <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
-            <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
-        </div>
+    <!-- ===== HERO SECTION 3D ===== -->
+    <section id="home" class="hero-3d min-h-screen flex items-center relative">
+        <!-- 3D Orbs -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
 
-        <!-- Hero Content -->
-        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="hero-parallax">
-                <p class="text-haiti-gold uppercase tracking-[0.3em] text-sm mb-6 animate-pulse">Bienvenue à Luxe HAITI</p>
-                <h1 class="font-playfair text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
-                    <span class="block text-shimmer">Style &</span>
-                    <span class="block text-white">Performance</span>
-                </h1>
-                <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-                    Découvrez notre collection exclusive d'accessoires mécaniques et de vêtements tendance pour hommes et femmes. Qualité premium, livraison à Delmas 31.
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#mechanics" class="group relative px-8 py-4 bg-haiti-gold text-haiti-dark font-bold uppercase tracking-wider overflow-hidden">
-                        <span class="relative z-10 group-hover:text-white transition-colors duration-300">Accessoires Mécaniques</span>
-                        <div class="absolute inset-0 bg-haiti-red transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
-                    </a>
-                    <a href="#clothing" class="px-8 py-4 border border-haiti-gold text-haiti-gold font-bold uppercase tracking-wider hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
-                        Collection Mode
-                    </a>
+        <!-- Floating Particles -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none" id="particles-container"></div>
+
+        <!-- Grid Pattern -->
+        <div class="absolute inset-0 grid-pattern opacity-50 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 w-full relative z-10 pt-24">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="space-y-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full">
+                        <span class="w-2 h-2 bg-haiti-gold rounded-full animate-pulse"></span>
+                        <span class="text-xs uppercase tracking-widest text-haiti-gold">Nouvelle Collection 2026</span>
+                    </div>
+
+                    <h1 class="font-playfair text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9]">
+                        <span class="block text-white">Style &</span>
+                        <span class="block text-shimmer mt-2">Performance</span>
+                    </h1>
+
+                    <p class="text-gray-400 text-lg md:text-xl max-w-lg leading-relaxed">
+                        Découvrez l'excellence haïtienne. Accessoires mécaniques premium et mode urbaine pour ceux qui osent se démarquer.
+                    </p>
+
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#mechanics" class="magnetic-btn">
+                            <span>Explorer <i class="fas fa-arrow-right ml-2"></i></span>
+                        </a>
+                        <a href="#clothing" class="px-8 py-4 border border-gray-700 rounded-full text-gray-300 hover:border-haiti-gold hover:text-haiti-gold transition-all duration-300 font-semibold uppercase tracking-wider text-sm">
+                            Collection Mode
+                        </a>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="flex gap-8 pt-8 border-t border-gray-800">
+                        <div>
+                            <p class="text-3xl font-bold text-haiti-gold counter" data-target="2500">0</p>
+                            <p class="text-gray-500 text-sm uppercase tracking-wider mt-1">Clients</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-haiti-gold counter" data-target="500">0</p>
+                            <p class="text-gray-500 text-sm uppercase tracking-wider mt-1">Produits</p>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-bold text-haiti-gold counter" data-target="100">0</p>
+                            <p class="text-gray-500 text-sm uppercase tracking-wider mt-1">% Qualité</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3D Product Showcase -->
+                <div class="relative h-[500px] md:h-[600px] hidden lg:block" id="hero-3d-container">
+                    <div class="product-showcase" id="product-showcase">
+                        <div class="product-ring"></div>
+                        <div class="product-ring" style="width: 500px; height: 500px; animation-direction: reverse; animation-duration: 20s;"></div>
+                        <div class="product-main tilt-element">
+                            <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&h=600&fit=crop" alt="Snapback Premium" class="rounded-3xl">
+                        </div>
+                        <!-- Floating badges -->
+                        <div class="absolute top-10 right-10 glass-card px-4 py-2 rounded-full text-sm font-semibold text-haiti-gold animate-bounce" style="animation-duration: 3s;">
+                            <i class="fas fa-star mr-1"></i> Best Seller
+                        </div>
+                        <div class="absolute bottom-20 left-0 glass-card px-4 py-2 rounded-full text-sm font-semibold text-white" style="animation: float 4s ease-in-out infinite;">
+                            <i class="fas fa-fire mr-1 text-haiti-red"></i> 2,500 HTG
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Scroll Indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <i class="fas fa-chevron-down text-haiti-gold text-2xl"></i>
+        <div class="scroll-3d" onclick="document.getElementById('features').scrollIntoView({behavior: 'smooth'})">
+            <span class="text-xs uppercase tracking-widest text-gray-500">Scroll</span>
+            <div class="scroll-mouse">
+                <div class="scroll-wheel"></div>
+            </div>
         </div>
     </section>
 
-    <!-- Features Bar with Column Slide Animation -->
-    <section class="py-20 bg-haiti-gray relative overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="slide-column text-center p-6">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-haiti-gold/10 rounded-full flex items-center justify-center">
+    <!-- Marquee -->
+    <div class="py-6 border-y border-gray-800 bg-haiti-darker overflow-hidden">
+        <div class="marquee-container">
+            <div class="marquee-content text-gray-500 uppercase tracking-[0.3em] text-sm font-semibold">
+                <span class="mx-8">Livraison Delmas 31</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Snapback Caps 2,500 HTG</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Sandales 1,500 HTG</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Qualité Garantie</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Commande WhatsApp</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Livraison Delmas 31</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Snapback Caps 2,500 HTG</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Sandales 1,500 HTG</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Qualité Garantie</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+                <span class="mx-8">Commande WhatsApp</span>
+                <span class="mx-8 text-haiti-gold">•</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <section id="features" class="py-24 bg-haiti-darker relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children" id="features-grid">
+                <div class="glass-card p-8 rounded-2xl text-center group hover:border-haiti-gold/30 transition-all duration-500">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i class="fas fa-shipping-fast text-haiti-gold text-2xl"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">Livraison Rapide</h3>
-                    <p class="text-gray-400 text-sm">Service disponible à Delmas 31 et environs</p>
+                    <p class="text-gray-400 text-sm">Service disponible à Delmas 31 et environs immédiats</p>
                 </div>
-                <div class="slide-column text-center p-6">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-haiti-gold/10 rounded-full flex items-center justify-center">
+                <div class="glass-card p-8 rounded-2xl text-center group hover:border-haiti-gold/30 transition-all duration-500">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i class="fas fa-shield-alt text-haiti-gold text-2xl"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">Qualité Garantie</h3>
-                    <p class="text-gray-400 text-sm">Produits sélectionnés avec soin</p>
+                    <p class="text-gray-400 text-sm">Produits sélectionnés et vérifiés avec soin</p>
                 </div>
-                <div class="slide-column text-center p-6">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-haiti-gold/10 rounded-full flex items-center justify-center">
+                <div class="glass-card p-8 rounded-2xl text-center group hover:border-haiti-gold/30 transition-all duration-500">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i class="fas fa-tags text-haiti-gold text-2xl"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">Prix Compétitifs</h3>
-                    <p class="text-gray-400 text-sm">Meilleurs tarifs du marché local</p>
+                    <p class="text-gray-400 text-sm">Meilleurs tarifs du marché local haïtien</p>
                 </div>
-                <div class="slide-column text-center p-6">
-                    <div class="w-16 h-16 mx-auto mb-4 bg-haiti-gold/10 rounded-full flex items-center justify-center">
+                <div class="glass-card p-8 rounded-2xl text-center group hover:border-haiti-gold/30 transition-all duration-500">
+                    <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                         <i class="fab fa-whatsapp text-haiti-gold text-2xl"></i>
                     </div>
                     <h3 class="font-bold text-lg mb-2">Commande Facile</h3>
-                    <p class="text-gray-400 text-sm">Contact direct par WhatsApp</p>
+                    <p class="text-gray-400 text-sm">Contact direct et rapide par WhatsApp</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Categories with Light Reveal -->
+    <!-- Categories -->
     <section class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="font-playfair text-4xl md:text-5xl font-bold mb-4">Nos Catégories</h2>
-                <div class="w-24 h-1 bg-haiti-gold mx-auto"></div>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <p class="text-haiti-gold uppercase tracking-[0.3em] text-sm mb-4 font-semibold">Nos Univers</p>
+                <h2 class="font-playfair text-4xl md:text-6xl font-bold">Explorez nos Collections</h2>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Mechanics Category -->
-                <div class="light-reveal group relative h-96 rounded-2xl overflow-hidden">
-                    <div class="reveal-content absolute inset-0">
-                        <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=600&fit=crop" alt="Accessoires Mécaniques" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 p-8 z-20">
-                        <p class="text-haiti-gold uppercase tracking-wider text-sm mb-2">Collection</p>
-                        <h3 class="font-playfair text-3xl font-bold mb-2">Accessoires Mécaniques</h3>
-                        <p class="text-gray-300 mb-4">Outils, pièces et équipements de qualité</p>
-                        <a href="#mechanics" class="inline-flex items-center text-haiti-gold hover:text-white transition-colors">
-                            Explorer <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
+                <div class="category-expand rounded-3xl overflow-hidden h-[500px] relative group cursor-pointer reveal">
+                    <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=600&fit=crop" alt="Mécanique" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="category-content absolute bottom-0 left-0 p-10">
+                        <span class="text-haiti-gold uppercase tracking-wider text-sm font-semibold mb-2 block">Collection</span>
+                        <h3 class="font-playfair text-4xl font-bold mb-3">Accessoires Mécaniques</h3>
+                        <p class="text-gray-300 mb-6 max-w-md">Outils professionnels, pièces auto et équipements de garage de qualité supérieure</p>
+                        <span class="inline-flex items-center text-haiti-gold font-semibold group-hover:translate-x-2 transition-transform">
+                            Découvrir <i class="fas fa-arrow-right ml-2"></i>
+                        </span>
                     </div>
                 </div>
 
-                <!-- Clothing Category -->
-                <div class="light-reveal group relative h-96 rounded-2xl overflow-hidden">
-                    <div class="reveal-content absolute inset-0">
-                        <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=600&fit=crop" alt="Vêtements" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                    </div>
-                    <div class="absolute bottom-0 left-0 p-8 z-20">
-                        <p class="text-haiti-gold uppercase tracking-wider text-sm mb-2">Collection</p>
-                        <h3 class="font-playfair text-3xl font-bold mb-2">Mode Homme & Femme</h3>
-                        <p class="text-gray-300 mb-4">Tendances et élégance pour tous</p>
-                        <a href="#clothing" class="inline-flex items-center text-haiti-gold hover:text-white transition-colors">
-                            Explorer <i class="fas fa-arrow-right ml-2"></i>
-                        </a>
+                <div class="category-expand rounded-3xl overflow-hidden h-[500px] relative group cursor-pointer reveal">
+                    <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=800&h=600&fit=crop" alt="Mode" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                    <div class="category-content absolute bottom-0 left-0 p-10">
+                        <span class="text-haiti-gold uppercase tracking-wider text-sm font-semibold mb-2 block">Collection</span>
+                        <h3 class="font-playfair text-4xl font-bold mb-3">Mode Homme & Femme</h3>
+                        <p class="text-gray-300 mb-6 max-w-md">Tendances urbaines, élégance et confort pour toutes les occasions</p>
+                        <span class="inline-flex items-center text-haiti-gold font-semibold group-hover:translate-x-2 transition-transform">
+                            Découvrir <i class="fas fa-arrow-right ml-2"></i>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Mechanics Section with Layer Transformation -->
-    <section id="mechanics" class="py-24 bg-haiti-gray relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+    <!-- Mechanics Section -->
+    <section id="mechanics" class="py-24 bg-haiti-darker relative grid-pattern">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
                 <div>
-                    <p class="text-haiti-gold uppercase tracking-wider text-sm mb-2">Nos Produits</p>
+                    <p class="text-haiti-gold uppercase tracking-[0.3em] text-sm mb-2 font-semibold">Boutique</p>
                     <h2 class="font-playfair text-4xl md:text-5xl font-bold">Accessoires Mécaniques</h2>
                 </div>
-                <a href="#" class="mt-4 md:mt-0 text-haiti-gold hover:text-white transition-colors flex items-center">
-                    Voir tout <i class="fas fa-arrow-right ml-2"></i>
+                <a href="#" class="mt-4 md:mt-0 text-gray-400 hover:text-haiti-gold transition-colors flex items-center gap-2">
+                    Voir tout <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children" id="mechanics-grid">
                 <!-- Product 1 -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="card-3d group">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1581147036324-c17ac41dd161?w=400&h=400&fit=crop" alt="Clé à Cliquet" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1581147036324-c17ac41dd161?w=400&h=400&fit=crop" alt="Clé à Cliquet" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute top-4 right-4 bg-haiti-gold text-haiti-dark text-xs font-bold px-3 py-1 rounded-full">Populaire</div>
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Clé à Cliquet Pro</h3>
-                            <p class="text-gray-400 text-sm mb-3">Ensemble 40 pièces chrome vanadium</p>
+                            <p class="text-gray-400 text-sm mb-4">Ensemble 40 pièces chrome vanadium</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">3,500 HTG</span>
-                                <button onclick="addToCart('Clé à Cliquet Pro', 3500, 'https://images.unsplash.com/photo-1581147036324-c17ac41dd161?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">3,500 HTG</span>
+                                <button onclick="addToCart('Clé à Cliquet Pro', 3500, 'https://images.unsplash.com/photo-1581147036324-c17ac41dd161?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -467,18 +907,18 @@
                 </div>
 
                 <!-- Product 2 -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="card-3d group">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&h=400&fit=crop" alt="Compresseur" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&h=400&fit=crop" alt="Compresseur" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Compresseur Portable</h3>
-                            <p class="text-gray-400 text-sm mb-3">12V - 150 PSI avec manomètre</p>
+                            <p class="text-gray-400 text-sm mb-4">12V - 150 PSI avec manomètre digital</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">4,200 HTG</span>
-                                <button onclick="addToCart('Compresseur Portable', 4200, 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">4,200 HTG</span>
+                                <button onclick="addToCart('Compresseur Portable', 4200, 'https://images.unsplash.com/photo-1530124566582-a618bc2615dc?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -487,19 +927,19 @@
                 </div>
 
                 <!-- Product 3 -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="card-3d group">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=400&fit=crop" alt="Boîte à Outils" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=400&fit=crop" alt="Boîte à Outils" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute top-4 right-4 bg-haiti-red text-white text-xs font-bold px-3 py-1 rounded-full">Promo</div>
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Boîte à Outils 120pcs</h3>
-                            <p class="text-gray-400 text-sm mb-3">Complete avec mallette aluminium</p>
+                            <p class="text-gray-400 text-sm mb-4">Complete avec mallette aluminium renforcée</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">8,500 HTG</span>
-                                <button onclick="addToCart('Boîte à Outils 120pcs', 8500, 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">8,500 HTG</span>
+                                <button onclick="addToCart('Boîte à Outils 120pcs', 8500, 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -508,18 +948,18 @@
                 </div>
 
                 <!-- Product 4 -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="card-3d group">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=400&fit=crop" alt="Démarreur" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=400&fit=crop" alt="Démarreur" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Démarreur Auto</h3>
-                            <p class="text-gray-400 text-sm mb-3">Jump starter 20000mAh + lampe LED</p>
+                            <p class="text-gray-400 text-sm mb-4">Jump starter 20000mAh + lampe LED</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">5,800 HTG</span>
-                                <button onclick="addToCart('Démarreur Auto', 5800, 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">5,800 HTG</span>
+                                <button onclick="addToCart('Démarreur Auto', 5800, 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -530,36 +970,36 @@
         </div>
     </section>
 
-    <!-- Clothing Section with Layer Transformation -->
+    <!-- Clothing Section -->
     <section id="clothing" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
                 <div>
-                    <p class="text-haiti-gold uppercase tracking-wider text-sm mb-2">Collection Mode</p>
+                    <p class="text-haiti-gold uppercase tracking-[0.3em] text-sm mb-2 font-semibold">Collection Mode</p>
                     <h2 class="font-playfair text-4xl md:text-5xl font-bold">Vêtements Homme & Femme</h2>
                 </div>
-                <div class="flex gap-4 mt-4 md:mt-0">
-                    <button onclick="filterClothing('all')" class="px-4 py-2 bg-haiti-gold text-haiti-dark text-sm font-bold rounded-full hover:bg-white transition-colors">Tout</button>
-                    <button onclick="filterClothing('men')" class="px-4 py-2 border border-gray-600 text-sm font-bold rounded-full hover:border-haiti-gold hover:text-haiti-gold transition-colors">Homme</button>
-                    <button onclick="filterClothing('women')" class="px-4 py-2 border border-gray-600 text-sm font-bold rounded-full hover:border-haiti-gold hover:text-haiti-gold transition-colors">Femme</button>
+                <div class="flex gap-3 mt-4 md:mt-0">
+                    <button onclick="filterClothing('all')" class="filter-btn active px-5 py-2 rounded-full text-sm font-semibold border border-haiti-gold bg-haiti-gold text-haiti-dark transition-all duration-300">Tout</button>
+                    <button onclick="filterClothing('men')" class="filter-btn px-5 py-2 rounded-full text-sm font-semibold border border-gray-700 text-gray-400 hover:border-haiti-gold hover:text-haiti-gold transition-all duration-300">Homme</button>
+                    <button onclick="filterClothing('women')" class="filter-btn px-5 py-2 rounded-full text-sm font-semibold border border-gray-700 text-gray-400 hover:border-haiti-gold hover:text-haiti-gold transition-all duration-300">Femme</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="clothing-grid">
-                <!-- Snapback Cap -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group clothing-item" data-category="men">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 stagger-children" id="clothing-grid">
+                <!-- Snapback -->
+                <div class="clothing-item card-3d group" data-category="men">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=400&fit=crop" alt="Snapback Cap" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=400&fit=crop" alt="Snapback" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute top-4 right-4 bg-haiti-gold text-haiti-dark text-xs font-bold px-3 py-1 rounded-full">Best Seller</div>
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Snapback Premium</h3>
-                            <p class="text-gray-400 text-sm mb-3">Broderie 3D, ajustable</p>
+                            <p class="text-gray-400 text-sm mb-4">Broderie 3D, ajustable, qualité supérieure</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">2,500 HTG</span>
-                                <button onclick="addToCart('Snapback Premium', 2500, 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">2,500 HTG</span>
+                                <button onclick="addToCart('Snapback Premium', 2500, 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -568,18 +1008,18 @@
                 </div>
 
                 <!-- Sandals -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group clothing-item" data-category="unisex">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="clothing-item card-3d group" data-category="unisex">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400&h=400&fit=crop" alt="Sandales" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400&h=400&fit=crop" alt="Sandales" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Sandales Confort</h3>
-                            <p class="text-gray-400 text-sm mb-3">Cuir synthétique, semelle antidérapante</p>
+                            <p class="text-gray-400 text-sm mb-4">Cuir synthétique, semelle antidérapante</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">1,500 HTG</span>
-                                <button onclick="addToCart('Sandales Confort', 1500, 'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">1,500 HTG</span>
+                                <button onclick="addToCart('Sandales Confort', 1500, 'https://images.unsplash.com/photo-1603487742131-4160ec999306?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -588,18 +1028,18 @@
                 </div>
 
                 <!-- T-Shirt -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group clothing-item" data-category="men">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="clothing-item card-3d group" data-category="men">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop" alt="T-Shirt" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop" alt="T-Shirt" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">T-Shirt Premium</h3>
-                            <p class="text-gray-400 text-sm mb-3">Coton 100%, coupe moderne</p>
+                            <p class="text-gray-400 text-sm mb-4">Coton 100%, coupe moderne urbaine</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">1,800 HTG</span>
-                                <button onclick="addToCart('T-Shirt Premium', 1800, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">1,800 HTG</span>
+                                <button onclick="addToCart('T-Shirt Premium', 1800, 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -608,19 +1048,19 @@
                 </div>
 
                 <!-- Dress -->
-                <div class="layer-card product-card bg-haiti-dark rounded-xl overflow-hidden border border-gray-800 relative group clothing-item" data-category="women">
-                    <div class="layer-bg"></div>
-                    <div class="layer-content relative">
+                <div class="clothing-item card-3d group" data-category="women">
+                    <div class="card-3d-inner glass-card rounded-2xl overflow-hidden relative">
+                        <div class="card-glow rounded-2xl"></div>
                         <div class="relative h-64 overflow-hidden">
-                            <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop" alt="Robe" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                            <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop" alt="Robe" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                             <div class="absolute top-4 right-4 bg-haiti-red text-white text-xs font-bold px-3 py-1 rounded-full">Nouveau</div>
                         </div>
                         <div class="p-6">
                             <h3 class="font-bold text-lg mb-1">Robe Élégante</h3>
-                            <p class="text-gray-400 text-sm mb-3">Style urbain, tissu léger</p>
+                            <p class="text-gray-400 text-sm mb-4">Style urbain, tissu léger et fluide</p>
                             <div class="flex justify-between items-center">
-                                <span class="text-haiti-gold font-bold text-xl">3,200 HTG</span>
-                                <button onclick="addToCart('Robe Élégante', 3200, 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop')" class="w-10 h-10 bg-haiti-gold/10 rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                                <span class="price-tag">3,200 HTG</span>
+                                <button onclick="addToCart('Robe Élégante', 3200, 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop')" class="w-10 h-10 rounded-full bg-haiti-gold/10 flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
@@ -631,71 +1071,71 @@
         </div>
     </section>
 
-    <!-- New Arrivals with Light Reveal -->
-    <section id="new" class="py-24 bg-haiti-gray relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <p class="text-haiti-gold uppercase tracking-wider text-sm mb-2">Nouveautés</p>
+    <!-- New Arrivals with Light Sweep -->
+    <section class="py-24 bg-haiti-darker relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16 reveal">
+                <p class="text-haiti-gold uppercase tracking-[0.3em] text-sm mb-4 font-semibold">Nouveautés</p>
                 <h2 class="font-playfair text-4xl md:text-5xl font-bold">Dernières Arrivées</h2>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="light-reveal group relative h-80 rounded-xl overflow-hidden">
-                    <div class="reveal-content absolute inset-0">
-                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop" alt="Nouveauté 1" class="w-full h-full object-cover">
+                <div class="light-sweep glass-card rounded-2xl overflow-hidden group cursor-pointer reveal">
+                    <div class="relative h-72 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=400&fit=crop" alt="Diagnostic" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
                     </div>
-                    <div class="absolute bottom-0 left-0 p-6 z-20">
+                    <div class="p-6">
                         <span class="text-haiti-gold text-xs font-bold uppercase tracking-wider">Nouveau</span>
-                        <h3 class="font-bold text-xl mt-2">Kit Diagnostic Auto</h3>
-                        <p class="text-gray-300 text-sm mt-1">OBD2 Bluetooth - Compatible iOS/Android</p>
-                        <p class="text-haiti-gold font-bold mt-3">6,500 HTG</p>
+                        <h3 class="font-bold text-xl mt-2 mb-1">Kit Diagnostic Auto</h3>
+                        <p class="text-gray-400 text-sm mb-3">OBD2 Bluetooth - Compatible iOS/Android</p>
+                        <p class="text-haiti-gold font-bold text-lg">6,500 HTG</p>
                     </div>
                 </div>
 
-                <div class="light-reveal group relative h-80 rounded-xl overflow-hidden">
-                    <div class="reveal-content absolute inset-0">
-                        <img src="https://images.unsplash.com/photo-1434389677669-e08b4dba3aee?w=600&h=400&fit=crop" alt="Nouveauté 2" class="w-full h-full object-cover">
+                <div class="light-sweep glass-card rounded-2xl overflow-hidden group cursor-pointer reveal">
+                    <div class="relative h-72 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1434389677669-e08b4dba3aee?w=600&h=400&fit=crop" alt="Veste" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
                     </div>
-                    <div class="absolute bottom-0 left-0 p-6 z-20">
+                    <div class="p-6">
                         <span class="text-haiti-gold text-xs font-bold uppercase tracking-wider">Nouveau</span>
-                        <h3 class="font-bold text-xl mt-2">Veste Premium</h3>
-                        <p class="text-gray-300 text-sm mt-1">Imperméable, coupe-vent</p>
-                        <p class="text-haiti-gold font-bold mt-3">4,800 HTG</p>
+                        <h3 class="font-bold text-xl mt-2 mb-1">Veste Premium</h3>
+                        <p class="text-gray-400 text-sm mb-3">Imperméable, coupe-vent, style urbain</p>
+                        <p class="text-haiti-gold font-bold text-lg">4,800 HTG</p>
                     </div>
                 </div>
 
-                <div class="light-reveal group relative h-80 rounded-xl overflow-hidden">
-                    <div class="reveal-content absolute inset-0">
-                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop" alt="Nouveauté 3" class="w-full h-full object-cover">
+                <div class="light-sweep glass-card rounded-2xl overflow-hidden group cursor-pointer reveal">
+                    <div class="relative h-72 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop" alt="Cuisine" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
                     </div>
-                    <div class="absolute bottom-0 left-0 p-6 z-20">
+                    <div class="p-6">
                         <span class="text-haiti-gold text-xs font-bold uppercase tracking-wider">Nouveau</span>
-                        <h3 class="font-bold text-xl mt-2">Ensemble Cuisine Pro</h3>
-                        <p class="text-gray-300 text-sm mt-1">Ustensiles inox 18 pièces</p>
-                        <p class="text-haiti-gold font-bold mt-3">3,900 HTG</p>
+                        <h3 class="font-bold text-xl mt-2 mb-1">Ensemble Cuisine Pro</h3>
+                        <p class="text-gray-400 text-sm mb-3">Ustensiles inox 18 pièces premium</p>
+                        <p class="text-haiti-gold font-bold text-lg">3,900 HTG</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <!-- Contact -->
     <section id="contact" class="py-24 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <div>
-                    <p class="text-haiti-gold uppercase tracking-wider text-sm mb-2">Contactez-nous</p>
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <div class="reveal">
+                    <p class="text-haiti-gold uppercase tracking-[0.3em] text-sm mb-4 font-semibold">Contact</p>
                     <h2 class="font-playfair text-4xl md:text-5xl font-bold mb-6">Commandez par WhatsApp</h2>
-                    <p class="text-gray-400 mb-8 leading-relaxed">
-                        Pour passer commande, contactez-nous directement par WhatsApp. Nous sommes disponibles pour vous aider à choisir vos produits et organiser la livraison à Delmas 31.
+                    <p class="text-gray-400 mb-10 leading-relaxed text-lg">
+                        Pour passer commande, contactez-nous directement. Nous sommes disponibles pour vous aider à choisir vos produits et organiser la livraison à Delmas 31.
                     </p>
-                    
+
                     <div class="space-y-6">
-                        <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-haiti-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center flex-shrink-0">
                                 <i class="fab fa-whatsapp text-haiti-gold text-xl"></i>
                             </div>
                             <div>
@@ -703,9 +1143,8 @@
                                 <p class="text-gray-400">509 3895-4747</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-haiti-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-map-marker-alt text-haiti-gold text-xl"></i>
                             </div>
                             <div>
@@ -713,9 +1152,8 @@
                                 <p class="text-gray-400">Delmas 31, Haïti</p>
                             </div>
                         </div>
-                        
-                        <div class="flex items-start space-x-4">
-                            <div class="w-12 h-12 bg-haiti-gold/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <div class="flex items-start gap-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-haiti-gold/20 to-transparent flex items-center justify-center flex-shrink-0">
                                 <i class="fas fa-clock text-haiti-gold text-xl"></i>
                             </div>
                             <div>
@@ -725,29 +1163,28 @@
                         </div>
                     </div>
 
-                    <a href="https://wa.me/50938954747" target="_blank" class="inline-flex items-center mt-8 px-8 py-4 bg-green-600 text-white font-bold rounded-full hover:bg-green-700 transition-colors">
-                        <i class="fab fa-whatsapp mr-2"></i>
-                        Discuter sur WhatsApp
+                    <a href="https://wa.me/50938954747" target="_blank" class="magnetic-btn mt-10 inline-flex">
+                        <span><i class="fab fa-whatsapp mr-2"></i>Discuter sur WhatsApp</span>
                     </a>
                 </div>
 
-                <div class="bg-haiti-gray rounded-2xl p-8 border border-gray-800">
-                    <h3 class="font-playfair text-2xl font-bold mb-6">Envoyez un message</h3>
-                    <form onsubmit="handleSubmit(event)" class="space-y-4">
+                <div class="glass-card rounded-3xl p-8 md:p-10 reveal">
+                    <h3 class="font-playfair text-2xl font-bold mb-8">Envoyez un message</h3>
+                    <form onsubmit="handleSubmit(event)" class="space-y-5">
                         <div>
                             <label class="block text-sm text-gray-400 mb-2">Nom complet</label>
-                            <input type="text" required class="w-full bg-haiti-dark border border-gray-700 rounded-lg px-4 py-3 focus:border-haiti-gold focus:outline-none transition-colors" placeholder="Votre nom">
+                            <input type="text" required class="w-full bg-haiti-dark/50 border border-gray-800 rounded-xl px-5 py-4 text-white input-glow transition-all duration-300" placeholder="Votre nom">
                         </div>
                         <div>
                             <label class="block text-sm text-gray-400 mb-2">Téléphone</label>
-                            <input type="tel" required class="w-full bg-haiti-dark border border-gray-700 rounded-lg px-4 py-3 focus:border-haiti-gold focus:outline-none transition-colors" placeholder="509 xxxx xxxx">
+                            <input type="tel" required class="w-full bg-haiti-dark/50 border border-gray-800 rounded-xl px-5 py-4 text-white input-glow transition-all duration-300" placeholder="509 xxxx xxxx">
                         </div>
                         <div>
                             <label class="block text-sm text-gray-400 mb-2">Message</label>
-                            <textarea rows="4" required class="w-full bg-haiti-dark border border-gray-700 rounded-lg px-4 py-3 focus:border-haiti-gold focus:outline-none transition-colors" placeholder="Quels produits vous intéressent ?"></textarea>
+                            <textarea rows="4" required class="w-full bg-haiti-dark/50 border border-gray-800 rounded-xl px-5 py-4 text-white input-glow transition-all duration-300 resize-none" placeholder="Quels produits vous intéressent ?"></textarea>
                         </div>
-                        <button type="submit" class="w-full bg-haiti-gold text-haiti-dark font-bold py-4 rounded-lg hover:bg-white transition-colors">
-                            Envoyer le message
+                        <button type="submit" class="magnetic-btn w-full">
+                            <span>Envoyer le message</span>
                         </button>
                     </form>
                 </div>
@@ -756,146 +1193,119 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-haiti-gray border-t border-gray-800 pt-16 pb-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+    <footer class="bg-haiti-darker border-t border-gray-800 pt-20 pb-8">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
                 <div>
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-10 h-10 bg-gradient-to-br from-haiti-gold to-yellow-600 rounded-full flex items-center justify-center">
-                            <span class="text-haiti-dark font-bold text-lg">L</span>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-haiti-gold to-yellow-600 flex items-center justify-center">
+                            <span class="text-haiti-dark font-bold text-lg font-playfair">L</span>
                         </div>
                         <h3 class="font-playfair text-xl font-bold">Luxe <span class="text-haiti-gold">HAITI</span></h3>
                     </div>
                     <p class="text-gray-400 text-sm leading-relaxed">
-                        Votre boutique de confiance pour accessoires mécaniques et vêtements de qualité à Delmas 31.
+                        Votre boutique de confiance pour accessoires mécaniques et vêtements de qualité à Delmas 31, Haïti.
                     </p>
                 </div>
-                
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Liens Rapides</h4>
-                    <ul class="space-y-2 text-gray-400">
+                    <h4 class="font-bold text-lg mb-6">Liens</h4>
+                    <ul class="space-y-3 text-gray-400">
                         <li><a href="#mechanics" class="hover:text-haiti-gold transition-colors">Mécanique</a></li>
-                        <li><a href="#clothing" class="hover:text-haiti-gold transition-colors">Vêtements</a></li>
-                        <li><a href="#new" class="hover:text-haiti-gold transition-colors">Nouveautés</a></li>
+                        <li><a href="#clothing" class="hover:text-haiti-gold transition-colors">Mode</a></li>
                         <li><a href="#contact" class="hover:text-haiti-gold transition-colors">Contact</a></li>
                     </ul>
                 </div>
-                
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Produits</h4>
-                    <ul class="space-y-2 text-gray-400">
+                    <h4 class="font-bold text-lg mb-6">Produits</h4>
+                    <ul class="space-y-3 text-gray-400">
                         <li><a href="#" class="hover:text-haiti-gold transition-colors">Snapback Caps</a></li>
                         <li><a href="#" class="hover:text-haiti-gold transition-colors">Sandales</a></li>
                         <li><a href="#" class="hover:text-haiti-gold transition-colors">Outils</a></li>
-                        <li><a href="#" class="hover:text-haiti-gold transition-colors">Accessoires Auto</a></li>
                     </ul>
                 </div>
-                
                 <div>
-                    <h4 class="font-bold text-lg mb-4">Suivez-nous</h4>
-                    <div class="flex space-x-4">
-                        <a href="#" class="w-10 h-10 bg-haiti-dark rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                    <h4 class="font-bold text-lg mb-6">Suivez-nous</h4>
+                    <div class="flex gap-3">
+                        <a href="#" class="w-12 h-12 rounded-xl bg-haiti-dark flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-haiti-dark rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                        <a href="#" class="w-12 h-12 rounded-xl bg-haiti-dark flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="w-10 h-10 bg-haiti-dark rounded-full flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all">
+                        <a href="#" class="w-12 h-12 rounded-xl bg-haiti-dark flex items-center justify-center hover:bg-haiti-gold hover:text-haiti-dark transition-all duration-300">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
                 </div>
             </div>
-            
-            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-                <p> 2024 Luxe HAITI. Tous droits réservés. | Delmas 31, Haïti</p>
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+                <p> 2026 Luxe HAITI. Tous droits réservés. | Delmas 31, Haïti</p>
             </div>
         </div>
     </footer>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-8 right-8 bg-haiti-gold text-haiti-dark px-6 py-4 rounded-lg shadow-2xl transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center space-x-3">
-        <i class="fas fa-check-circle text-xl"></i>
-        <div>
-            <p class="font-bold">Ajouté au panier!</p>
-            <p class="text-sm" id="toast-message"></p>
-        </div>
+    <!-- Toast -->
+    <div class="toast-3d" id="toast">
+        <i class="fas fa-check-circle mr-2"></i>
+        <span id="toast-message">Ajouté au panier!</span>
     </div>
 
     <script>
-        // Cart State
+        // ===== CART SYSTEM =====
         let cart = [];
-        
-        // Toggle Cart
+
         function toggleCart() {
-            const sidebar = document.getElementById('cart-sidebar');
-            const overlay = document.getElementById('cart-overlay');
-            
-            if (sidebar.classList.contains('open')) {
-                sidebar.classList.remove('open');
-                overlay.classList.add('hidden');
-                setTimeout(() => overlay.classList.remove('opacity-100'), 300);
-            } else {
-                sidebar.classList.add('open');
-                overlay.classList.remove('hidden');
-                setTimeout(() => overlay.classList.add('opacity-100'), 10);
-            }
+            document.getElementById('cart-drawer').classList.toggle('open');
+            document.getElementById('cart-overlay').classList.toggle('open');
         }
-        
-        // Toggle Mobile Menu
+
         function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.classList.toggle('open');
+            document.getElementById('mobile-menu').classList.toggle('open');
         }
-        
-        // Add to Cart
+
         function addToCart(name, price, image) {
-            const existingItem = cart.find(item => item.name === name);
-            
-            if (existingItem) {
-                existingItem.quantity++;
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity++;
             } else {
                 cart.push({ name, price, image, quantity: 1 });
             }
-            
             updateCart();
             showToast(`${name} ajouté au panier`);
         }
-        
-        // Remove from Cart
+
         function removeFromCart(name) {
             cart = cart.filter(item => item.name !== name);
             updateCart();
         }
-        
-        // Update Cart UI
+
         function updateCart() {
-            const cartItems = document.getElementById('cart-items');
-            const cartEmpty = document.getElementById('cart-empty');
-            const cartFooter = document.getElementById('cart-footer');
-            const cartCount = document.getElementById('cart-count');
-            const cartTotal = document.getElementById('cart-total');
-            
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            cartCount.textContent = totalItems;
-            
+            const items = document.getElementById('cart-items');
+            const empty = document.getElementById('cart-empty');
+            const footer = document.getElementById('cart-footer');
+            const badge = document.getElementById('cart-badge');
+            const total = document.getElementById('cart-total');
+
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const price = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            badge.textContent = count;
+
             if (cart.length === 0) {
-                cartItems.innerHTML = '';
-                cartEmpty.classList.remove('hidden');
-                cartFooter.classList.add('hidden');
+                items.innerHTML = '';
+                empty.classList.remove('hidden');
+                footer.classList.add('hidden');
             } else {
-                cartEmpty.classList.add('hidden');
-                cartFooter.classList.remove('hidden');
-                cartTotal.textContent = `${totalPrice.toLocaleString()} HTG`;
-                
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="flex items-center space-x-4 bg-haiti-dark p-4 rounded-lg">
+                empty.classList.add('hidden');
+                footer.classList.remove('hidden');
+                total.textContent = `${price.toLocaleString()} HTG`;
+
+                items.innerHTML = cart.map(item => `
+                    <div class="flex items-center gap-4 bg-haiti-dark/50 p-4 rounded-xl">
                         <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h4 class="font-bold text-sm">${item.name}</h4>
-                            <p class="text-haiti-gold text-sm">${item.price.toLocaleString()} HTG x ${item.quantity}</p>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm truncate">${item.name}</h4>
+                            <p class="text-haiti-gold text-sm">${item.price.toLocaleString()} HTG × ${item.quantity}</p>
                         </div>
                         <button onclick="removeFromCart('${item.name}')" class="text-gray-400 hover:text-red-500 transition-colors">
                             <i class="fas fa-trash"></i>
@@ -904,90 +1314,163 @@
                 `).join('');
             }
         }
-        
-        // Show Toast
-        function showToast(message) {
+
+        function showToast(msg) {
             const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            
-            toastMessage.textContent = message;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
-        
-        // Filter Clothing
+
+        // ===== FILTER =====
         function filterClothing(category) {
-            const items = document.querySelectorAll('.clothing-item');
-            
-            items.forEach((item, index) => {
-                const itemCategory = item.getAttribute('data-category');
-                
-                if (category === 'all' || itemCategory === category || itemCategory === 'unisex') {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-haiti-gold', 'text-haiti-dark', 'border-haiti-gold');
+                btn.classList.add('border-gray-700', 'text-gray-400');
+            });
+            event.target.classList.remove('border-gray-700', 'text-gray-400');
+            event.target.classList.add('bg-haiti-gold', 'text-haiti-dark', 'border-haiti-gold');
+
+            document.querySelectorAll('.clothing-item').forEach(item => {
+                const cat = item.getAttribute('data-category');
+                if (category === 'all' || cat === category || cat === 'unisex') {
                     item.style.display = 'block';
                     setTimeout(() => {
                         item.style.opacity = '1';
                         item.style.transform = 'translateY(0)';
-                    }, index * 100);
+                    }, 100);
                 } else {
                     item.style.opacity = '0';
                     item.style.transform = 'translateY(20px)';
-                    setTimeout(() => {
-                        item.style.display = 'none';
-                    }, 300);
+                    setTimeout(() => item.style.display = 'none', 300);
                 }
             });
         }
-        
-        // Handle Form Submit
+
+        // ===== FORM =====
         function handleSubmit(e) {
             e.preventDefault();
             showToast('Message envoyé! Nous vous contacterons bientôt.');
             e.target.reset();
         }
-        
-        // Intersection Observer for Column Slide Animation
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
+
+        // ===== 3D TILT EFFECT =====
+        const heroContainer = document.getElementById('hero-3d-container');
+        const productShowcase = document.getElementById('product-showcase');
+        const tiltElement = document.querySelector('.tilt-element');
+
+        if (heroContainer && productShowcase) {
+            heroContainer.addEventListener('mousemove', (e) => {
+                const rect = heroContainer.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+                productShowcase.style.transform = `
+                    rotateY(${x * 15}deg)
+                    rotateX(${-y * 15}deg)
+                `;
+
+                if (tiltElement) {
+                    tiltElement.style.transform = `
+                        translate(-50%, -50%)
+                        translateZ(100px)
+                        rotateY(${x * 20}deg)
+                        rotateX(${-y * 20}deg)
+                    `;
+                }
+            });
+
+            heroContainer.addEventListener('mouseleave', () => {
+                productShowcase.style.transform = 'rotateY(0) rotateX(0)';
+                if (tiltElement) {
+                    tiltElement.style.transform = 'translate(-50%, -50%) translateZ(100px)';
+                }
+            });
+        }
+
+        // ===== PARTICLES =====
+        const particlesContainer = document.getElementById('particles-container');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle-3d';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 15}s`;
+            particle.style.animationDuration = `${10 + Math.random() * 10}s`;
+            particlesContainer.appendChild(particle);
+        }
+
+        // ===== SCROLL REVEAL =====
+        const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                 }
             });
-        }, observerOptions);
-        
-        document.querySelectorAll('.slide-column').forEach(el => observer.observe(el));
-        
-        // Parallax Effect on Hero
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const parallax = document.querySelector('.hero-parallax');
-            if (parallax) {
-                parallax.style.setProperty('--scroll-y', `${scrolled * 0.5}px`);
-            }
-        });
-        
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+        }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Stagger observer
+        const staggerObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
                 }
             });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.stagger-children').forEach(el => staggerObserver.observe(el));
+
+        // ===== NAVBAR SCROLL =====
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
-        
-        // Initialize
+
+        // ===== COUNTER ANIMATION =====
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = parseInt(counter.getAttribute('data-target'));
+                        const duration = 2000;
+                        const step = target / (duration / 16);
+                        let current = 0;
+
+                        const update = () => {
+                            current += step;
+                            if (current < target) {
+                                counter.textContent = Math.floor(current).toLocaleString();
+                                requestAnimationFrame(update);
+                            } else {
+                                counter.textContent = target.toLocaleString();
+                            }
+                        };
+                        update();
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.counter')?.closest('div')?.parentElement;
+        if (statsSection) counterObserver.observe(statsSection);
+
+        // ===== SMOOTH SCROLL =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+
+        // Init
         updateCart();
     </script>
 </body>
